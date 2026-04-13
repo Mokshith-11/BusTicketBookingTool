@@ -21,13 +21,6 @@ Develop a centralized bus ticket booking platform where users can search buses, 
 ## Database
 Total Tables: 11
 
-## Team Members
-- Member 1 – Database
-- Member 2 – Booking API
-- Member 3 – Payment
-- Member 4 – Frontend
-- Member 5 – Testing
-
 ## Features
 - Search buses
 - View routes
