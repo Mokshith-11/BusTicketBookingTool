@@ -1,35 +1,34 @@
 package com.gemini.BusTicketBookingSystem.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Entity
 @Table(name = "customers")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class Customer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int customerId;
+    @Column(name = "customer_id")
+    private Integer customerId;
 
     @NotBlank(message = "Name is required")
-    @Size(min = 3, max = 100, message = "Name must be between 3 and 100 characters")
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @NotBlank(message = "Email is required")
     @Email(message = "Invalid email format")
+    @NotBlank(message = "Email is required")
+    @Column(name = "email", nullable = false)
     private String email;
 
-    @NotBlank(message = "Phone number is required")
-    @Pattern(regexp = "^[0-9]{10}$", message = "Phone number must be 10 digits")
+    @NotBlank(message = "Phone is required")
+    @Column(name = "phone", nullable = false, length = 15)
     private String phone;
 
-    // Many customers can have one address
-//    @ManyToOne
+//    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "address_id")
-//    @NotNull(message = "Address is required")
 //    private Address address;
 }
