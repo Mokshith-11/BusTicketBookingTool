@@ -1,7 +1,7 @@
-package com.capgemini.busticketbooking.controller;
+package com.gemini.busticketbooking.controller;
 
-import com.capgemini.busticketbooking.entity.Payment;
-import com.capgemini.busticketbooking.repository.PaymentRepository;
+import com.gemini.busticketbooking.entity.Payment;
+import com.gemini.busticketbooking.repository.PaymentRepository;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

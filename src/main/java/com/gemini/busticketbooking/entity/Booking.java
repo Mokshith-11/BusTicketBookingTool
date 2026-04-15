@@ -1,4 +1,4 @@
-package com.capgemini.busticketbooking.entity;
+package com.gemini.busticketbooking.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
