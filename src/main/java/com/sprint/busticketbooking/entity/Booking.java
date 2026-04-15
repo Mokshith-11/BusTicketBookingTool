@@ -1,30 +1,36 @@
 package com.sprint.busticketbooking.entity;
 
+//import com.busticket.enums.BookingStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Min;
-import lombok.Data;
+import lombok.*;
 
 @Entity
 @Table(name = "bookings")
-@Data
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class Booking {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long bookingId;
+    @Column(name = "booking_id")
+    private Integer bookingId;
 
-    @NotNull(message = "Trip ID is required")
-    private Long tripId;
-
-    @NotNull(message = "Customer ID is required")
-    private Long customerId;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "trip_id")
+//    private Trip trip;
+//
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "customer_id")
+//    private Customer customer;
 
     @NotNull(message = "Seat number is required")
-    @Min(value = 1, message = "Seat number must be greater than 0")
+    @Column(name = "seat_number", nullable = false)
     private Integer seatNumber;
 
-    @NotBlank(message = "Booking status cannot be empty")
-    private String bookingStatus;
+    public void setBookingStatus(String confirmed) {
+    }
+
+//    @Enumerated(EnumType.STRING)
+//    @Column(name = "status")
+//    private BookingStatus status = BookingStatus.Available;
 }

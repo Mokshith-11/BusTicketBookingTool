@@ -1,7 +1,7 @@
 package com.sprint.busticketbooking.controller;
 
 import com.sprint.busticketbooking.entity.Booking;
-import com.sprint.busticketbooking.repository.BookingRepository;
+import com.sprint.busticketbooking.repository.IBookingRepository;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -9,9 +9,9 @@ import java.util.List;
 @RequestMapping("/api/bookings")
 public class BookingController {
 
-    private final BookingRepository bookingRepository;
+    private final IBookingRepository bookingRepository;
 
-    public BookingController(BookingRepository bookingRepository) {
+    public BookingController(IBookingRepository bookingRepository) {
         this.bookingRepository = bookingRepository;
     }
 

@@ -1,19 +1,38 @@
 package com.sprint.busticketbooking.entity;
 
+//import com.busticket.enums.PaymentStatus;
 import jakarta.persistence.*;
-import lombok.Data;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "payments")
-@Data
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class Payment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long paymentId;
+    @Column(name = "payment_id")
+    private Integer paymentId;
 
-    private Long bookingId;
-    private Double amount;
-    private String paymentMode;
-    private String paymentStatus;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "booking_id", nullable = false)
+    private Booking booking;
+
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "customer_id")
+//    private Customer customer;
+
+    @Column(name = "amount", precision = 10, scale = 2)
+    private BigDecimal amount;
+
+    @Column(name = "payment_date")
+    private LocalDateTime paymentDate;
+
+//    @Enumerated(EnumType.STRING)
+//    @Column(name = "payment_status")
+//    private PaymentStatus paymentStatus;
 }
