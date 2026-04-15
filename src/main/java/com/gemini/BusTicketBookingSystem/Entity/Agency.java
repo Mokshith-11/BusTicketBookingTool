@@ -1,4 +1,4 @@
-package com.gemini.BusTicketBookingSystem.entity;
+package com.gemini.BusTicketBookingSystem.Entity;
 
 
 import jakarta.persistence.*;

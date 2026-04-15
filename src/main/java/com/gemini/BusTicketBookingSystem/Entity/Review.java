@@ -1,5 +1,7 @@
-package com.gemini.BusTicketBookingSystem.entity;
+package com.gemini.BusTicketBookingSystem.Entity;
 
+import com.gemini.BusTicketBookingSystem.Entity.Trip;
+import com.gemini.BusTicketBookingSystem.Entity.Customer;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -15,10 +17,10 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "review_id")
     private Integer reviewId;
-//
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "customer_id", nullable = false)
-//    private Customer customer;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id", nullable = false)
+    private Customer customer;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "trip_id", nullable = false)

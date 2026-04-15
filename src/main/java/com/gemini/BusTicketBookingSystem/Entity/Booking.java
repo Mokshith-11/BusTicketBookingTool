@@ -1,6 +1,7 @@
 package com.gemini.BusTicketBookingSystem.Entity;
 
 //import com.busticket.enums.BookingStatus;
+import com.gemini.BusTicketBookingSystem.enums.BookingStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -15,22 +16,19 @@ public class Booking {
     @Column(name = "booking_id")
     private Integer bookingId;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "trip_id")
-//    private Trip trip;
-//
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "customer_id")
-//    private Customer customer;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "trip_id")
+    private Trip trip;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
 
     @NotNull(message = "Seat number is required")
     @Column(name = "seat_number", nullable = false)
     private Integer seatNumber;
 
-    public void setBookingStatus(String confirmed) {
-    }
-
-//    @Enumerated(EnumType.STRING)
-//    @Column(name = "status")
-//    private BookingStatus status = BookingStatus.Available;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private BookingStatus status = BookingStatus.Available;
 }

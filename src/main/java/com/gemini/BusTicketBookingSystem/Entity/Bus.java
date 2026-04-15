@@ -16,9 +16,9 @@ public class Bus {
     @Column(name = "bus_id")
     private Integer busId;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "office_id", nullable = false)
-//    private AgencyOffice office;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "office_id", nullable = false)
+    private AgencyOffice office;
 
     @NotBlank(message = "Registration number is required")
     @Column(name = "registration_number", nullable = false, length = 20)
