@@ -1,16 +1,13 @@
-package com.gemini.BusTicketBookingSystem.Entity;
-
+package com.gemini.BusTicketBookingSystem.entity;
 
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "agency_offices")
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class AgencyOffice {
 
     @Id
@@ -18,26 +15,20 @@ public class AgencyOffice {
     @Column(name = "office_id")
     private Integer officeId;
 
-    @NotBlank
-    @Column(name = "office_mail")
-    private String officeMail;
-
-    @NotBlank
-    @Column(name = "office_contact_person_name")
-    private String officeContactPersonName;
-
-    @NotBlank
-    @Column(name = "office_contact_number")
-    private String officeContactNumber;
-
-    // Many offices belong to one agency
-    @ManyToOne
-    @JoinColumn(name = "agency_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "agency_id", nullable = false)
     private Agency agency;
 
-    // Many offices belong to one address
-    @ManyToOne
-    @JoinColumn(name = "office_address_id")
-    private Addresses address;
-}
+    @Column(name = "office_mail", length = 100)
+    private String officeMail;
 
+    @Column(name = "office_contact_person_name", length = 50)
+    private String officeContactPersonName;
+
+    @Column(name = "office_contact_number", length = 10)
+    private String officeContactNumber;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "office_address_id")
+    private Addresses officeAddress;
+}

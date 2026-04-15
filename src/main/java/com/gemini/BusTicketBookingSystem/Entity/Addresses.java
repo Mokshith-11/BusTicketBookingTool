@@ -1,41 +1,32 @@
-package com.gemini.BusTicketBookingSystem.Entity;
-
-
+package com.gemini.BusTicketBookingSystem.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
-import java.util.List;
-
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "addresses")
-public class Addresses {
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+public class Addresses{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "address_id")
     private Integer addressId;
 
-    @NotBlank
+    @NotBlank(message = "Address is required")
     @Column(name = "address", nullable = false)
     private String address;
 
-    @NotBlank
+    @NotBlank(message = "City is required")
     @Column(name = "city", nullable = false)
     private String city;
 
-    @NotBlank
+    @NotBlank(message = "State is required")
     @Column(name = "state", nullable = false)
     private String state;
 
-    @NotBlank
-    @Column(name = "zip_code", nullable = false)
+    @NotBlank(message = "Zip code is required")
+    @Column(name = "zip_code", nullable = false, length = 10)
     private String zipCode;
-
-    @OneToMany(mappedBy = "address", fetch = FetchType.LAZY)
-    private List<AgencyOffice> agencyOffices;
 }

@@ -1,19 +1,17 @@
-package com.gemini.BusTicketBookingSystem.Entity;
-
+package com.gemini.BusTicketBookingSystem.entity;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.List;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "agencies")
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class Agency {
 
     @Id
@@ -21,25 +19,20 @@ public class Agency {
     @Column(name = "agency_id")
     private Integer agencyId;
 
-    @NotBlank
-    @Size(max = 255)
+    @NotBlank(message = "Agency name is required")
     @Column(name = "name", nullable = false)
     private String name;
 
-    @NotBlank
-    @Size(max = 30)
-    @Column(name = "contact_person_name", nullable = false)
+    @NotBlank(message = "Contact person name is required")
+    @Column(name = "contact_person_name", nullable = false, length = 30)
     private String contactPersonName;
 
-    @NotBlank
+    @Email(message = "Invalid email format")
+    @NotBlank(message = "Email is required")
     @Column(name = "email", nullable = false)
     private String email;
 
-    @NotBlank
-    @Column(name = "phone", nullable = false)
+    @NotBlank(message = "Phone is required")
+    @Column(name = "phone", nullable = false, length = 15)
     private String phone;
-
-    @OneToMany(mappedBy = "agency", fetch = FetchType.LAZY)
-    private List<AgencyOffice> agencyOffices;
 }
-
