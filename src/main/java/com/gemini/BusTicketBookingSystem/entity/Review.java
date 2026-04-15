@@ -1,46 +1,38 @@
 package com.gemini.BusTicketBookingSystem.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "reviews")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class Review {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "review_id")
     private Integer reviewId;
-
-//    // Many reviews by one customer
-//    @NotNull(message = "Customer is required")
-//    @ManyToOne
-//    @JoinColumn(name = "customer_id")
+//
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "customer_id", nullable = false)
 //    private Customer customer;
 
-    // Many reviews for one trip
-    @NotNull(message = "Trip is required")
-    @ManyToOne
-    @JoinColumn(name = "trip_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "trip_id", nullable = false)
     private Trip trip;
 
-    // Rating must be between 1 and 5
     @NotNull(message = "Rating is required")
-    @Min(value = 1, message = "Rating minimum is 1")
-    @Max(value = 5, message = "Rating maximum is 5")
+    @Min(value = 1, message = "Rating must be at least 1")
+    @Max(value = 5, message = "Rating must be at most 5")
+    @Column(name = "rating", nullable = false)
     private Integer rating;
 
-    // @NotBlank means comment cannot be empty string
-    @NotBlank(message = "Comment cannot be empty")
+    @Column(name = "comment", columnDefinition = "TEXT")
     private String comment;
 
+    @Column(name = "review_date")
     private LocalDateTime reviewDate;
 }
