@@ -25,12 +25,12 @@ public class Driver {
     @NotBlank(message = "Phone is required")
     @Column(name = "phone", nullable = false, length = 15)
     private String phone;
-//
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "office_id")
-//    private AgencyOffice office;
-//
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "address_id")
-//    private Address address;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "office_id")
+    private AgencyOffice office;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "address_id")
+    private Addresses address;
 }

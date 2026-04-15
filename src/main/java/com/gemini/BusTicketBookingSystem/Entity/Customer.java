@@ -1,4 +1,4 @@
-package com.gemini.BusTicketBookingSystem.entity;
+package com.gemini.BusTicketBookingSystem.Entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -28,7 +28,7 @@ public class Customer {
     @Column(name = "phone", nullable = false, length = 15)
     private String phone;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "address_id")
-//    private Address address;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "address_id")
+    private Addresses address;
 }

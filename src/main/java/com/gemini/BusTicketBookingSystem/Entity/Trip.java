@@ -1,5 +1,9 @@
-package com.gemini.BusTicketBookingSystem.entity;
+package com.gemini.BusTicketBookingSystem.Entity;
 
+import com.gemini.BusTicketBookingSystem.Entity.*;
+import com.gemini.BusTicketBookingSystem.Entity.Driver;
+import com.gemini.BusTicketBookingSystem.Entity.Route;
+import com.gemini.BusTicketBookingSystem.Entity.Addresses;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -16,22 +20,22 @@ public class Trip {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "trip_id")
     private Integer tripId;
-//
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "route_id", nullable = false)
-//    private Route route;
-//
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "bus_id", nullable = false)
-//    private Bus bus;
-//
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "boarding_address_id", nullable = false)
-//    private Address boardingAddress;
-//
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "dropping_address_id", nullable = false)
-//    private Address droppingAddress;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "route_id", nullable = false)
+    private Route route;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "bus_id", nullable = false)
+    private Bus bus;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "boarding_address_id", nullable = false)
+    private Addresses boardingAddress;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "dropping_address_id", nullable = false)
+    private Addresses droppingAddress;
 
     @NotNull(message = "Departure time is required")
     @Column(name = "departure_time", nullable = false)
@@ -41,13 +45,13 @@ public class Trip {
     @Column(name = "arrival_time", nullable = false)
     private LocalDateTime arrivalTime;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "driver1_driver_id", nullable = false)
-//    private Driver driver1;
-//
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "driver2_driver_id", nullable = false)
-//    private Driver driver2;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "driver1_driver_id", nullable = false)
+    private Driver driver1;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "driver2_driver_id", nullable = false)
+    private Driver driver2;
 
     @NotNull(message = "Available seats is required")
     @Column(name = "available_seats", nullable = false)

@@ -1,6 +1,7 @@
 package com.gemini.BusTicketBookingSystem.Entity;
 
 //import com.busticket.enums.PaymentStatus;
+import com.gemini.BusTicketBookingSystem.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,9 +22,9 @@ public class Payment {
     @JoinColumn(name = "booking_id", nullable = false)
     private Booking booking;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "customer_id")
-//    private Customer customer;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
 
     @Column(name = "amount", precision = 10, scale = 2)
     private BigDecimal amount;
@@ -31,10 +32,7 @@ public class Payment {
     @Column(name = "payment_date")
     private LocalDateTime paymentDate;
 
-    public void setPaymentStatus(String success) {
-    }
-
-//    @Enumerated(EnumType.STRING)
-//    @Column(name = "payment_status")
-//    private PaymentStatus paymentStatus;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "payment_status")
+    private PaymentStatus paymentStatus;
 }
