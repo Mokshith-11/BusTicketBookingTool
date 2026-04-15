@@ -1,17 +1,30 @@
 package fleet.BusTicketBookingSystem.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import jakarta.validation.constraints.NotBlank;
+import lombok.*;
 
 @Entity
-@Table(name="route")
-@Data
+@Table(name = "routes")
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class Route {
+
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "route_id")
     private Integer routeId;
 
-    private String routeName;
+    @NotBlank(message = "From city is required")
+    @Column(name = "from_city", nullable = false)
+    private String fromCity;
 
-    private float distance;
+    @NotBlank(message = "To city is required")
+    @Column(name = "to_city", nullable = false)
+    private String toCity;
+
+    @Column(name = "break_points")
+    private Integer breakPoints;
+
+    @Column(name = "duration")
+    private Integer duration;
 }
