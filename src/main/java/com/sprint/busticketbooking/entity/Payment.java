@@ -32,6 +32,9 @@ public class Payment {
     @Column(name = "payment_date")
     private LocalDateTime paymentDate;
 
+    public void setPaymentStatus(String success) {
+    }
+
 //    @Enumerated(EnumType.STRING)
 //    @Column(name = "payment_status")
 //    private PaymentStatus paymentStatus;

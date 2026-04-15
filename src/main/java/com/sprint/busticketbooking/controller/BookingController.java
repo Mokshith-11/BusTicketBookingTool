@@ -18,7 +18,8 @@ public class BookingController {
     // CREATE
     @PostMapping
     public Booking createBooking(@RequestBody Booking booking) {
-        booking.setBookingStatus("CONFIRMED");
+        booking.
+                setBookingStatus("CONFIRMED");
         return bookingRepository.save(booking);
     }
 
