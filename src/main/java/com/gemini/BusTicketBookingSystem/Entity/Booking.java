@@ -1,4 +1,4 @@
-package com.sprint.busticketbooking.entity;
+package com.gemini.BusTicketBookingSystem.Entity;
 
 //import com.busticket.enums.BookingStatus;
 import jakarta.persistence.*;

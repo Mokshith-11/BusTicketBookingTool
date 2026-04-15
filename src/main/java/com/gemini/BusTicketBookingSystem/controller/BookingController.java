@@ -1,7 +1,7 @@
-package com.sprint.busticketbooking.controller;
+package com.gemini.BusTicketBookingSystem.controller;
 
-import com.sprint.busticketbooking.entity.Booking;
-import com.sprint.busticketbooking.repository.IBookingRepository;
+import com.gemini.BusTicketBookingSystem.Entity.Booking;
+import com.gemini.BusTicketBookingSystem.Repository.IBookingRepository;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -32,13 +32,13 @@ public class BookingController {
     // READ BY ID
     @GetMapping("/{id}")
     public Booking getBookingById(@PathVariable Long id) {
-        return bookingRepository.findById(id).orElse(null);
+        return bookingRepository.findById(Math.toIntExact(id)).orElse(null);
     }
 
     // UPDATE
     @PutMapping("/{id}")
     public Booking updateBooking(@PathVariable Long id, @RequestBody Booking booking) {
-        booking.setBookingId(id);
+        booking.setBookingId(Math.toIntExact(id));
         booking.setBookingStatus("UPDATED");
         return bookingRepository.save(booking);
     }
@@ -46,7 +46,7 @@ public class BookingController {
     // DELETE
     @DeleteMapping("/{id}")
     public String deleteBooking(@PathVariable Long id) {
-        bookingRepository.deleteById(id);
+        bookingRepository.deleteById(Math.toIntExact(id));
         return "Booking deleted successfully";
     }
 }

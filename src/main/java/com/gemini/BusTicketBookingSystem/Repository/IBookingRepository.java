@@ -1,7 +1,7 @@
-package com.sprint.busticketbooking.repository;
+package com.gemini.BusTicketBookingSystem.Repository;
 
 
-import com.sprint.busticketbooking.entity.Booking;
+import com.gemini.BusTicketBookingSystem.Entity.Booking;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
