@@ -1,4 +1,4 @@
-package com.gemini.BusTicketBookingSystem;
+package com.sprint.BusTicketBookingSystem;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

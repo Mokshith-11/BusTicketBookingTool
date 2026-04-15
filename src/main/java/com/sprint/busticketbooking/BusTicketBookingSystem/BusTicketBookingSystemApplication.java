@@ -1,4 +1,4 @@
-package com.gemini.busticketbooking.BusTicketBookingSystem;
+package com.sprint.busticketbooking.BusTicketBookingSystem;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

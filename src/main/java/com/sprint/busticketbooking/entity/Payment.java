@@ -1,4 +1,4 @@
-package com.gemini.busticketbooking.entity;
+package com.sprint.busticketbooking.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;

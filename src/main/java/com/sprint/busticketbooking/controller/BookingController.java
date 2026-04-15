@@ -1,7 +1,7 @@
-package com.gemini.busticketbooking.controller;
+package com.sprint.busticketbooking.controller;
 
-import com.gemini.busticketbooking.entity.Booking;
-import com.gemini.busticketbooking.repository.BookingRepository;
+import com.sprint.busticketbooking.entity.Booking;
+import com.sprint.busticketbooking.repository.BookingRepository;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 

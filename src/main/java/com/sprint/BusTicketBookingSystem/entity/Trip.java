@@ -1,4 +1,4 @@
-package com.gemini.BusTicketBookingSystem.entity;
+package com.sprint.BusTicketBookingSystem.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
