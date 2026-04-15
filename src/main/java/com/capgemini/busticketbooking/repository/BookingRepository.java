@@ -1,5 +1,6 @@
-package com.capgemini.busticketbooking.booking;
+package com.capgemini.busticketbooking.repository;
 
+import com.capgemini.busticketbooking.entity.Booking;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

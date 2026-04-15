@@ -1,5 +1,7 @@
-package com.capgemini.busticketbooking.booking;
+package com.capgemini.busticketbooking.controller;
 
+import com.capgemini.busticketbooking.entity.Booking;
+import com.capgemini.busticketbooking.repository.BookingRepository;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
