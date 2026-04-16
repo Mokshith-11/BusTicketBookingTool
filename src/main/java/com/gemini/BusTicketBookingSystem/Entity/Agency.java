@@ -1,4 +1,4 @@
-package com.gemini.BusTicketBookingSystem.entity;
+package com.gemini.BusTicketBookingSystem.Entity;
 
 
 import jakarta.persistence.*;
@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.math.BigInteger;
 import java.util.List;
 
 @Entity
@@ -33,6 +34,6 @@ public class Agency {
     private String email;
 
     @NotBlank(message = "Phone is required")
-    @Column(name = "phone", nullable = false, length = 15)
+    @Column(name = "phone", nullable = false, length = 10)
     private String phone;
 }
