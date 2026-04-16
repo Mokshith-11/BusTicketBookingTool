@@ -15,7 +15,7 @@ public interface ITripRepository extends JpaRepository<Trip, Integer> {
             "WHERE t.route.fromCity = :fromCity " +
             "AND t.route.toCity = :toCity " +
             "AND t.tripDate BETWEEN :start AND :end")
-    List<Trip> findByRoute_FromCityAndRoute_ToCityAndTripDateBetween(
+    List<Trip> findTripsByCitiesAndDateRange(
             @Param("fromCity") String fromCity,
             @Param("toCity") String toCity,
             @Param("start") LocalDateTime start,

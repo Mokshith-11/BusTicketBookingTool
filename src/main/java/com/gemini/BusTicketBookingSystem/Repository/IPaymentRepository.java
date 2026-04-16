@@ -21,4 +21,5 @@ public interface IPaymentRepository extends JpaRepository<Payment, Integer> {
     @Query("SELECT CASE WHEN COUNT(p) > 0 THEN true ELSE false END " +
             "FROM Payment p WHERE p.booking.bookingId = :bookingId")
     boolean existsPaymentByBookingId(@Param("bookingId") Integer bookingId);
+
 }
