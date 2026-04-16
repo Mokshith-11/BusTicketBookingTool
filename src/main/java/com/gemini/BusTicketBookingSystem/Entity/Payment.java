@@ -4,7 +4,7 @@ package com.gemini.BusTicketBookingSystem.Entity;
 import com.gemini.BusTicketBookingSystem.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.*;
-
+import com.gemini.BusTicketBookingSystem.Entity.Customer;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -31,6 +31,7 @@ public class Payment {
 
     @Column(name = "payment_date")
     private LocalDateTime paymentDate;
+
 
     @Enumerated(EnumType.STRING)
     @Column(name = "payment_status")
