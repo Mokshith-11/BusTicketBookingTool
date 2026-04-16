@@ -27,7 +27,7 @@ public class BusServiceImpl implements IBusService {
     }
 
     @Autowired
-    private IBusService busRepository;
+    private IBusRepository busRepository;
 
     @Autowired
     private IAgencyOfficeRepository officeRepository;
