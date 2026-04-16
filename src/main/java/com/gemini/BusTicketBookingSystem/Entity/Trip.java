@@ -1,10 +1,10 @@
 package com.gemini.BusTicketBookingSystem.Entity;
 
-import com.gemini.BusTicketBookingSystem.Entity.*;
+import com.gemini.BusTicketBookingSystem.Entity.Bus;
 import com.gemini.BusTicketBookingSystem.Entity.Driver;
 import com.gemini.BusTicketBookingSystem.Entity.Route;
-import com.gemini.BusTicketBookingSystem.Entity.Addresses;
 import jakarta.persistence.*;
+import com.gemini.BusTicketBookingSystem.Entity.Addresses;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -35,7 +35,7 @@ public class Trip {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dropping_address_id", nullable = false)
-    private Addresses droppingAddress;
+    private Addresses  droppingAddress;
 
     @NotNull(message = "Departure time is required")
     @Column(name = "departure_time", nullable = false)
