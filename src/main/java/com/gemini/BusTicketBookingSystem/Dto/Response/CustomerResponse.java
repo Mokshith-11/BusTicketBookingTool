@@ -1,4 +1,4 @@
-package com.gemini.BusTicketBookingSystem.Dto.Response;
+package com.gemini.BusTicketBookingSystem.dto.response;
 
 import lombok.*;
 
@@ -8,5 +8,4 @@ public class CustomerResponse {
     private String name;
     private String email;
     private String phone;
-//    private AddressResponse address;
 }
