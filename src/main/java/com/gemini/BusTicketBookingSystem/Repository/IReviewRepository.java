@@ -1,13 +1,24 @@
 package com.gemini.BusTicketBookingSystem.Repository;
 
 import com.gemini.BusTicketBookingSystem.Entity.Review;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
 public interface IReviewRepository extends JpaRepository<Review, Integer> {
-    List<Review> findByTrip_TripId(Integer tripId);
-    List<Review> findByCustomer_CustomerId(Integer customerId);
+    @Query("SELECT r FROM Review r WHERE r.trip.tripId = :tripId")
+    List<Review> findByTripId(@Param("tripId") Integer tripId);
+
+    @Query("SELECT r FROM Review r WHERE r.customer.customerId = :customerId")
+    List<Review> findByCustomerId(@Param("customerId") Integer customerId);
+
+    @Query("SELECT CASE WHEN COUNT(r) > 0 THEN true ELSE false END " +
+            "FROM Review r WHERE r.trip.tripId = :tripId AND r.customer.customerId = :customerId")
+    boolean existsByTripAndCustomer(@Param("tripId") Integer tripId,
+                                    @Param("customerId") Integer customerId);
 }
