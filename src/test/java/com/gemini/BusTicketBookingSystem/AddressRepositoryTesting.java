@@ -2,8 +2,8 @@ package com.gemini.BusTicketBookingSystem;
 
 
 
-import com.gemini.BusTicketBookingSystem.Entity.Addresses;
-import com.gemini.BusTicketBookingSystem.Repository.IAddressesRepository;
+import com.gemini.BusTicketBookingSystem.entity.Addresses;
+import com.gemini.BusTicketBookingSystem.repository.IAddressesRepository;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
