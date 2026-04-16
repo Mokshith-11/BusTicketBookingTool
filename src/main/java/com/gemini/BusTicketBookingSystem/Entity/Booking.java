@@ -28,6 +28,9 @@ public class Booking {
     @Column(name = "seat_number", nullable = false)
     private Integer seatNumber;
 
+    public void setBookingStatus(String confirmed) {
+    }
+
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private BookingStatus status = BookingStatus.Available;

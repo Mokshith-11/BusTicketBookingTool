@@ -1,0 +1,156 @@
+package com.gemini.BusTicketBookingSystem.Service.Impl;
+
+import com.gemini.BusTicketBookingSystem.Entity.Booking;
+import com.gemini.BusTicketBookingSystem.Exception.InvalidOperationException;
+import com.gemini.BusTicketBookingSystem.Exception.ResourceNotFoundException;
+import com.gemini.BusTicketBookingSystem.Exception.SeatNotAvailableException;
+import com.gemini.BusTicketBookingSystem.Repository.IBookingRepository;
+import com.gemini.BusTicketBookingSystem.Repository.ITripRepository;
+import com.gemini.BusTicketBookingSystem.Service.IBookingService;
+import com.gemini.BusTicketBookingSystem.Dto.Request.BookingRequest;
+import com.gemini.BusTicketBookingSystem.Dto.Response.BookingResponse;
+import com.gemini.BusTicketBookingSystem.enums.BookingStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.gemini.BusTicketBookingSystem.Repository.ICustomerRepository;
+import org.springframework.transaction.annotation.Transactional;
+import com.gemini.BusTicketBookingSystem.Entity.Trip;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+public class BookingServiceImpl implements IBookingService {
+
+    @Autowired
+    private IBookingRepository bookingRepository;
+
+    @Autowired
+    private ITripRepository tripRepository;
+
+    @Autowired
+    private ICustomerRepository customerRepository;
+
+    @Override
+    @Transactional
+    public BookingResponse bookSeat(Integer tripId, BookingRequest requestDTO) {
+        Trip trip = tripRepository.findById(tripId)
+                .orElseThrow(() -> new ResourceNotFoundException("Trip", "tripId", tripId));
+
+        // Validate seat number
+        if (requestDTO.getSeatNumber() < 1 ||
+                requestDTO.getSeatNumber() > trip.getBus().getCapacity()) {
+            throw new SeatNotAvailableException(tripId,
+                    "Invalid seat number. Bus capacity is " + trip.getBus().getCapacity());
+        }
+
+        // Check if trip is still open for booking
+        if (trip.getDepartureTime().isBefore(LocalDateTime.now())) {
+            throw new InvalidOperationException("Book Seat",
+                    "Cannot book seat for a trip that has already departed");
+        }
+
+        // Check seat availability
+        List<Booking> existingBookings = bookingRepository.findBookingsByTripIdAndStatus(tripId, BookingStatus.Booked);
+        boolean seatAlreadyBooked = existingBookings.stream()
+                .anyMatch(b -> b.getSeatNumber().equals(requestDTO.getSeatNumber()));
+
+        if (seatAlreadyBooked) {
+            throw new SeatNotAvailableException(tripId, requestDTO.getSeatNumber());
+        }
+
+        // Check if trip has available seats
+        if (trip.getAvailableSeats() <= 0) {
+            throw new SeatNotAvailableException(tripId, "No seats available for this trip");
+        }
+
+        Booking booking = new Booking();
+        booking.setTrip(trip);
+        booking.setSeatNumber(requestDTO.getSeatNumber());
+        booking.setStatus(BookingStatus.Booked);
+
+        // Update available seats
+        trip.setAvailableSeats(trip.getAvailableSeats() - 1);
+        tripRepository.save(trip);
+
+        Booking savedBooking = bookingRepository.save(booking);
+        return convertToResponseDTO(savedBooking);
+    }
+
+    @Override
+    public List<BookingResponse> getCustomerBookings(Integer customerId) {
+        if (!customerRepository.existsById(customerId)) {
+            throw new ResourceNotFoundException("Customer", "customerId", customerId);
+        }
+
+        // Note: You'll need to add customer reference in Booking entity
+        // For now, returning all bookings
+        return bookingRepository.findAll().stream()
+                .map(this::convertToResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public BookingResponse getBookingById(Integer bookingId) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking", "bookingId", bookingId));
+        return convertToResponseDTO(booking);
+    }
+
+    @Override
+    @Transactional
+    public void cancelBooking(Integer bookingId) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking", "bookingId", bookingId));
+
+        if (booking.getStatus() == BookingStatus.Available) {
+            throw new InvalidOperationException("Cancel Booking",
+                    "Booking is already cancelled or not booked");
+        }
+
+        booking.setStatus(BookingStatus.Available);
+
+        // Restore available seats
+        Trip trip = booking.getTrip();
+        trip.setAvailableSeats(trip.getAvailableSeats() + 1);
+        tripRepository.save(trip);
+
+        bookingRepository.save(booking);
+    }
+
+    @Override
+    public List<Integer> getAvailableSeats(Integer tripId) {
+        Trip trip = tripRepository.findById(tripId)
+                .orElseThrow(() -> new ResourceNotFoundException("Trip", "tripId", tripId));
+
+        List<Booking> bookedSeats = bookingRepository.findBookingsByTripIdAndStatus(tripId, BookingStatus.Booked);
+        List<Integer> bookedSeatNumbers = bookedSeats.stream()
+                .map(Booking::getSeatNumber)
+                .collect(Collectors.toList());
+
+        return java.util.stream.IntStream.rangeClosed(1, trip.getBus().getCapacity())
+                .boxed()
+                .filter(seat -> !bookedSeatNumbers.contains(seat))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Integer> getBookedSeats(Integer tripId) {
+        Trip trip = tripRepository.findById(tripId)
+                .orElseThrow(() -> new ResourceNotFoundException("Trip", "tripId", tripId));
+
+        return bookingRepository.findBookingsByTripIdAndStatus(tripId, BookingStatus.Booked).stream()
+                .map(Booking::getSeatNumber)
+                .collect(Collectors.toList());
+    }
+
+    private BookingResponse convertToResponseDTO(Booking booking) {
+        BookingResponse dto = new BookingResponse();
+        dto.setBookingId(booking.getBookingId());
+        dto.setTripId(booking.getTrip().getTripId());
+        dto.setSeatNumber(booking.getSeatNumber());
+        dto.setStatus(booking.getStatus().toString());
+        return dto;
+    }
+}
