@@ -1,7 +1,7 @@
 package com.gemini.BusTicketBookingSystem.Entity;
 
-import com.gemini.BusTicketBookingSystem.Entity.Trip;
 import com.gemini.BusTicketBookingSystem.Entity.Customer;
+import com.gemini.BusTicketBookingSystem.Entity.Trip;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
