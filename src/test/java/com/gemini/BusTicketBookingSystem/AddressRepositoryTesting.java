@@ -67,7 +67,6 @@ class AddressRepositoryTesting {
     @Test
     void testFindById_Negative_InvalidId() {
         Optional<Addresses> found = addressesRepository.findById(-1);
-
         assertThat(found).isNotPresent();
     }
 
