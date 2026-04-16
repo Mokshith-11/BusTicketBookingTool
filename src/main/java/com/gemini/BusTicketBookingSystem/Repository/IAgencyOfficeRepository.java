@@ -10,6 +10,19 @@ import java.util.List;
 @Repository
 public interface IAgencyOfficeRepository extends JpaRepository<AgencyOffice,Integer> {
     @Query("SELECT ao FROM AgencyOffice ao WHERE ao.agency.agencyId = :agencyId")
+
+List<AgencyOffice> findOfficesByAgencyId(@Param("agencyId") Integer agencyId);
+
+
+
+
+
+
+
+
+
+
+
     List<AgencyOffice> findOfficesByAgencyId(@Param("agencyId") Integer agencyId);
 
 }
