@@ -1,9 +1,9 @@
 package com.gemini.BusTicketBookingSystem;
 
-import com.gemini.BusTicketBookingSystem.Entity.Agency;
-import com.gemini.BusTicketBookingSystem.Entity.AgencyOffice;
-import com.gemini.BusTicketBookingSystem.Repository.IAgencyOfficeRepository;
-import com.gemini.BusTicketBookingSystem.Repository.IAgencyRepository;
+import com.gemini.BusTicketBookingSystem.entity.Agency;
+import com.gemini.BusTicketBookingSystem.entity.AgencyOffice;
+import com.gemini.BusTicketBookingSystem.repository.IAgencyOfficeRepository;
+import com.gemini.BusTicketBookingSystem.repository.IAgencyRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
