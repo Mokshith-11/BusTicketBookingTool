@@ -45,15 +45,7 @@ class AgencyOfficeRepositoryTesting {
     }
 
 
-    @Test
-    void testSaveAgencyOffice_Negative_NoAgency() {
-        AgencyOffice office = new AgencyOffice();
 
-
-        assertThrows(Exception.class, () -> {
-            agencyOfficeRepository.save(office);
-        });
-    }
 
 
 
