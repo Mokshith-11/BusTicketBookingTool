@@ -8,7 +8,7 @@ import lombok.*;
 
 @Entity
 @Table(name = "buses")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+ @Builder
 public class Bus {
 
     @Id
@@ -32,4 +32,56 @@ public class Bus {
     @NotBlank(message = "Bus type is required")
     @Column(name = "type", nullable = false, length = 30)
     private String type;
+
+
+    public Integer getBusId() {
+        return busId;
+    }
+
+    public void setBusId(Integer busId) {
+        this.busId = busId;
+    }
+
+    public AgencyOffice getOffice() {
+        return office;
+    }
+
+    public void setOffice(AgencyOffice office) {
+        this.office = office;
+    }
+
+    public String getRegistrationNumber() {
+        return registrationNumber;
+    }
+
+    public void setRegistrationNumber(String registrationNumber) {
+        this.registrationNumber = registrationNumber;
+    }
+
+    public Integer getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(Integer capacity) {
+        this.capacity = capacity;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public Bus() {
+    }
+
+    public Bus(Integer busId, AgencyOffice office, String registrationNumber, Integer capacity, String type) {
+        this.busId = busId;
+        this.office = office;
+        this.registrationNumber = registrationNumber;
+        this.capacity = capacity;
+        this.type = type;
+    }
 }

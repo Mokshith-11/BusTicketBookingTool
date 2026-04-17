@@ -6,7 +6,7 @@ import lombok.*;
 
 @Entity
 @Table(name = "drivers")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Builder
 public class Driver {
 
     @Id
@@ -33,4 +33,64 @@ public class Driver {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id")
     private Addresses address;
+
+    public Integer getDriverId() {
+        return driverId;
+    }
+
+    public void setDriverId(Integer driverId) {
+        this.driverId = driverId;
+    }
+
+    public String getLicenseNumber() {
+        return licenseNumber;
+    }
+
+    public void setLicenseNumber(String licenseNumber) {
+        this.licenseNumber = licenseNumber;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public AgencyOffice getOffice() {
+        return office;
+    }
+
+    public void setOffice(AgencyOffice office) {
+        this.office = office;
+    }
+
+    public Addresses getAddress() {
+        return address;
+    }
+
+    public void setAddress(Addresses address) {
+        this.address = address;
+    }
+
+    public Driver() {
+    }
+
+    public Driver(Integer driverId, String licenseNumber, String name, String phone, AgencyOffice office, Addresses address) {
+        this.driverId = driverId;
+        this.licenseNumber = licenseNumber;
+        this.name = name;
+        this.phone = phone;
+        this.office = office;
+        this.address = address;
+    }
 }

@@ -8,7 +8,7 @@ import lombok.*;
 
 @Entity
 @Table(name = "bookings")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+ @Builder
 public class Booking {
 
     @Id
@@ -34,4 +34,55 @@ public class Booking {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private BookingStatus status = BookingStatus.Available;
+
+    public Integer getBookingId() {
+        return bookingId;
+    }
+
+    public void setBookingId(Integer bookingId) {
+        this.bookingId = bookingId;
+    }
+
+    public Trip getTrip() {
+        return trip;
+    }
+
+    public void setTrip(Trip trip) {
+        this.trip = trip;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    public Integer getSeatNumber() {
+        return seatNumber;
+    }
+
+    public void setSeatNumber(Integer seatNumber) {
+        this.seatNumber = seatNumber;
+    }
+
+    public BookingStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(BookingStatus status) {
+        this.status = status;
+    }
+
+    public Booking() {
+    }
+
+    public Booking(Integer bookingId, Trip trip, Customer customer, Integer seatNumber, BookingStatus status) {
+        this.bookingId = bookingId;
+        this.trip = trip;
+        this.customer = customer;
+        this.seatNumber = seatNumber;
+        this.status = status;
+    }
 }
