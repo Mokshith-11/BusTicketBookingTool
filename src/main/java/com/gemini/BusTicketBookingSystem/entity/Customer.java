@@ -7,7 +7,7 @@ import lombok.*;
 
 @Entity
 @Table(name = "customers")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+ @Builder
 public class Customer {
 
     @Id
@@ -31,4 +31,55 @@ public class Customer {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id")
     private Addresses address;
+
+    public Integer getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(Integer customerId) {
+        this.customerId = customerId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public Addresses getAddress() {
+        return address;
+    }
+
+    public void setAddress(Addresses address) {
+        this.address = address;
+    }
+
+    public Customer() {
+    }
+
+    public Customer(Integer customerId, String name, String email, String phone, Addresses address) {
+        this.customerId = customerId;
+        this.name = name;
+        this.email = email;
+        this.phone = phone;
+        this.address = address;
+    }
 }

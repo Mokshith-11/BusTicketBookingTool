@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "payments")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+ @Builder
 public class Payment {
 
     @Id
@@ -36,4 +36,64 @@ public class Payment {
     @Enumerated(EnumType.STRING)
     @Column(name = "payment_status")
     private PaymentStatus paymentStatus;
+
+    public Integer getPaymentId() {
+        return paymentId;
+    }
+
+    public void setPaymentId(Integer paymentId) {
+        this.paymentId = paymentId;
+    }
+
+    public Booking getBooking() {
+        return booking;
+    }
+
+    public void setBooking(Booking booking) {
+        this.booking = booking;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
+
+    public LocalDateTime getPaymentDate() {
+        return paymentDate;
+    }
+
+    public void setPaymentDate(LocalDateTime paymentDate) {
+        this.paymentDate = paymentDate;
+    }
+
+    public PaymentStatus getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(PaymentStatus paymentStatus) {
+        this.paymentStatus = paymentStatus;
+    }
+
+    public Payment() {
+    }
+
+    public Payment(Integer paymentId, Booking booking, Customer customer, BigDecimal amount, LocalDateTime paymentDate, PaymentStatus paymentStatus) {
+        this.paymentId = paymentId;
+        this.booking = booking;
+        this.customer = customer;
+        this.amount = amount;
+        this.paymentDate = paymentDate;
+        this.paymentStatus = paymentStatus;
+    }
 }

@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "reviews")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+ @Builder
 public class Review {
 
     @Id
@@ -35,4 +35,64 @@ public class Review {
 
     @Column(name = "review_date")
     private LocalDateTime reviewDate;
+
+    public Integer getReviewId() {
+        return reviewId;
+    }
+
+    public void setReviewId(Integer reviewId) {
+        this.reviewId = reviewId;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    public Trip getTrip() {
+        return trip;
+    }
+
+    public void setTrip(Trip trip) {
+        this.trip = trip;
+    }
+
+    public Integer getRating() {
+        return rating;
+    }
+
+    public void setRating(Integer rating) {
+        this.rating = rating;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public LocalDateTime getReviewDate() {
+        return reviewDate;
+    }
+
+    public void setReviewDate(LocalDateTime reviewDate) {
+        this.reviewDate = reviewDate;
+    }
+
+    public Review() {
+    }
+
+    public Review(Integer reviewId, Customer customer, Trip trip, Integer rating, String comment, LocalDateTime reviewDate) {
+        this.reviewId = reviewId;
+        this.customer = customer;
+        this.trip = trip;
+        this.rating = rating;
+        this.comment = comment;
+        this.reviewDate = reviewDate;
+    }
 }
