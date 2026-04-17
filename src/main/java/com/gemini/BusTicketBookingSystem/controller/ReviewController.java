@@ -2,7 +2,9 @@ package com.gemini.BusTicketBookingSystem.controller;
 
 import com.gemini.BusTicketBookingSystem.dto.request.ReviewRequest;
 import com.gemini.BusTicketBookingSystem.dto.response.ReviewResponse;
+import com.gemini.BusTicketBookingSystem.dto.response.ApiResponse;
 import com.gemini.BusTicketBookingSystem.service.IReviewService;
+
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,30 +20,64 @@ public class ReviewController {
     @Autowired
     private IReviewService reviewService;
 
+    // ✅ SUBMIT REVIEW
     @PostMapping("/trips/{tripId}/reviews")
-    public ResponseEntity<ReviewResponse> submitReview(
+    public ResponseEntity<ApiResponse<ReviewResponse>> submitReview(
             @PathVariable Integer tripId,
             @Valid @RequestBody ReviewRequest requestDTO) {
+
         ReviewResponse response = reviewService.submitReview(tripId, requestDTO);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+
+        ApiResponse<ReviewResponse> apiResponse =
+                new ApiResponse<>(HttpStatus.CREATED.value(),
+                        "Review submitted successfully",
+                        response);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
     }
 
+    // ✅ GET REVIEWS BY TRIP
     @GetMapping("/trips/{tripId}/reviews")
-    public ResponseEntity<List<ReviewResponse>> getTripReviews(@PathVariable Integer tripId) {
+    public ResponseEntity<ApiResponse<List<ReviewResponse>>> getTripReviews(
+            @PathVariable Integer tripId) {
+
         List<ReviewResponse> reviews = reviewService.getTripReviews(tripId);
-        return ResponseEntity.ok(reviews);
+
+        ApiResponse<List<ReviewResponse>> apiResponse =
+                new ApiResponse<>(HttpStatus.OK.value(),
+                        "Trip reviews fetched successfully",
+                        reviews);
+
+        return ResponseEntity.ok(apiResponse);
     }
 
+    // ✅ GET REVIEWS BY CUSTOMER
     @GetMapping("/customers/{customerId}/reviews")
-    public ResponseEntity<List<ReviewResponse>> getCustomerReviews(@PathVariable Integer customerId) {
+    public ResponseEntity<ApiResponse<List<ReviewResponse>>> getCustomerReviews(
+            @PathVariable Integer customerId) {
+
         List<ReviewResponse> reviews = reviewService.getCustomerReviews(customerId);
-        return ResponseEntity.ok(reviews);
+
+        ApiResponse<List<ReviewResponse>> apiResponse =
+                new ApiResponse<>(HttpStatus.OK.value(),
+                        "Customer reviews fetched successfully",
+                        reviews);
+
+        return ResponseEntity.ok(apiResponse);
     }
 
+    // ✅ DELETE REVIEW
     @DeleteMapping("/reviews/{reviewId}")
-    public ResponseEntity<Void> removeReview(@PathVariable Integer reviewId) {
+    public ResponseEntity<ApiResponse<String>> removeReview(
+            @PathVariable Integer reviewId) {
+
         reviewService.removeReview(reviewId);
-        return ResponseEntity.noContent().build();
+
+        ApiResponse<String> apiResponse =
+                new ApiResponse<>(HttpStatus.OK.value(),
+                        "Review removed successfully",
+                        null);
+
+        return ResponseEntity.ok(apiResponse);
     }
 }
- 

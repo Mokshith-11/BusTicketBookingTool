@@ -79,7 +79,7 @@ public class ReviewServiceImpl implements IReviewService {
             throw new ResourceNotFoundException("Trip", "tripId", tripId);
         }
 
-        return reviewRepository.findByCustomerId(tripId).stream()
+        return reviewRepository.findByTripId(tripId).stream()
                 .map(this::convertToResponseDTO)
                 .collect(Collectors.toList());
     }

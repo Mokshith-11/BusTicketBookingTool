@@ -4,6 +4,7 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -44,5 +45,5 @@ public class TripRequest {
 
     @NotNull(message = "Trip date is required")
     @FutureOrPresent(message = "Trip date cannot be in the past")
-    private LocalDateTime tripDate;
+    private LocalDate tripDate;
 }

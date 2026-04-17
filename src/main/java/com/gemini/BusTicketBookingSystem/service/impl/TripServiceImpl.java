@@ -46,8 +46,12 @@ import java.util.stream.Collectors;
             Driver driver1 = driverRepository.findById(requestDTO.getDriver1Id())
                     .orElseThrow(() -> new ResourceNotFoundException("Driver", "driverId", requestDTO.getDriver1Id()));
 
-            Driver driver2 = driverRepository.findById(requestDTO.getDriver2Id())
-                    .orElseThrow(() -> new ResourceNotFoundException("Driver", "driverId", requestDTO.getDriver2Id()));
+            Driver driver2 = null;
+            if (requestDTO.getDriver2Id() != null) {
+                driver2 = driverRepository.findById(requestDTO.getDriver2Id())
+                        .orElseThrow(() -> new ResourceNotFoundException("Driver", "driverId", requestDTO.getDriver2Id()));
+            }
+
 
             Addresses boardingAddress = addressRepository.findById(requestDTO.getBoardingAddressId())
                     .orElseThrow(() -> new ResourceNotFoundException("Address", "addressId",
@@ -68,7 +72,7 @@ import java.util.stream.Collectors;
             trip.setArrivalTime(requestDTO.getArrivalTime());
             trip.setAvailableSeats(bus.getCapacity()); // Initialize with full capacity
             trip.setFare(requestDTO.getFare());
-            trip.setTripDate(requestDTO.getTripDate());
+            trip.setTripDate(requestDTO.getTripDate().atStartOfDay());
 
             Trip savedTrip = tripRepository.save(trip);
             return convertToResponseDTO(savedTrip);
@@ -117,7 +121,7 @@ import java.util.stream.Collectors;
             trip.setDepartureTime(requestDTO.getDepartureTime());
             trip.setArrivalTime(requestDTO.getArrivalTime());
             trip.setFare(requestDTO.getFare());
-            trip.setTripDate(requestDTO.getTripDate());
+            trip.setTripDate(requestDTO.getTripDate().atStartOfDay());
 
             Trip updatedTrip = tripRepository.save(trip);
             return convertToResponseDTO(updatedTrip);
