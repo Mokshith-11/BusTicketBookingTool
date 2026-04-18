@@ -6,6 +6,10 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+
+@NoArgsConstructor
+@AllArgsConstructor
+
 public class ReviewResponse {
 
     private Integer reviewId;
@@ -103,6 +107,7 @@ public class ReviewResponse {
         this.tripDate = tripDate;
     }
 
+
     public ReviewResponse() {
     }
 
@@ -118,4 +123,5 @@ public class ReviewResponse {
         this.toCity = toCity;
         this.tripDate = tripDate;
     }
+
 }

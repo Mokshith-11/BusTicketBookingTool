@@ -4,6 +4,9 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 
+@NoArgsConstructor
+@AllArgsConstructor
+
 @Builder
 public class AddressRequest {
 
@@ -51,6 +54,7 @@ public class AddressRequest {
         this.zipCode = zipCode;
     }
 
+
     public AddressRequest() {
     }
 
@@ -60,4 +64,5 @@ public class AddressRequest {
         this.state = state;
         this.zipCode = zipCode;
     }
+
 }

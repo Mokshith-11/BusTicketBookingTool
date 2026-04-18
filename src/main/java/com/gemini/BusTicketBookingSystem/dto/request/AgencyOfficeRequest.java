@@ -3,7 +3,9 @@ package com.gemini.BusTicketBookingSystem.dto.request;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
- @Builder
+
+ @NoArgsConstructor @AllArgsConstructor @Builder
+
 public class AgencyOfficeRequest {
 
     @NotNull(message = "Agency ID is required")
@@ -56,6 +58,7 @@ public class AgencyOfficeRequest {
          this.officeAddressId = officeAddressId;
      }
 
+
      public AgencyOfficeRequest() {
      }
 
@@ -66,4 +69,5 @@ public class AgencyOfficeRequest {
          this.officeContactNumber = officeContactNumber;
          this.officeAddressId = officeAddressId;
      }
+
  }

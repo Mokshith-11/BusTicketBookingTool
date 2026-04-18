@@ -4,6 +4,10 @@ package com.gemini.BusTicketBookingSystem.dto.response;
 import lombok.*;
 
 
+@NoArgsConstructor
+@AllArgsConstructor
+
+
 @Builder
 public class AddressResponse {
     private Integer addressId;
@@ -52,6 +56,7 @@ public class AddressResponse {
         this.zipCode = zipCode;
     }
 
+
     public AddressResponse() {
     }
 
@@ -62,4 +67,5 @@ public class AddressResponse {
         this.state = state;
         this.zipCode = zipCode;
     }
+
 }

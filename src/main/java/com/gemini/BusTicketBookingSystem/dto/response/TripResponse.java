@@ -8,6 +8,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
+@NoArgsConstructor
+@AllArgsConstructor
+
 @Builder
 public class TripResponse {
 
@@ -120,6 +123,7 @@ public class TripResponse {
         this.tripDate = tripDate;
     }
 
+
     public TripResponse() {
     }
 
@@ -136,4 +140,5 @@ public class TripResponse {
         this.fare = fare;
         this.tripDate = tripDate;
     }
+
 }
