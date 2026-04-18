@@ -1,12 +1,6 @@
 package com.gemini.BusTicketBookingSystem.exceptions;
 
-/**
- * Custom exception thrown when attempting to book a seat that is not available.
- * This can happen when:
- * - The seat is already booked by another customer
- * - The trip has no available seats left
- * - The seat number is invalid for the given bus
- */
+
 public class SeatNotAvailableException extends RuntimeException {
 
     private Integer tripId;

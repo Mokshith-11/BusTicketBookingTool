@@ -1,20 +1,22 @@
 package com.gemini.BusTicketBookingSystem.service.impl;
 
 import com.gemini.BusTicketBookingSystem.entity.Booking;
+import com.gemini.BusTicketBookingSystem.entity.Customer;
+import com.gemini.BusTicketBookingSystem.entity.Trip;
 import com.gemini.BusTicketBookingSystem.exceptions.InvalidOperationException;
 import com.gemini.BusTicketBookingSystem.exceptions.ResourceNotFoundException;
 import com.gemini.BusTicketBookingSystem.exceptions.SeatNotAvailableException;
 import com.gemini.BusTicketBookingSystem.repository.IBookingRepository;
+import com.gemini.BusTicketBookingSystem.repository.ICustomerRepository;
 import com.gemini.BusTicketBookingSystem.repository.ITripRepository;
 import com.gemini.BusTicketBookingSystem.service.IBookingService;
 import com.gemini.BusTicketBookingSystem.dto.request.BookingRequest;
 import com.gemini.BusTicketBookingSystem.dto.response.BookingResponse;
 import com.gemini.BusTicketBookingSystem.enums.BookingStatus;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.gemini.BusTicketBookingSystem.repository.ICustomerRepository;
 import org.springframework.transaction.annotation.Transactional;
-import com.gemini.BusTicketBookingSystem.entity.Trip;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -35,24 +37,24 @@ public class BookingServiceImpl implements IBookingService {
     @Override
     @Transactional
     public BookingResponse bookSeat(Integer tripId, BookingRequest requestDTO) {
+
         Trip trip = tripRepository.findById(tripId)
                 .orElseThrow(() -> new ResourceNotFoundException("Trip", "tripId", tripId));
 
-        // Validate seat number
         if (requestDTO.getSeatNumber() < 1 ||
                 requestDTO.getSeatNumber() > trip.getBus().getCapacity()) {
             throw new SeatNotAvailableException(tripId,
                     "Invalid seat number. Bus capacity is " + trip.getBus().getCapacity());
         }
 
-        // Check if trip is still open for booking
         if (trip.getDepartureTime().isBefore(LocalDateTime.now())) {
             throw new InvalidOperationException("Book Seat",
                     "Cannot book seat for a trip that has already departed");
         }
 
-        // Check seat availability
-        List<Booking> existingBookings = bookingRepository.findBookingsByTripIdAndStatus(tripId, BookingStatus.Booked);
+        List<Booking> existingBookings =
+                bookingRepository.findBookingsByTripIdAndStatus(tripId, BookingStatus.Booked);
+
         boolean seatAlreadyBooked = existingBookings.stream()
                 .anyMatch(b -> b.getSeatNumber().equals(requestDTO.getSeatNumber()));
 
@@ -60,21 +62,24 @@ public class BookingServiceImpl implements IBookingService {
             throw new SeatNotAvailableException(tripId, requestDTO.getSeatNumber());
         }
 
-        // Check if trip has available seats
         if (trip.getAvailableSeats() <= 0) {
             throw new SeatNotAvailableException(tripId, "No seats available for this trip");
         }
 
+        Customer customer = customerRepository.findById(requestDTO.getCustomerId())
+                .orElseThrow(() -> new ResourceNotFoundException("Customer", "customerId", requestDTO.getCustomerId()));
+
         Booking booking = new Booking();
         booking.setTrip(trip);
+        booking.setCustomer(customer);
         booking.setSeatNumber(requestDTO.getSeatNumber());
         booking.setStatus(BookingStatus.Booked);
 
-        // Update available seats
+        Booking savedBooking = bookingRepository.save(booking);
+
         trip.setAvailableSeats(trip.getAvailableSeats() - 1);
         tripRepository.save(trip);
 
-        Booking savedBooking = bookingRepository.save(booking);
         return convertToResponseDTO(savedBooking);
     }
 
@@ -84,9 +89,8 @@ public class BookingServiceImpl implements IBookingService {
             throw new ResourceNotFoundException("Customer", "customerId", customerId);
         }
 
-        // Note: You'll need to add customer reference in Booking entity
-        // For now, returning all bookings
-        return bookingRepository.findAll().stream()
+        return bookingRepository.findBookingsByCustomerId(customerId)
+                .stream()
                 .map(this::convertToResponseDTO)
                 .collect(Collectors.toList());
     }
@@ -111,7 +115,6 @@ public class BookingServiceImpl implements IBookingService {
 
         booking.setStatus(BookingStatus.Available);
 
-        // Restore available seats
         Trip trip = booking.getTrip();
         trip.setAvailableSeats(trip.getAvailableSeats() + 1);
         tripRepository.save(trip);
@@ -121,10 +124,13 @@ public class BookingServiceImpl implements IBookingService {
 
     @Override
     public List<Integer> getAvailableSeats(Integer tripId) {
+
         Trip trip = tripRepository.findById(tripId)
                 .orElseThrow(() -> new ResourceNotFoundException("Trip", "tripId", tripId));
 
-        List<Booking> bookedSeats = bookingRepository.findBookingsByTripIdAndStatus(tripId, BookingStatus.Booked);
+        List<Booking> bookedSeats = bookingRepository
+                .findBookingsByTripIdAndStatus(tripId, BookingStatus.Booked);
+
         List<Integer> bookedSeatNumbers = bookedSeats.stream()
                 .map(Booking::getSeatNumber)
                 .collect(Collectors.toList());
@@ -137,10 +143,13 @@ public class BookingServiceImpl implements IBookingService {
 
     @Override
     public List<Integer> getBookedSeats(Integer tripId) {
+
         Trip trip = tripRepository.findById(tripId)
                 .orElseThrow(() -> new ResourceNotFoundException("Trip", "tripId", tripId));
 
-        return bookingRepository.findBookingsByTripIdAndStatus(tripId, BookingStatus.Booked).stream()
+        return bookingRepository
+                .findBookingsByTripIdAndStatus(tripId, BookingStatus.Booked)
+                .stream()
                 .map(Booking::getSeatNumber)
                 .collect(Collectors.toList());
     }
@@ -151,6 +160,7 @@ public class BookingServiceImpl implements IBookingService {
         dto.setTripId(booking.getTrip().getTripId());
         dto.setSeatNumber(booking.getSeatNumber());
         dto.setStatus(booking.getStatus().toString());
+        dto.setCustomerId(booking.getCustomer().getCustomerId());
         return dto;
     }
 }

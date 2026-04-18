@@ -28,8 +28,6 @@ public class Booking {
     @Column(name = "seat_number", nullable = false)
     private Integer seatNumber;
 
-    public void setBookingStatus(String confirmed) {
-    }
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
@@ -50,6 +48,7 @@ public class Booking {
     public void setTrip(Trip trip) {
         this.trip = trip;
     }
+
 
     public Customer getCustomer() {
         return customer;
@@ -78,7 +77,7 @@ public class Booking {
     public Booking() {
     }
 
-    public Booking(Integer bookingId, Trip trip, Customer customer, Integer seatNumber, BookingStatus status) {
+    public Booking(Integer bookingId,Customer customer ,Trip trip, Integer seatNumber, BookingStatus status) {
         this.bookingId = bookingId;
         this.trip = trip;
         this.customer = customer;

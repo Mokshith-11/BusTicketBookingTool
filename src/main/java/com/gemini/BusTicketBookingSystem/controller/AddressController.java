@@ -2,7 +2,9 @@ package com.gemini.BusTicketBookingSystem.controller;
 
 
 import com.gemini.BusTicketBookingSystem.dto.request.AddressRequest;
+
 import com.gemini.BusTicketBookingSystem.dto.response.AddressResponse;
+import com.gemini.BusTicketBookingSystem.dto.response.ApiResponse;
 import com.gemini.BusTicketBookingSystem.service.IAddressService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,16 +21,33 @@ public class AddressController {
     private IAddressService addressService;
 
     @PostMapping
-    public ResponseEntity<AddressResponse> createAddress(@Valid @RequestBody AddressRequest requestDTO) {
-        AddressResponse response = addressService.createAddress(requestDTO);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    public ResponseEntity<ApiResponse<AddressResponse>> createAddress(
+        @RequestBody AddressRequest request) {
+
+    AddressResponse response = addressService.createAddress(request);
+
+    ApiResponse<AddressResponse> apiResponse =
+            new ApiResponse<>(HttpStatus.CREATED.value(),
+                    "Address created successfully",
+                    response);
+
+    return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
+}
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<AddressResponse>> getAddress(@PathVariable Integer id) {
+
+        AddressResponse response = addressService.getAddressById(id);
+
+        ApiResponse<AddressResponse> apiResponse =
+                new ApiResponse<>(HttpStatus.OK.value(),
+                        "Address fetched successfully",
+                        response);
+
+        return ResponseEntity.ok(apiResponse);
     }
 
-    @GetMapping("/{addressId}")
-    public ResponseEntity<AddressResponse> getAddressById(@PathVariable Integer addressId) {
-        AddressResponse response = addressService.getAddressById(addressId);
-        return ResponseEntity.ok(response);
-    }
+
+
 }
 
 

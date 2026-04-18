@@ -10,13 +10,8 @@ public class DriverResponse {
     private String phone;
     private Integer officeId;
 
-    public void setOfficeName(String officeMail) {
-    }
-
-    public void setAddressId(Integer addressId) {
-    }
-
-    public void setAddress(String s) {
-    }
+    private String officeName;
+    private Integer addressId;
+    private String address;
 //    private AddressResponse address;
 }

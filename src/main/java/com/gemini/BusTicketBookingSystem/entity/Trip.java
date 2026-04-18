@@ -25,12 +25,12 @@ public class Trip {
     @JoinColumn(name = "bus_id", nullable = false)
     private Bus bus;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "boarding_address_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "boarding_address_address_id")
     private Addresses boardingAddress;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "dropping_address_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "dropping_address_address_id")
     private Addresses  droppingAddress;
 
     @NotNull(message = "Departure time is required")
@@ -61,8 +61,7 @@ public class Trip {
     @Column(name = "trip_date", nullable = false)
     private LocalDateTime tripDate;
 
-    @Column(name = "is_closed")
-    private Boolean isClosed = false;
+
 
     public Driver getDriver1() {
         return driver1;
@@ -160,18 +159,12 @@ public class Trip {
         this.tripDate = tripDate;
     }
 
-    public Boolean getClosed() {
-        return isClosed;
-    }
 
-    public void setClosed(Boolean closed) {
-        isClosed = closed;
-    }
 
     public Trip() {
     }
 
-    public Trip(Integer tripId, Route route, Bus bus, Addresses boardingAddress, Addresses droppingAddress, LocalDateTime departureTime, LocalDateTime arrivalTime, Driver driver1, Driver driver2, Integer availableSeats, BigDecimal fare, LocalDateTime tripDate, Boolean isClosed) {
+    public Trip(Integer tripId, Route route, Bus bus, Addresses boardingAddress, Addresses droppingAddress, LocalDateTime departureTime, LocalDateTime arrivalTime, Driver driver1, Driver driver2, Integer availableSeats, BigDecimal fare, LocalDateTime tripDate) {
         this.tripId = tripId;
         this.route = route;
         this.bus = bus;
@@ -184,6 +177,6 @@ public class Trip {
         this.availableSeats = availableSeats;
         this.fare = fare;
         this.tripDate = tripDate;
-        this.isClosed = isClosed;
+
     }
 }
