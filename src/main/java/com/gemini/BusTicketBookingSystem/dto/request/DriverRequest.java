@@ -5,7 +5,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-@Builder
+
+@NoArgsConstructor @AllArgsConstructor @Builder
+
 public class DriverRequest {
 
     @NotBlank(message = "License number is required")
@@ -73,4 +75,5 @@ public class DriverRequest {
         this.officeId = officeId;
         this.addressId = addressId;
     }
+
 }
