@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
- class CustomerServiceImpl implements ICustomerService {
+public class CustomerServiceImpl implements ICustomerService {
 
     @Autowired
     private ICustomerRepository customerRepository;
