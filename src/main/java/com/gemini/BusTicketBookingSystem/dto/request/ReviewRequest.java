@@ -6,8 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+
 @NoArgsConstructor
 @AllArgsConstructor
+
 public class ReviewRequest {
 
     @NotNull(message = "Customer ID is required")
@@ -45,4 +47,14 @@ public class ReviewRequest {
     public void setComment(String comment) {
         this.comment = comment;
     }
+
+    public ReviewRequest() {
+    }
+
+    public ReviewRequest(Integer customerId, Integer rating, String comment) {
+        this.customerId = customerId;
+        this.rating = rating;
+        this.comment = comment;
+    }
+
 }

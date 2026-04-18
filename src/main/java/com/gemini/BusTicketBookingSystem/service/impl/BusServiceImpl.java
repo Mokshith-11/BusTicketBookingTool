@@ -40,7 +40,6 @@ public class BusServiceImpl implements IBusService {
         AgencyOffice office = officeRepository.findById(officeId)
                 .orElseThrow(() -> new ResourceNotFoundException("AgencyOffice", "officeId", officeId));
 
-        // Check for duplicate registration number
         if (iBusRepository.existsByRegistrationNumber(requestDTO.getRegistrationNumber())) {
             throw new DuplicateResourceException("Bus", "registrationNumber",
                     requestDTO.getRegistrationNumber());
@@ -80,7 +79,6 @@ public class BusServiceImpl implements IBusService {
         Bus bus = iBusRepository.findById(busId)
                 .orElseThrow(() -> new ResourceNotFoundException("Bus", "busId", busId));
 
-        // Check if registration number is being changed and if it's duplicate
         if (!bus.getRegistrationNumber().equals(requestDTO.getRegistrationNumber()) &&
                 iBusRepository.existsByRegistrationNumber(requestDTO.getRegistrationNumber())) {
             throw new DuplicateResourceException("Bus", "registrationNumber",

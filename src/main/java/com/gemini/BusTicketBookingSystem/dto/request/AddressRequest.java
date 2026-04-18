@@ -3,8 +3,10 @@ package com.gemini.BusTicketBookingSystem.dto.request;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
+
 @NoArgsConstructor
 @AllArgsConstructor
+
 @Builder
 public class AddressRequest {
 
@@ -51,4 +53,16 @@ public class AddressRequest {
     public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
     }
+
+
+    public AddressRequest() {
+    }
+
+    public AddressRequest(String address, String city, String state, String zipCode) {
+        this.address = address;
+        this.city = city;
+        this.state = state;
+        this.zipCode = zipCode;
+    }
+
 }

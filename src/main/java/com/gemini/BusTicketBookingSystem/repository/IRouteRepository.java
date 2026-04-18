@@ -12,4 +12,5 @@ import java.util.List;
 public interface IRouteRepository extends JpaRepository<Route,Integer> {
     @Query("SELECT r FROM Route r WHERE r.fromCity = :fromCity AND r.toCity = :toCity")
     List<Route> findByFromCityAndToCity(@Param("fromCity") String fromCity,
-                                        @Param("toCity") String toCity);}
+                                        @Param("toCity") String toCity);
+}

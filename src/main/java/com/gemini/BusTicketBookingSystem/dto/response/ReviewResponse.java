@@ -6,8 +6,10 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+
 @NoArgsConstructor
 @AllArgsConstructor
+
 public class ReviewResponse {
 
     private Integer reviewId;
@@ -104,4 +106,22 @@ public class ReviewResponse {
     public void setTripDate(LocalDateTime tripDate) {
         this.tripDate = tripDate;
     }
+
+
+    public ReviewResponse() {
+    }
+
+    public ReviewResponse(Integer reviewId, Integer tripId, Integer customerId, String customerName, Integer rating, String comment, LocalDateTime reviewDate, String fromCity, String toCity, LocalDateTime tripDate) {
+        this.reviewId = reviewId;
+        this.tripId = tripId;
+        this.customerId = customerId;
+        this.customerName = customerName;
+        this.rating = rating;
+        this.comment = comment;
+        this.reviewDate = reviewDate;
+        this.fromCity = fromCity;
+        this.toCity = toCity;
+        this.tripDate = tripDate;
+    }
+
 }
