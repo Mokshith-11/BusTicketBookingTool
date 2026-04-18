@@ -2,10 +2,7 @@ package com.gemini.BusTicketBookingSystem.dto.response;
 
 import lombok.*;
 
-
-@Builder
-
-
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class AgencyOfficeResponse {
     private Integer officeId;
     private Integer agencyId;
@@ -14,7 +11,4 @@ public class AgencyOfficeResponse {
     private String officeContactPersonName;
     private String officeContactNumber;
     private AddressResponse officeAddress;
-
-
- }
-
+}

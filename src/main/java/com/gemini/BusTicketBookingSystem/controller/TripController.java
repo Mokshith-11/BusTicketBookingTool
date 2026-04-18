@@ -2,7 +2,10 @@ package com.gemini.BusTicketBookingSystem.controller;
 
 import com.gemini.BusTicketBookingSystem.dto.request.TripRequest;
 import com.gemini.BusTicketBookingSystem.dto.response.TripResponse;
+import com.gemini.BusTicketBookingSystem.dto.response.ApiResponse;
 import com.gemini.BusTicketBookingSystem.service.ITripService;
+import com.gemini.BusTicketBookingSystem.service.IBookingService;
+
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -17,80 +20,156 @@ import java.util.List;
 @RequestMapping("/api/v1/trips")
 public class TripController {
 
-    @Autowired
-    private ITripService tripService;
+        @Autowired
+        private ITripService tripService;
 
-    @PostMapping
-    public ResponseEntity<TripResponse> createTrip(@Valid @RequestBody TripRequest requestDTO) {
-        TripResponse response = tripService.createTrip(requestDTO);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
-    }
+        @Autowired
+        private IBookingService bookingService;
 
-    @GetMapping
-    public ResponseEntity<List<TripResponse>> getAllTrips() {
-        List<TripResponse> trips = tripService.getAllTrips();
-        return ResponseEntity.ok(trips);
-    }
+        // ✅ CREATE TRIP
+        @PostMapping
+        public ResponseEntity<ApiResponse<TripResponse>> createTrip(
+                        @Valid @RequestBody TripRequest requestDTO) {
 
-    @GetMapping("/{tripId}")
-    public ResponseEntity<TripResponse> getTripById(@PathVariable Integer tripId) {
-        TripResponse response = tripService.getTripById(tripId);
-        return ResponseEntity.ok(response);
-    }
+                TripResponse response = tripService.createTrip(requestDTO);
 
-    @GetMapping("/search")
-    public ResponseEntity<List<TripResponse>> searchTrips(
-            @RequestParam String fromCity,
-            @RequestParam String toCity,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        List<TripResponse> trips = tripService.searchTrips(fromCity, toCity, date);
-        return ResponseEntity.ok(trips);
-    }
+                ApiResponse<TripResponse> apiResponse = new ApiResponse<>(HttpStatus.CREATED.value(),
+                                "Trip created successfully",
+                                response);
 
-    @PutMapping("/{tripId}")
-    public ResponseEntity<TripResponse> updateTrip(
-            @PathVariable Integer tripId,
-            @Valid @RequestBody TripRequest requestDTO) {
-        TripResponse response = tripService.updateTrip(tripId, requestDTO);
-        return ResponseEntity.ok(response);
-    }
-
-    @PatchMapping("/{tripId}/close")
-    public ResponseEntity<Void> closeTrip(@PathVariable Integer tripId) {
-        tripService.closeTrip(tripId);
-        return ResponseEntity.ok().build();
-    }
-
-    // Seat availability endpoints
-    @GetMapping("/{tripId}/seats")
-    public ResponseEntity<SeatAvailabilityResponse> getSeatAvailability(@PathVariable Integer tripId) {
-        return ResponseEntity.ok(new SeatAvailabilityResponse(tripId));
-    }
-
-    @GetMapping("/{tripId}/seats/booked")
-    public ResponseEntity<List<Integer>> getBookedSeats(@PathVariable Integer tripId) {
-        // This would be handled by BookingService
-        return ResponseEntity.ok(List.of());
-    }
-
-    @GetMapping("/{tripId}/seats/available")
-    public ResponseEntity<List<Integer>> getAvailableSeats(@PathVariable Integer tripId) {
-        // This would be handled by BookingService
-        return ResponseEntity.ok(List.of());
-    }
-
-    // Inner class for seat availability response
-    static class SeatAvailabilityResponse {
-        private Integer tripId;
-        private String message;
-
-        public SeatAvailabilityResponse(Integer tripId) {
-            this.tripId = tripId;
-            this.message = "Use /seats/available or /seats/booked endpoints";
+                return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
         }
 
-        public Integer getTripId() { return tripId; }
-        public String getMessage() { return message; }
-    }
+        // ✅ GET ALL TRIPS
+        @GetMapping
+        public ResponseEntity<ApiResponse<List<TripResponse>>> getAllTrips() {
+
+                List<TripResponse> trips = tripService.getAllTrips();
+
+                ApiResponse<List<TripResponse>> apiResponse = new ApiResponse<>(HttpStatus.OK.value(),
+                                "Trips fetched successfully",
+                                trips);
+
+                return ResponseEntity.ok(apiResponse);
+        }
+
+        // ✅ GET TRIP BY ID
+        @GetMapping("/{tripId}")
+        public ResponseEntity<ApiResponse<TripResponse>> getTripById(
+                        @PathVariable Integer tripId) {
+
+                TripResponse response = tripService.getTripById(tripId);
+
+                ApiResponse<TripResponse> apiResponse = new ApiResponse<>(HttpStatus.OK.value(),
+                                "Trip fetched successfully",
+                                response);
+
+                return ResponseEntity.ok(apiResponse);
+        }
+
+        // ✅ SEARCH TRIPS
+        @GetMapping("/search")
+        public ResponseEntity<ApiResponse<List<TripResponse>>> searchTrips(
+                        @RequestParam String fromCity,
+                        @RequestParam String toCity,
+                        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+
+                List<TripResponse> trips = tripService.searchTrips(fromCity, toCity, date);
+
+                ApiResponse<List<TripResponse>> apiResponse = new ApiResponse<>(HttpStatus.OK.value(),
+                                "Trips fetched successfully",
+                                trips);
+
+                return ResponseEntity.ok(apiResponse);
+        }
+
+        // ✅ UPDATE TRIP
+        @PutMapping("/{tripId}")
+        public ResponseEntity<ApiResponse<TripResponse>> updateTrip(
+                        @PathVariable Integer tripId,
+                        @Valid @RequestBody TripRequest requestDTO) {
+
+                TripResponse response = tripService.updateTrip(tripId, requestDTO);
+
+                ApiResponse<TripResponse> apiResponse = new ApiResponse<>(HttpStatus.OK.value(),
+                                "Trip updated successfully",
+                                response);
+
+                return ResponseEntity.ok(apiResponse);
+        }
+
+        // ✅ CLOSE TRIP
+        @PatchMapping("/{tripId}/close")
+        public ResponseEntity<ApiResponse<String>> closeTrip(
+                        @PathVariable Integer tripId) {
+
+                tripService.closeTrip(tripId);
+
+                ApiResponse<String> apiResponse = new ApiResponse<>(HttpStatus.OK.value(),
+                                "Trip closed successfully",
+                                null);
+
+                return ResponseEntity.ok(apiResponse);
+        }
+
+        // ✅ SEAT INFO MESSAGE
+        @GetMapping("/{tripId}/seats")
+        public ResponseEntity<ApiResponse<SeatAvailabilityResponse>> getSeatAvailability(
+                        @PathVariable Integer tripId) {
+
+                SeatAvailabilityResponse response = new SeatAvailabilityResponse(tripId);
+
+                ApiResponse<SeatAvailabilityResponse> apiResponse = new ApiResponse<>(HttpStatus.OK.value(),
+                                "Seat info fetched",
+                                response);
+
+                return ResponseEntity.ok(apiResponse);
+        }
+
+        // ✅ BOOKED SEATS
+        @GetMapping("/{tripId}/seats/booked")
+        public ResponseEntity<ApiResponse<List<Integer>>> getBookedSeats(
+                        @PathVariable Integer tripId) {
+
+                List<Integer> bookedSeats = bookingService.getBookedSeats(tripId);
+
+                ApiResponse<List<Integer>> apiResponse = new ApiResponse<>(HttpStatus.OK.value(),
+                                "Booked seats fetched",
+                                bookedSeats);
+
+                return ResponseEntity.ok(apiResponse);
+        }
+
+        // ✅ AVAILABLE SEATS
+        @GetMapping("/{tripId}/seats/available")
+        public ResponseEntity<ApiResponse<List<Integer>>> getAvailableSeats(
+                        @PathVariable Integer tripId) {
+
+                List<Integer> availableSeats = bookingService.getAvailableSeats(tripId);
+
+                ApiResponse<List<Integer>> apiResponse = new ApiResponse<>(HttpStatus.OK.value(),
+                                "Available seats fetched",
+                                availableSeats);
+
+                return ResponseEntity.ok(apiResponse);
+        }
+
+        // Inner class
+        static class SeatAvailabilityResponse {
+                private Integer tripId;
+                private String message;
+
+                public SeatAvailabilityResponse(Integer tripId) {
+                        this.tripId = tripId;
+                        this.message = "Use /seats/available or /seats/booked endpoints";
+                }
+
+                public Integer getTripId() {
+                        return tripId;
+                }
+
+                public String getMessage() {
+                        return message;
+                }
+        }
 }
- 

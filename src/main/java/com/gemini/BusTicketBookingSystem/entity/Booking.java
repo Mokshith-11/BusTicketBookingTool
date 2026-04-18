@@ -1,5 +1,7 @@
 package com.gemini.BusTicketBookingSystem.entity;
 
+//import com.busticket.enums.BookingStatus;
+import com.gemini.BusTicketBookingSystem.enums.BookingStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -26,7 +28,10 @@ public class Booking {
     @Column(name = "seat_number", nullable = false)
     private Integer seatNumber;
 
+    public void setBookingStatus(String confirmed) {
+    }
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private BookingStatus status = BookingStatus.Available;
@@ -46,7 +51,6 @@ public class Booking {
     public void setTrip(Trip trip) {
         this.trip = trip;
     }
-
 
     public Customer getCustomer() {
         return customer;
@@ -75,7 +79,7 @@ public class Booking {
     public Booking() {
     }
 
-    public Booking(Integer bookingId,Customer customer ,Trip trip, Integer seatNumber, BookingStatus status) {
+    public Booking(Integer bookingId, Trip trip, Customer customer, Integer seatNumber, BookingStatus status) {
         this.bookingId = bookingId;
         this.trip = trip;
         this.customer = customer;

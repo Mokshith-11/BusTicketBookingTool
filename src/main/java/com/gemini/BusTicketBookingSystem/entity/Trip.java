@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "trips")
- @Builder
+@Builder
 public class Trip {
 
     @Id
@@ -25,13 +25,13 @@ public class Trip {
     @JoinColumn(name = "bus_id", nullable = false)
     private Bus bus;
 
-    @ManyToOne
-    @JoinColumn(name = "boarding_address_address_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "boarding_address_id", nullable = false)
     private Addresses boardingAddress;
 
-    @ManyToOne
-    @JoinColumn(name = "dropping_address_address_id")
-    private Addresses  droppingAddress;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "dropping_address_id", nullable = false)
+    private Addresses droppingAddress;
 
     @NotNull(message = "Departure time is required")
     @Column(name = "departure_time", nullable = false)
@@ -61,7 +61,9 @@ public class Trip {
     @Column(name = "trip_date", nullable = false)
     private LocalDateTime tripDate;
 
-
+    @Builder.Default
+    @Column(name = "is_closed")
+    private Boolean isClosed = false;
 
     public Driver getDriver1() {
         return driver1;
@@ -159,12 +161,20 @@ public class Trip {
         this.tripDate = tripDate;
     }
 
+    public Boolean getClosed() {
+        return isClosed;
+    }
 
+    public void setClosed(Boolean closed) {
+        isClosed = closed;
+    }
 
     public Trip() {
     }
 
-    public Trip(Integer tripId, Route route, Bus bus, Addresses boardingAddress, Addresses droppingAddress, LocalDateTime departureTime, LocalDateTime arrivalTime, Driver driver1, Driver driver2, Integer availableSeats, BigDecimal fare, LocalDateTime tripDate) {
+    public Trip(Integer tripId, Route route, Bus bus, Addresses boardingAddress, Addresses droppingAddress,
+            LocalDateTime departureTime, LocalDateTime arrivalTime, Driver driver1, Driver driver2,
+            Integer availableSeats, BigDecimal fare, LocalDateTime tripDate, Boolean isClosed) {
         this.tripId = tripId;
         this.route = route;
         this.bus = bus;
@@ -177,6 +187,6 @@ public class Trip {
         this.availableSeats = availableSeats;
         this.fare = fare;
         this.tripDate = tripDate;
-
+        this.isClosed = isClosed;
     }
 }
