@@ -3,8 +3,10 @@ package com.gemini.BusTicketBookingSystem.dto.request;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+
 @NoArgsConstructor @AllArgsConstructor @Builder
-public class BookingRequest {
+
+ public class BookingRequest {
 
     @NotNull(message = "Customer ID is required")
     private Integer customerId;
@@ -27,4 +29,13 @@ public class BookingRequest {
     public void setSeatNumber(Integer seatNumber) {
         this.seatNumber = seatNumber;
     }
+
+    public BookingRequest() {
+    }
+
+    public BookingRequest(Integer customerId, Integer seatNumber) {
+        this.customerId = customerId;
+        this.seatNumber = seatNumber;
+    }
+
 }

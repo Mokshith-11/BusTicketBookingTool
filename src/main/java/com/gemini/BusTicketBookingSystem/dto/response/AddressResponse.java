@@ -3,8 +3,11 @@ package com.gemini.BusTicketBookingSystem.dto.response;
 
 import lombok.*;
 
+
 @NoArgsConstructor
 @AllArgsConstructor
+
+
 @Builder
 public class AddressResponse {
     private Integer addressId;
@@ -52,4 +55,17 @@ public class AddressResponse {
     public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
     }
+
+
+    public AddressResponse() {
+    }
+
+    public AddressResponse(Integer addressId, String address, String city, String state, String zipCode) {
+        this.addressId = addressId;
+        this.address = address;
+        this.city = city;
+        this.state = state;
+        this.zipCode = zipCode;
+    }
+
 }

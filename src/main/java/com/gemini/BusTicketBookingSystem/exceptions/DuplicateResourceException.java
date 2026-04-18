@@ -1,13 +1,6 @@
 package com.gemini.BusTicketBookingSystem.exceptions;
 
-/**
- * Custom exception thrown when attempting to create a resource that already exists.
- * This can happen when:
- * - Creating an agency with duplicate email
- * - Registering a bus with duplicate registration number
- * - Creating a driver with duplicate license number
- * - Registering a customer with duplicate email
- */
+
 public class DuplicateResourceException extends RuntimeException {
 
     private String resourceName;

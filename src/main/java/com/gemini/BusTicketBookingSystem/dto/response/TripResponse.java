@@ -7,8 +7,10 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+
 @NoArgsConstructor
 @AllArgsConstructor
+
 @Builder
 public class TripResponse {
 
@@ -120,4 +122,23 @@ public class TripResponse {
     public void setTripDate(LocalDateTime tripDate) {
         this.tripDate = tripDate;
     }
+
+
+    public TripResponse() {
+    }
+
+    public TripResponse(Integer tripId, Integer routeId, String fromCity, String toCity, Integer busId, String busRegistrationNumber, LocalDateTime departureTime, LocalDateTime arrivalTime, Integer availableSeats, BigDecimal fare, LocalDateTime tripDate) {
+        this.tripId = tripId;
+        this.routeId = routeId;
+        this.fromCity = fromCity;
+        this.toCity = toCity;
+        this.busId = busId;
+        this.busRegistrationNumber = busRegistrationNumber;
+        this.departureTime = departureTime;
+        this.arrivalTime = arrivalTime;
+        this.availableSeats = availableSeats;
+        this.fare = fare;
+        this.tripDate = tripDate;
+    }
+
 }
