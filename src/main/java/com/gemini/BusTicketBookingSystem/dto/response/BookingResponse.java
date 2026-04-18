@@ -3,7 +3,7 @@ package com.gemini.BusTicketBookingSystem.dto.response;
 
 import lombok.*;
 
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@NoArgsConstructor @AllArgsConstructor @Builder
 public class BookingResponse {
     private Integer bookingId;
     private Integer tripId;
@@ -11,4 +11,52 @@ public class BookingResponse {
     private String customerName;
     private Integer seatNumber;
     private String status;
+
+    public Integer getBookingId() {
+        return bookingId;
+    }
+
+    public void setBookingId(Integer bookingId) {
+        this.bookingId = bookingId;
+    }
+
+    public Integer getTripId() {
+        return tripId;
+    }
+
+    public void setTripId(Integer tripId) {
+        this.tripId = tripId;
+    }
+
+    public Integer getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(Integer customerId) {
+        this.customerId = customerId;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
+    public Integer getSeatNumber() {
+        return seatNumber;
+    }
+
+    public void setSeatNumber(Integer seatNumber) {
+        this.seatNumber = seatNumber;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }
