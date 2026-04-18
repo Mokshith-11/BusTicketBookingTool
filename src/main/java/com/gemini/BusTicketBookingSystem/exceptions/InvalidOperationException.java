@@ -1,13 +1,4 @@
 package com.gemini.BusTicketBookingSystem.exceptions;
-
-/**
- * Custom exception thrown when an invalid business operation is attempted.
- * This can happen when:
- * - Attempting to cancel an already cancelled booking
- * - Trying to close a trip that's already closed
- * - Attempting to book a trip that has already departed
- * - Invalid payment status transitions
- */
 public class InvalidOperationException extends RuntimeException {
 
     private String operation;

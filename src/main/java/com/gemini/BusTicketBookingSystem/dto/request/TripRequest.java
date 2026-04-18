@@ -6,10 +6,6 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
 public class TripRequest {
 
@@ -22,7 +18,6 @@ public class TripRequest {
     @NotNull(message = "Driver 1 ID is required")
     private Integer driver1Id;
 
-    // Optional (you used it in service → so better validate conditionally later)
     private Integer driver2Id;
 
     @NotNull(message = "Boarding address ID is required")
@@ -45,4 +40,100 @@ public class TripRequest {
     @NotNull(message = "Trip date is required")
     @FutureOrPresent(message = "Trip date cannot be in the past")
     private LocalDateTime tripDate;
+
+    public Integer getRouteId() {
+        return routeId;
+    }
+
+    public void setRouteId(Integer routeId) {
+        this.routeId = routeId;
+    }
+
+    public Integer getBusId() {
+        return busId;
+    }
+
+    public void setBusId(Integer busId) {
+        this.busId = busId;
+    }
+
+    public Integer getDriver1Id() {
+        return driver1Id;
+    }
+
+    public void setDriver1Id(Integer driver1Id) {
+        this.driver1Id = driver1Id;
+    }
+
+    public Integer getDriver2Id() {
+        return driver2Id;
+    }
+
+    public void setDriver2Id(Integer driver2Id) {
+        this.driver2Id = driver2Id;
+    }
+
+    public Integer getBoardingAddressId() {
+        return boardingAddressId;
+    }
+
+    public void setBoardingAddressId(Integer boardingAddressId) {
+        this.boardingAddressId = boardingAddressId;
+    }
+
+    public Integer getDroppingAddressId() {
+        return droppingAddressId;
+    }
+
+    public void setDroppingAddressId(Integer droppingAddressId) {
+        this.droppingAddressId = droppingAddressId;
+    }
+
+    public LocalDateTime getDepartureTime() {
+        return departureTime;
+    }
+
+    public void setDepartureTime(LocalDateTime departureTime) {
+        this.departureTime = departureTime;
+    }
+
+    public LocalDateTime getArrivalTime() {
+        return arrivalTime;
+    }
+
+    public void setArrivalTime(LocalDateTime arrivalTime) {
+        this.arrivalTime = arrivalTime;
+    }
+
+    public BigDecimal getFare() {
+        return fare;
+    }
+
+    public void setFare(BigDecimal fare) {
+        this.fare = fare;
+    }
+
+    public LocalDateTime getTripDate() {
+        return tripDate;
+    }
+
+    public void setTripDate(LocalDateTime tripDate) {
+        this.tripDate = tripDate;
+    }
+
+    public TripRequest() {
+    }
+
+    public TripRequest(Integer routeId, Integer busId, Integer driver1Id, Integer driver2Id, Integer boardingAddressId, Integer droppingAddressId, LocalDateTime departureTime, LocalDateTime arrivalTime, BigDecimal fare, LocalDateTime tripDate) {
+        this.routeId = routeId;
+        this.busId = busId;
+        this.driver1Id = driver1Id;
+        this.driver2Id = driver2Id;
+        this.boardingAddressId = boardingAddressId;
+        this.droppingAddressId = droppingAddressId;
+        this.departureTime = departureTime;
+        this.arrivalTime = arrivalTime;
+        this.fare = fare;
+        this.tripDate = tripDate;
+    }
 }

@@ -15,4 +15,5 @@ public interface IBusRepository extends JpaRepository<Bus,Integer> {
     List<Bus> findByOffice_OfficeId(@ Param("officeId") Integer officeId);
 
     @Query("SELECT COUNT(b) > 0 FROM Bus b WHERE b.registrationNumber = :registrationNumber")
-    boolean existsByRegistrationNumber(@Param("registrationNumber") String registrationNumber);}
+    boolean existsByRegistrationNumber(@Param("registrationNumber") String registrationNumber);
+}

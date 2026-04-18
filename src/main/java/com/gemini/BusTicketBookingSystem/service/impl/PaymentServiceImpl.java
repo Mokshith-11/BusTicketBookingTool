@@ -45,19 +45,16 @@ public class PaymentServiceImpl implements IPaymentService {
                 .orElseThrow(() -> new ResourceNotFoundException("Customer", "customerId",
                         requestDTO.getCustomerId()));
 
-        // Check if booking is in Booked status
         if (booking.getStatus() != BookingStatus.Booked) {
             throw new InvalidOperationException("Make Payment",
                     "Cannot make payment for a booking that is not confirmed");
         }
 
-        // Check if payment already exists for this booking
         if (paymentRepository.existsPaymentByBookingId(requestDTO.getBookingId())) {
             throw new DuplicateResourceException("Payment", "bookingId",
                     requestDTO.getBookingId());
         }
 
-        // Validate payment amount matches trip fare
         if (requestDTO.getAmount().compareTo(booking.getTrip().getFare()) != 0) {
             throw new InvalidOperationException("Make Payment",
                     "Payment amount must match trip fare of " + booking.getTrip().getFare());
@@ -68,8 +65,7 @@ public class PaymentServiceImpl implements IPaymentService {
         payment.setCustomer(customer);
         payment.setAmount(requestDTO.getAmount());
         payment.setPaymentDate(LocalDateTime.now());
-        payment.setPaymentStatus(PaymentStatus.Success); // In real app, this would come from payment gateway
-
+        payment.setPaymentStatus(PaymentStatus.Success);
         Payment savedPayment = paymentRepository.save(payment);
         return convertToResponseDTO(savedPayment);
     }
@@ -110,7 +106,6 @@ public class PaymentServiceImpl implements IPaymentService {
         Payment payment = paymentRepository.findById(paymentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Payment", "paymentId", paymentId));
 
-        // Validate status transition
         if (payment.getPaymentStatus() == PaymentStatus.Success && status == PaymentStatus.Failed) {
             throw new InvalidOperationException("Update Payment Status",
                     "Cannot change status from Success to Failed");

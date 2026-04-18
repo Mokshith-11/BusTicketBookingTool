@@ -28,12 +28,10 @@ import java.util.stream.Collectors;
     @Override
     @Transactional
     public CustomerResponse registerCustomer(CustomerRequest requestDTO) {
-        // Check for duplicate email
         if (customerRepository.existsByEmail(requestDTO.getEmail())) {
             throw new DuplicateResourceException("Customer", "email", requestDTO.getEmail());
         }
 
-        // Check for duplicate phone
         if (customerRepository.existsByPhone(requestDTO.getPhone())) {
             throw new DuplicateResourceException("Customer", "phone", requestDTO.getPhone());
         }
@@ -65,13 +63,11 @@ import java.util.stream.Collectors;
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer", "customerId", customerId));
 
-        // Check if email is being changed and if it's duplicate
         if (!customer.getEmail().equals(requestDTO.getEmail()) &&
                 customerRepository.existsByEmail(requestDTO.getEmail())) {
             throw new DuplicateResourceException("Customer", "email", requestDTO.getEmail());
         }
 
-        // Check if phone is being changed and if it's duplicate
         if (!customer.getPhone().equals(requestDTO.getPhone()) &&
                 customerRepository.existsByPhone(requestDTO.getPhone())) {
             throw new DuplicateResourceException("Customer", "phone", requestDTO.getPhone());

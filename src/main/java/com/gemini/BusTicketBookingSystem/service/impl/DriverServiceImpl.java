@@ -81,7 +81,6 @@ public class DriverServiceImpl implements IDriverService {
         Driver driver = driverRepository.findById(driverId)
                 .orElseThrow(() -> new ResourceNotFoundException("Driver", "driverId", driverId));
 
-        // Check if license number is being changed and if it's duplicate
         if (!driver.getLicenseNumber().equals(requestDTO.getLicenseNumber()) &&
                 driverRepository.existsByLicenseNumber(requestDTO.getLicenseNumber())) {
             throw new DuplicateResourceException("Driver", "licenseNumber",
@@ -107,9 +106,7 @@ public class DriverServiceImpl implements IDriverService {
         Driver driver = driverRepository.findById(driverId)
                 .orElseThrow(() -> new ResourceNotFoundException("Driver", "driverId", driverId));
 
-        // Check if driver is assigned to any active trips
-        // This would require checking Trip entity for this driver
-        // For now, we'll just delete
+
         driverRepository.delete(driver);
     }
 
