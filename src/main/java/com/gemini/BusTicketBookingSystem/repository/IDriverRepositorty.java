@@ -13,4 +13,5 @@ public interface IDriverRepositorty extends JpaRepository<Driver,Integer> {
     @Query("SELECT COUNT(d) > 0 FROM Driver d WHERE d.licenseNumber = :licenseNumber")
     boolean existsByLicenseNumber(@Param("licenseNumber") String licenseNumber);
     @Query("SELECT d FROM Driver d WHERE d.office.officeId = :officeId")
-    List<Driver> findByOffice_OfficeId(@Param("officeId") Integer officeId);}
+    List<Driver> findByOffice_OfficeId(@Param("officeId") Integer officeId);
+}

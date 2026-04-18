@@ -1,5 +1,4 @@
 package com.gemini.BusTicketBookingSystem.exceptions;
-
 public class ResourceNotFoundException extends RuntimeException {
 
     private String resourceName;

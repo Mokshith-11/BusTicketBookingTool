@@ -1,5 +1,4 @@
 package com.gemini.BusTicketBookingSystem.exceptions;
-
 public class InvalidOperationException extends RuntimeException {
 
     private String operation;

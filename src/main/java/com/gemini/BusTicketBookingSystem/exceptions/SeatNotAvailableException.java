@@ -1,6 +1,4 @@
 package com.gemini.BusTicketBookingSystem.exceptions;
-
-
 public class SeatNotAvailableException extends RuntimeException {
 
     private Integer tripId;

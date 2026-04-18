@@ -101,8 +101,7 @@ public class ReviewServiceImpl implements IReviewService {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ResourceNotFoundException("Review", "reviewId", reviewId));
 
-        // In production, you might want to add authorization check here
-        // to ensure only admin or the review owner can delete
+
         reviewRepository.delete(review);
     }
 
