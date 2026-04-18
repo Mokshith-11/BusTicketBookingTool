@@ -8,7 +8,7 @@ import lombok.*;
 
 @Entity
 @Table(name = "bookings")
- @Builder
+@Builder
 public class Booking {
 
     @Id

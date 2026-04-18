@@ -17,17 +17,10 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Global exception handler for the entire application.
- * Uses @RestControllerAdvice to handle exceptions across all @RestController classes.
- * Provides consistent error response format for all exception types.
- */
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    /**
-     * Error response structure for consistent API error responses
-     */
     public static class ErrorResponse {
         private LocalDateTime timestamp;
         private int status;
