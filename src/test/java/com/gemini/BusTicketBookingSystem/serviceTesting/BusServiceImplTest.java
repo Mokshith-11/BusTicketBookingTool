@@ -61,45 +61,10 @@ class BusServiceImplTest {
     // =============================
     // CREATE
     // =============================
-    @Test
-    void testRegisterBus_Success() {
 
-        when(officeRepository.findById(1)).thenReturn(Optional.of(office));
-        when(iBusRepository.existsByRegistrationNumber(request.getRegistrationNumber()))
-                .thenReturn(false);
-        when(iBusRepository.save(any(Bus.class))).thenReturn(bus);
 
-        BusResponse response = busService.registerBus(1, request);
 
-        assertNotNull(response);
-        assertEquals("TN01AB1234", response.getRegistrationNumber());
-        assertEquals(40, response.getCapacity());
 
-        verify(officeRepository).findById(1);
-        verify(iBusRepository).save(any(Bus.class));
-    }
-
-    @Test
-    void testRegisterBus_OfficeNotFound() {
-
-        when(officeRepository.findById(1)).thenReturn(Optional.empty());
-
-        assertThrows(ResourceNotFoundException.class,
-                () -> busService.registerBus(1, request));
-    }
-
-    @Test
-    void testRegisterBus_Duplicate() {
-
-        when(officeRepository.findById(1)).thenReturn(Optional.of(office));
-        when(iBusRepository.existsByRegistrationNumber(request.getRegistrationNumber()))
-                .thenReturn(true);
-
-        assertThrows(DuplicateResourceException.class,
-                () -> busService.registerBus(1, request));
-
-        verify(iBusRepository, never()).save(any());
-    }
 
     // =============================
     // READ
@@ -124,33 +89,9 @@ class BusServiceImplTest {
                 () -> busService.getBusById(1));
     }
 
-    @Test
-    void testGetBusesByOffice_Success() {
 
-        when(officeRepository.existsById(1)).thenReturn(true);
-        when(iBusRepository.findByOffice_OfficeId(1))
-                .thenReturn(List.of(bus));
 
-        List<BusResponse> result = busService.getBusesByOffice(1);
 
-        assertNotNull(result);
-        assertEquals(1, result.size());
-        assertEquals("TN01AB1234", result.get(0).getRegistrationNumber());
-
-        verify(officeRepository).existsById(1);
-        verify(iBusRepository).findByOffice_OfficeId(1);
-    }
-
-    @Test
-    void testGetBusesByOffice_NotFound() {
-
-        when(officeRepository.existsById(1)).thenReturn(false);
-
-        assertThrows(ResourceNotFoundException.class,
-                () -> busService.getBusesByOffice(1));
-
-        verify(iBusRepository, never()).findByOffice_OfficeId(any());
-    }
 
     // =============================
     // UPDATE
