@@ -3,7 +3,7 @@ package com.gemini.BusTicketBookingSystem.dto.response;
 import lombok.*;
 
 
-@NoArgsConstructor @AllArgsConstructor @Builder
+@Builder
 
 public class BusResponse {
     private Integer busId;
@@ -12,6 +12,16 @@ public class BusResponse {
     private Integer capacity;
     private String type;
 
+    public BusResponse(Integer busId, Integer officeId, String registrationNumber, Integer capacity, String type) {
+        this.busId = busId;
+        this.officeId = officeId;
+        this.registrationNumber = registrationNumber;
+        this.capacity = capacity;
+        this.type = type;
+    }
+
+    public BusResponse() {
+    }
 
     public Integer getBusId() {
         return busId;
@@ -53,57 +63,5 @@ public class BusResponse {
         this.type = type;
     }
 }
-
-     public Integer getBusId() {
-         return busId;
-     }
-
-     public void setBusId(Integer busId) {
-         this.busId = busId;
-     }
-
-     public Integer getOfficeId() {
-         return officeId;
-     }
-
-     public void setOfficeId(Integer officeId) {
-         this.officeId = officeId;
-     }
-
-     public String getRegistrationNumber() {
-         return registrationNumber;
-     }
-
-     public void setRegistrationNumber(String registrationNumber) {
-         this.registrationNumber = registrationNumber;
-     }
-
-     public Integer getCapacity() {
-         return capacity;
-     }
-
-     public void setCapacity(Integer capacity) {
-         this.capacity = capacity;
-     }
-
-     public String getType() {
-         return type;
-     }
-
-     public void setType(String type) {
-         this.type = type;
-     }
-
-     public BusResponse() {
-     }
-
-     public BusResponse(Integer busId, Integer officeId, String registrationNumber, Integer capacity, String type) {
-         this.busId = busId;
-         this.officeId = officeId;
-         this.registrationNumber = registrationNumber;
-         this.capacity = capacity;
-         this.type = type;
-     }
- }
 
 

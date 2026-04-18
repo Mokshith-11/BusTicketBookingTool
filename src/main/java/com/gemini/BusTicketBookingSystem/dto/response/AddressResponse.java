@@ -4,8 +4,6 @@ package com.gemini.BusTicketBookingSystem.dto.response;
 import lombok.*;
 
 
-@NoArgsConstructor
-@AllArgsConstructor
 
 
 @Builder

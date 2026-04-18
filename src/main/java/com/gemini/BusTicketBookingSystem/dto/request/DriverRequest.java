@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 
-@NoArgsConstructor @AllArgsConstructor @Builder
+@Builder
 
 public class DriverRequest {
 

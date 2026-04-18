@@ -1,7 +1,5 @@
 package com.gemini.BusTicketBookingSystem.entity;
 
-//import com.busticket.enums.BookingStatus;
-import com.gemini.BusTicketBookingSystem.enums.BookingStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;

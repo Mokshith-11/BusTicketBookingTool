@@ -13,9 +13,6 @@ public class DriverResponse {
     private Integer addressId;
     private String address;
 
-//    private AddressResponse address;
-
-
     public Integer getDriverId() {
         return driverId;
     }
@@ -56,14 +53,41 @@ public class DriverResponse {
         this.officeId = officeId;
     }
 
-    public DriverResponse() {
+    public String getOfficeName() {
+        return officeName;
     }
 
-    public DriverResponse(Integer driverId, String licenseNumber, String name, String phone, Integer officeId) {
+    public void setOfficeName(String officeName) {
+        this.officeName = officeName;
+    }
+
+    public Integer getAddressId() {
+        return addressId;
+    }
+
+    public void setAddressId(Integer addressId) {
+        this.addressId = addressId;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public DriverResponse(Integer driverId, String licenseNumber, String name, String phone, Integer officeId, String officeName, Integer addressId, String address) {
         this.driverId = driverId;
         this.licenseNumber = licenseNumber;
         this.name = name;
         this.phone = phone;
         this.officeId = officeId;
+        this.officeName = officeName;
+        this.addressId = addressId;
+        this.address = address;
+    }
+
+    public DriverResponse() {
     }
 }
