@@ -8,7 +8,7 @@ import lombok.*;
 
 @Entity
 @Table(name = "bookings")
- @Builder
+@Builder
 public class Booking {
 
     @Id
@@ -31,6 +31,7 @@ public class Booking {
     public void setBookingStatus(String confirmed) {
     }
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private BookingStatus status = BookingStatus.Available;
