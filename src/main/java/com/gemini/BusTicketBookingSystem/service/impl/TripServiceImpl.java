@@ -94,7 +94,6 @@ import java.util.stream.Collectors;
 
         @Override
         public List<TripResponse> searchTrips(String fromCity, String toCity, LocalDate date) {
-            // Convert LocalDate to LocalDateTime range for the entire day
             LocalDateTime startOfDay = date.atStartOfDay();
             LocalDateTime endOfDay = date.atTime(23, 59, 59);
 
@@ -133,7 +132,6 @@ import java.util.stream.Collectors;
             Trip trip = tripRepository.findById(tripId)
                     .orElseThrow(() -> new ResourceNotFoundException("Trip", "tripId", tripId));
 
-            // Set available seats to 0 to prevent new bookings
             trip.setAvailableSeats(0);
             tripRepository.save(trip);
         }

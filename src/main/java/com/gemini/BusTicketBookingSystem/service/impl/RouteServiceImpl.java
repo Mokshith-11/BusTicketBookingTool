@@ -24,13 +24,11 @@ public class RouteServiceImpl implements IRouteService {
     @Override
     @Transactional
     public RouteResponse createRoute(RouteRequest requestDTO) {
-        // Validate that from city and to city are different
         if (requestDTO.getFromCity().equalsIgnoreCase(requestDTO.getToCity())) {
             throw new InvalidOperationException("Create Route",
                     "From city and To city cannot be the same");
         }
 
-        // Check if route already exists
         List<Route> existingRoutes = routeRepository.findByFromCityAndToCity(
                 requestDTO.getFromCity(), requestDTO.getToCity());
 
@@ -70,13 +68,11 @@ public class RouteServiceImpl implements IRouteService {
         Route route = routeRepository.findById(routeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Route", "routeId", routeId));
 
-        // Validate that from city and to city are different
         if (requestDTO.getFromCity().equalsIgnoreCase(requestDTO.getToCity())) {
             throw new InvalidOperationException("Update Route",
                     "From city and To city cannot be the same");
         }
 
-        // Check if updated route already exists (excluding current route)
         List<Route> existingRoutes = routeRepository.findByFromCityAndToCity(
                 requestDTO.getFromCity(), requestDTO.getToCity());
 
@@ -104,8 +100,7 @@ public class RouteServiceImpl implements IRouteService {
         Route route = routeRepository.findById(routeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Route", "routeId", routeId));
 
-        // In production, you might want to check if there are any active trips using this route
-        // For now, we'll just delete
+
         routeRepository.delete(route);
     }
 

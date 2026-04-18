@@ -13,8 +13,6 @@ import java.util.Optional;
 @Repository
 public interface IPaymentRepository extends JpaRepository<Payment, Integer> {
 
-
-
     @Query("SELECT p FROM Payment p WHERE p.customer.customerId = :customerId")
     List<Payment> findPaymentsByCustomerId(@Param("customerId") Integer customerId);
 

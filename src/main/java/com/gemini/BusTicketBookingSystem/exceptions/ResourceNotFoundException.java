@@ -1,10 +1,4 @@
 package com.gemini.BusTicketBookingSystem.exceptions;
-
-/**
- * Custom exception thrown when a requested resource is not found in the database.
- * This exception is typically used in service layer methods when querying for entities
- * that don't exist (e.g., Agency not found, Trip not found, etc.)
- */
 public class ResourceNotFoundException extends RuntimeException {
 
     private String resourceName;
