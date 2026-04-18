@@ -4,6 +4,7 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Builder
@@ -136,4 +137,5 @@ public class TripRequest {
         this.fare = fare;
         this.tripDate = tripDate;
     }
+    private LocalDate tripDate;
 }

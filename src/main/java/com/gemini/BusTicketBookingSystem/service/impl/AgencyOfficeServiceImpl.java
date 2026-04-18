@@ -19,11 +19,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
+
 public class AgencyOfficeServiceImpl implements IAgencyOfficeService {
 @Autowired
     private  IAgencyOfficeRepository officeRepository;
+    @Autowired
     private  IAgencyRepository agencyRepository;
+    @Autowired
     private  IAddressesRepository addressRepository;
 
     @Override

@@ -1,6 +1,7 @@
 package com.gemini.BusTicketBookingSystem.service.impl;
 
 import com.gemini.BusTicketBookingSystem.entity.Booking;
+import com.gemini.BusTicketBookingSystem.entity.Customer;
 import com.gemini.BusTicketBookingSystem.exceptions.InvalidOperationException;
 import com.gemini.BusTicketBookingSystem.exceptions.ResourceNotFoundException;
 import com.gemini.BusTicketBookingSystem.exceptions.SeatNotAvailableException;
@@ -60,9 +61,14 @@ public class BookingServiceImpl implements IBookingService {
         if (trip.getAvailableSeats() <= 0) {
             throw new SeatNotAvailableException(tripId, "No seats available for this trip");
         }
+        Customer customer = customerRepository.findById(requestDTO.getCustomerId())
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Customer", "customerId", requestDTO.getCustomerId()
+                ));
 
         Booking booking = new Booking();
         booking.setTrip(trip);
+        booking.setCustomer(customer);
         booking.setSeatNumber(requestDTO.getSeatNumber());
         booking.setStatus(BookingStatus.Booked);
 

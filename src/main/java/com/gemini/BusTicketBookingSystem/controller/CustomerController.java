@@ -2,7 +2,7 @@ package com.gemini.BusTicketBookingSystem.controller;
 
 import com.gemini.BusTicketBookingSystem.dto.request.CustomerRequest;
 import com.gemini.BusTicketBookingSystem.dto.response.CustomerResponse;
-
+import com.gemini.BusTicketBookingSystem.dto.response.ApiResponse;
 import com.gemini.BusTicketBookingSystem.service.ICustomerService;
 
 import jakarta.validation.Valid;
@@ -20,29 +20,63 @@ public class CustomerController {
     @Autowired
     private ICustomerService customerService;
 
+
     @PostMapping
-    public ResponseEntity<CustomerResponse> registerCustomer(@Valid @RequestBody CustomerRequest requestDTO) {
+    public ResponseEntity<ApiResponse<CustomerResponse>> registerCustomer(
+            @Valid @RequestBody CustomerRequest requestDTO) {
+
         CustomerResponse response = customerService.registerCustomer(requestDTO);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+
+        ApiResponse<CustomerResponse> apiResponse =
+                new ApiResponse<>(HttpStatus.CREATED.value(),
+                        "Customer registered successfully",
+                        response);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
     }
+
 
     @GetMapping("/{customerId}")
-    public ResponseEntity<CustomerResponse> getCustomerById(@PathVariable Integer customerId) {
+    public ResponseEntity<ApiResponse<CustomerResponse>> getCustomerById(
+            @PathVariable Integer customerId) {
+
         CustomerResponse response = customerService.getCustomerById(customerId);
-        return ResponseEntity.ok(response);
+
+        ApiResponse<CustomerResponse> apiResponse =
+                new ApiResponse<>(HttpStatus.OK.value(),
+                        "Customer fetched successfully",
+                        response);
+
+        return ResponseEntity.ok(apiResponse);
     }
+
 
     @PutMapping("/{customerId}")
-    public ResponseEntity<CustomerResponse> updateCustomer(
+    public ResponseEntity<ApiResponse<CustomerResponse>> updateCustomer(
             @PathVariable Integer customerId,
             @Valid @RequestBody CustomerRequest requestDTO) {
+
         CustomerResponse response = customerService.updateCustomer(customerId, requestDTO);
-        return ResponseEntity.ok(response);
+
+        ApiResponse<CustomerResponse> apiResponse =
+                new ApiResponse<>(HttpStatus.OK.value(),
+                        "Customer updated successfully",
+                        response);
+
+        return ResponseEntity.ok(apiResponse);
     }
 
+
     @GetMapping
-    public ResponseEntity<List<CustomerResponse>> getAllCustomers() {
+    public ResponseEntity<ApiResponse<List<CustomerResponse>>> getAllCustomers() {
+
         List<CustomerResponse> customers = customerService.getAllCustomers();
-        return ResponseEntity.ok(customers);
+
+        ApiResponse<List<CustomerResponse>> apiResponse =
+                new ApiResponse<>(HttpStatus.OK.value(),
+                        "Customers fetched successfully",
+                        customers);
+
+        return ResponseEntity.ok(apiResponse);
     }
 }

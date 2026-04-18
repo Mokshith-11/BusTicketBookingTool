@@ -46,7 +46,7 @@ public class Trip {
     private Driver driver1;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "driver2_driver_id", nullable = false)
+    @JoinColumn(name = "driver2_driver_id", nullable = true)
     private Driver driver2;
 
     @NotNull(message = "Available seats is required")
