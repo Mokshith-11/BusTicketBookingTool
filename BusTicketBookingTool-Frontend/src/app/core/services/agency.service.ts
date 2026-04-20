@@ -1,0 +1,14 @@
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+@Injectable({ providedIn: 'root' })
+export class AgencyService {
+  private http = inject(HttpClient);
+
+  create(payload: any): Observable<any> { return this.http.post('/agencies', payload); }
+  getAll(): Observable<any> { return this.http.get('/agencies'); }
+  getById(id: number): Observable<any> { return this.http.get(`/agencies/${id}`); }
+  update(id: number, payload: any): Observable<any> { return this.http.put(`/agencies/${id}`, payload); }
+  delete(id: number): Observable<any> { return this.http.delete(`/agencies/${id}`); }
+}

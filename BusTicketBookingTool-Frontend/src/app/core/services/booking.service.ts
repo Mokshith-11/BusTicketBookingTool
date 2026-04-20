@@ -1,0 +1,32 @@
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+@Injectable({ providedIn: 'root' })
+export class BookingService {
+  private http = inject(HttpClient);
+
+  createBooking(tripId: number, payload: any): Observable<any> {
+    return this.http.post(`/trips/${tripId}/bookings`, payload);
+  }
+
+  getCustomerBookings(customerId: number): Observable<any> {
+    return this.http.get(`/customers/${customerId}/bookings`);
+  }
+
+  getBookingById(bookingId: number): Observable<any> {
+    return this.http.get(`/bookings/${bookingId}`);
+  }
+
+  cancelBooking(bookingId: number): Observable<any> {
+    return this.http.patch(`/bookings/${bookingId}/cancel`, {});
+  }
+
+  getAvailableSeats(tripId: number): Observable<any> {
+    return this.http.get(`/trips/${tripId}/seats/available`);
+  }
+
+  getBookedSeats(tripId: number): Observable<any> {
+    return this.http.get(`/trips/${tripId}/seats/booked`);
+  }
+}

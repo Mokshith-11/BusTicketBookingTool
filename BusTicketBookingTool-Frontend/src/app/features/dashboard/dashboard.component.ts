@@ -1,31 +1,45 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, ActivatedRoute, RouterModule } from '@angular/router';
+import { Router } from '@angular/router';
 import { AuthService } from '../../core/auth.service';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule],
   templateUrl: './dashboard.component.html'
 })
-export class DashboardComponent implements OnInit {
-  workspaceUser: string = '';
+export class DashboardComponent {
+  auth = inject(AuthService);
+  router = inject(Router);
 
-  constructor(
-    private authService: AuthService, 
-    private router: Router,
-    private route: ActivatedRoute
-  ) {}
+  allModules = [
+    { name: 'Agency', owner: 'aksha', route: '/agencies', endpoints: 5 },
+    { name: 'Agency Office', owner: 'aksha', route: '/agency-offices', endpoints: 5 },
+    { name: 'Address', owner: 'aksha', route: '/addresses', endpoints: 2 },
+    { name: 'Bus', owner: 'nithish', route: '/buses', endpoints: 5 },
+    { name: 'Driver', owner: 'nithish', route: '/drivers', endpoints: 5 },
+    { name: 'Route', owner: 'ajitha', route: '/routes-mgmt', endpoints: 5 },
+    { name: 'Customer', owner: 'ajitha', route: '/customers', endpoints: 4 },
+    { name: 'Trip', owner: 'priyadharshini', route: '/trips', endpoints: 6 },
+    { name: 'Review', owner: 'priyadharshini', route: '/reviews', endpoints: 4 },
+    { name: 'Booking', owner: 'vignesh', route: '/bookings', endpoints: 6 },
+    { name: 'Payment', owner: 'vignesh', route: '/payments', endpoints: 5 }
+  ];
 
-  ngOnInit() {
-    this.route.paramMap.subscribe(params => {
-      this.workspaceUser = params.get('user') || '';
-    });
+  get visibleModules() {
+    const user = this.auth.username();
+    if (!user) return [];
+    // Only return modules where the owner matches the logged in user
+    return this.allModules.filter(m => m.owner === user);
   }
 
   logout() {
-    this.authService.logout();
-    this.router.navigate(['/home']);
+    this.auth.logout();
+    this.router.navigate(['/']);
+  }
+
+  navigateTo(route: string) {
+    this.router.navigate([route]);
   }
 }

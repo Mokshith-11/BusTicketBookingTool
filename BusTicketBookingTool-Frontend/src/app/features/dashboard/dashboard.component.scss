@@ -1,0 +1,54 @@
+.spacer { flex: 1 1 auto; }
+.mr-4 { margin-right: 1rem; }
+.mt-4 { margin-top: 1rem; }
+.mb-6 { margin-bottom: 1.5rem; }
+.p-8 { padding: 2rem; }
+.max-w-7xl { max-width: 1280px; }
+.mx-auto { margin-left: auto; margin-right: auto; }
+
+.modules-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.uppercase-chip { text-transform: uppercase; font-weight: bold; }
+
+.cursor-pointer { cursor: pointer; }
+.hover-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  }
+}
+
+.mine-card {
+  border-left: 5px solid #4CAF50;
+  background-color: #f1f8e9;
+  mat-card-title { color: #2E7D32; }
+}
+
+.mine-badge {
+  color: #2E7D32;
+  font-weight: bold;
+  font-size: 13px;
+  background: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  border: 1px solid #4CAF50;
+}
+
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.endpoint-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #666;
+  font-size: 14px;
+}

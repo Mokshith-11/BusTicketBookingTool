@@ -1,0 +1,89 @@
+<!-- Top Navbar -->
+<mat-toolbar color="primary" class="navbar shadow-sm">
+  <span>BusTicket System</span>
+  <span class="spacer"></span>
+  <span class="college-text">Panimalar Engineering College</span>
+</mat-toolbar>
+
+<div class="landing-container">
+  <!-- Hero Section -->
+  <section class="hero-section text-center">
+    <div class="badge-tag">BE CSE · Group Project · 2026</div>
+    <h1 class="mat-headline-1 mt-3">Bus Ticket Booking System</h1>
+    <h3 class="mat-headline-4 text-muted">Spring Boot · Angular 21 · MySQL</h3>
+  </section>
+
+  <div class="main-content-split">
+    
+    <!-- Left Col: Content & Grid -->
+    <div class="content-panel mt-4">
+      
+      <!-- Modules Grid -->
+      <h2 class="mat-headline-5 mb-4">System Modules (11)</h2>
+      <div class="modules-grid">
+        <mat-card *ngFor="let mod of modules" [ngClass]="{'mine-card': mod.isMine}">
+          <mat-card-header>
+            <mat-card-title>{{ mod.name }}</mat-card-title>
+            <mat-card-subtitle>{{ mod.owner }}</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content *ngIf="mod.isMine">
+            <span class="mine-badge mt-2 block">★ My module</span>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <!-- Team Row -->
+      <h2 class="mat-headline-5 mt-6 mb-4">Development Team</h2>
+      <div class="team-grid">
+        <mat-card *ngFor="let member of team" [ngClass]="{'mine-card': member.isMine}">
+          <mat-card-header>
+            <mat-card-title>{{ member.name }}</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <p>{{ member.modules }}</p>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+    </div>
+
+    <!-- Right Col: Login Form -->
+    <div class="login-panel">
+      <mat-card class="login-card elevation-z6">
+        <mat-card-header class="mb-4">
+          <mat-card-title>Authentication</mat-card-title>
+          <mat-card-subtitle>Sign in to access your modules</mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content>
+          <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="flex-col">
+            
+            <mat-button-toggle-group formControlName="roleType" class="w-100 mb-4 role-toggle">
+              <mat-button-toggle value="admin" class="w-50">Admin</mat-button-toggle>
+              <mat-button-toggle value="customer" class="w-50">Customer</mat-button-toggle>
+            </mat-button-toggle-group>
+
+            <mat-form-field appearance="outline" class="w-100 mb-2">
+              <mat-label>Username</mat-label>
+              <input matInput formControlName="username" type="text" autocomplete="off">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-100 mb-2">
+              <mat-label>Password</mat-label>
+              <input matInput formControlName="password" type="password">
+            </mat-form-field>
+
+            <div class="error-msg my-3" *ngIf="loginError()">
+              <mat-icon color="warn">error</mat-icon>
+              <span>{{ loginError() }}</span>
+            </div>
+
+            <button mat-flat-button color="primary" class="w-100 py-2 mt-2" type="submit" [disabled]="loginForm.invalid">Sign In</button>
+          
+          </form>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+  </div>
+</div>

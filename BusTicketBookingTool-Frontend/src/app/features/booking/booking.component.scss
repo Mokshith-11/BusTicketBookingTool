@@ -1,0 +1,23 @@
+.ml-2 { margin-left: 0.5rem; }
+.mb-4 { margin-bottom: 1rem; }
+.pt-4 { padding-top: 1rem; }
+.px-8 { padding-left: 2rem; padding-right: 2rem; }
+.max-w-7xl { max-width: 1280px; }
+.mx-auto { margin-left: auto; margin-right: auto; }
+.w-100 { width: 100%; }
+
+.grid-layout {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 2rem;
+}
+
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.empty-state {
+  color: #888;
+  font-style: italic;
+}

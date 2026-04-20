@@ -1,40 +1,56 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal, computed } from '@angular/core';
 
-@Injectable({
-  providedIn: 'root'
-})
+export interface AuthSession {
+  username: string | null;
+  member?: string; // Team member name
+}
+
+@Injectable({ providedIn: 'root' })
 export class AuthService {
-  private loggedInUser: string | null = null;
-  private token: string | null = null;
+  private sessionSignal = signal<AuthSession>({ username: null });
 
-  login(username: string, password: string): boolean {
-    const validUsers = ['vignesh', 'nithish', 'aksha', 'ajitha', 'priya'];
-    
-    // Check if user is in valid list
-    // In a real app we would check password strictly. Here any password works for demo.
-    if (validUsers.includes(username.toLowerCase())) {
-      this.loggedInUser = username.toLowerCase();
-      this.token = 'mock-jwt-token-' + this.loggedInUser; 
-      localStorage.setItem('token', this.token);
-      localStorage.setItem('currentUser', this.loggedInUser);
+  username = computed(() => this.sessionSignal().username);
+  member = computed(() => this.sessionSignal().member);
+  isAuth = computed(() => this.sessionSignal().username !== null);
+
+  // Each team member's credentials
+  private validCredentials: { [key: string]: { password: string } } = {
+    'vignesh': { password: 'vignesh123' },
+    'nithish': { password: 'nithish123' },
+    'aksha': { password: 'aksha123' },
+    'ajitha': { password: 'ajitha123' },
+    'priyadharshini': { password: 'priya123' }
+  };
+
+  constructor() { this.hydrate(); }
+
+  login(username: string, pass: string): boolean {
+    const key = username.toLowerCase();
+    const cred = this.validCredentials[key];
+
+    if (cred && cred.password === pass) {
+      const session: AuthSession = {
+        username: key,
+        member: key
+      };
+      sessionStorage.setItem('authSession', JSON.stringify(session));
+      this.sessionSignal.set(session);
       return true;
     }
     return false;
   }
 
-  logout() {
-    this.loggedInUser = null;
-    this.token = null;
-    localStorage.removeItem('token');
-    localStorage.removeItem('currentUser');
+  logout(): void {
+    sessionStorage.removeItem('authSession');
+    this.sessionSignal.set({ username: null });
   }
 
-  isLoggedInAs(requestedUser: string): boolean {
-    const current = this.loggedInUser || localStorage.getItem('currentUser');
-    return current === requestedUser.toLowerCase();
-  }
+  getUser(): string | null { return this.username(); }
 
-  getUser(): string | null {
-    return this.loggedInUser || localStorage.getItem('currentUser');
+  private hydrate(): void {
+    const raw = sessionStorage.getItem('authSession');
+    if (raw) {
+      try { this.sessionSignal.set(JSON.parse(raw)); } catch {}
+    }
   }
 }
