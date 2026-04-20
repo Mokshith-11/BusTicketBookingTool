@@ -6,7 +6,7 @@ import lombok.*;
 
 @Entity
 @Table(name = "addresses")
- @Builder
+@Builder
 public class Addresses{
 
     @Id

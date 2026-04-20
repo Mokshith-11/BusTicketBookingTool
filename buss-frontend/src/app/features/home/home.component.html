@@ -1,0 +1,29 @@
+<div class="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+  
+  <div class="w-full max-w-md bg-white border border-gray-200 shadow-xl rounded-2xl p-8 text-center">
+    
+    <div class="bg-blue-600 rounded-full h-20 w-20 flex items-center justify-center mx-auto mb-6 shadow-md shadow-blue-200">
+      <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+    </div>
+
+    <h2 class="text-3xl font-extrabold text-gray-800 mb-2">Bus Operations</h2>
+    <p class="text-gray-500 mb-8">Select your employee portal to login</p>
+
+    <div class="space-y-3">
+      <button 
+        *ngFor="let user of users" 
+        (click)="selectName(user)"
+        class="w-full text-left px-5 py-4 rounded-xl border border-gray-200 hover:border-blue-500 hover:bg-blue-50 font-medium transition-all group flex items-center justify-between"
+      >
+        <div class="flex items-center space-x-3">
+          <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 group-hover:bg-blue-100 group-hover:text-blue-600 font-bold text-sm">
+            {{ user.charAt(0) }}
+          </div>
+          <span class="text-gray-700 group-hover:text-blue-700">{{ user }}</span>
+        </div>
+        <svg class="w-5 h-5 text-gray-300 group-hover:text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+      </button>
+    </div>
+
+  </div>
+</div>
