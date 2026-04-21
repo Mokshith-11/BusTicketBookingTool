@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { MODULE_CONFIGS, ModuleConfig, EndpointDef } from '../../core/config/module-endpoints.config';
 
 @Component({
@@ -77,7 +78,7 @@ export class ModuleEndpointsComponent implements OnInit {
     const url = this.buildUrl(ep);
 
     // Build body for POST/PUT/PATCH
-    let body: any = null;
+    let body: Record<string, unknown> | null = null;
     if (ep.bodyFields && ep.bodyFields.length > 0) {
       body = {};
       for (const field of ep.bodyFields) {
@@ -86,7 +87,7 @@ export class ModuleEndpointsComponent implements OnInit {
       }
     }
 
-    let req$;
+    let req$: Observable<unknown>;
     switch (ep.method) {
       case 'GET': req$ = this.http.get(url); break;
       case 'POST': req$ = this.http.post(url, body); break;
@@ -97,12 +98,12 @@ export class ModuleEndpointsComponent implements OnInit {
     }
 
     req$.subscribe({
-      next: (res) => {
+      next: (res: unknown) => {
         this.response.set(JSON.stringify(res, null, 2));
         this.responseStatus.set('success');
         this.loading.set(false);
       },
-      error: (err) => {
+      error: (err: { error?: unknown; message?: string }) => {
         const errBody = err.error || err.message || 'Request failed';
         this.response.set(typeof errBody === 'string' ? errBody : JSON.stringify(errBody, null, 2));
         this.responseStatus.set('error');
