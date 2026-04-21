@@ -7,7 +7,6 @@ import { AuthService } from '../../core/auth.service';
 
 @Component({
   selector: 'app-booking',
-  standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './booking.component.html'
 })

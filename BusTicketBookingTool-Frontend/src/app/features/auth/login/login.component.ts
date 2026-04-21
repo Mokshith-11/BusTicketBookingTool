@@ -6,7 +6,6 @@ import { AuthService } from '../../../core/auth.service';
 
 @Component({
   selector: 'app-login',
-  standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './login.component.html'
 })
@@ -16,8 +15,8 @@ export class LoginComponent implements OnInit {
   requestedUser: string = '';
 
   constructor(
-    private fb: FormBuilder, 
-    private authService: AuthService, 
+    private fb: FormBuilder,
+    private authService: AuthService,
     private router: Router,
     private route: ActivatedRoute
   ) {

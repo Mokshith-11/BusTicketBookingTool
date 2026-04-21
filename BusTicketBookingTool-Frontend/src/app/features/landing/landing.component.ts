@@ -18,8 +18,8 @@ import { MatToolbarModule } from '@angular/material/toolbar';
   selector: 'app-landing',
   standalone: true,
   imports: [
-    CommonModule, ReactiveFormsModule, 
-    MatCardModule, MatButtonModule, MatFormFieldModule, 
+    CommonModule, ReactiveFormsModule,
+    MatCardModule, MatButtonModule, MatFormFieldModule,
     MatInputModule, MatButtonToggleModule, MatIconModule,
     MatBadgeModule, MatToolbarModule
   ],
