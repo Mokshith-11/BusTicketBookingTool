@@ -18,31 +18,35 @@
     <!-- Left Col: Content & Grid -->
     <div class="content-panel mt-4">
       
-      <!-- Modules Grid -->
-      <h2 class="mat-headline-5 mb-4">System Modules (11)</h2>
       <div class="modules-grid">
-        <mat-card *ngFor="let mod of modules" [ngClass]="{'mine-card': mod.isMine}">
-          <mat-card-header>
-            <mat-card-title>{{ mod.name }}</mat-card-title>
-            <mat-card-subtitle>{{ mod.owner }}</mat-card-subtitle>
-          </mat-card-header>
-          <mat-card-content *ngIf="mod.isMine">
-            <span class="mine-badge mt-2 block">★ My module</span>
-          </mat-card-content>
-        </mat-card>
+        @for (mod of modules; track mod.name) {
+          <mat-card [ngClass]="{'mine-card': mod.isMine}">
+            <mat-card-header>
+              <mat-card-title>{{ mod.name }}</mat-card-title>
+              <mat-card-subtitle>{{ mod.owner }}</mat-card-subtitle>
+            </mat-card-header>
+            @if (mod.isMine) {
+              <mat-card-content>
+                <span class="mine-badge mt-2 block">★ My module</span>
+              </mat-card-content>
+            }
+          </mat-card>
+        }
       </div>
 
       <!-- Team Row -->
       <h2 class="mat-headline-5 mt-6 mb-4">Development Team</h2>
       <div class="team-grid">
-        <mat-card *ngFor="let member of team" [ngClass]="{'mine-card': member.isMine}">
-          <mat-card-header>
-            <mat-card-title>{{ member.name }}</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <p>{{ member.modules }}</p>
-          </mat-card-content>
-        </mat-card>
+        @for (member of team; track member.name) {
+          <mat-card [ngClass]="{'mine-card': member.isMine}">
+            <mat-card-header>
+              <mat-card-title>{{ member.name }}</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <p>{{ member.modules }}</p>
+            </mat-card-content>
+          </mat-card>
+        }
       </div>
 
     </div>
@@ -73,10 +77,12 @@
               <input matInput formControlName="password" type="password">
             </mat-form-field>
 
-            <div class="error-msg my-3" *ngIf="loginError()">
-              <mat-icon color="warn">error</mat-icon>
-              <span>{{ loginError() }}</span>
-            </div>
+            @if (loginError()) {
+              <div class="error-msg my-3">
+                <mat-icon color="warn">error</mat-icon>
+                <span>{{ loginError() }}</span>
+              </div>
+            }
 
             <button mat-flat-button color="primary" class="w-100 py-2 mt-2" type="submit" [disabled]="loginForm.invalid">Sign In</button>
           

@@ -14,9 +14,11 @@
     <h3 class="text-2xl font-bold text-center text-gray-800 mb-2 capitalize">{{ requestedUser }} Login</h3>
     <p class="text-gray-500 text-center mb-8 text-sm">Please authenticate to access your tools.</p>
 
-    <div *ngIf="loginError" class="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm mb-6">
-      Invalid password for {{ requestedUser }}.
-    </div>
+    @if (loginError) {
+      <div class="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm mb-6">
+        Invalid password for {{ requestedUser }}.
+      </div>
+    }
 
     <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="space-y-6">
       <div>

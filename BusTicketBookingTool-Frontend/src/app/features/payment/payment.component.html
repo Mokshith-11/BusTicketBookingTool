@@ -27,32 +27,38 @@
     <!-- Payments Table -->
     <div class="md:col-span-2 bg-white rounded-lg shadow-md p-6">
       <h3 class="text-lg font-bold text-gray-800 mb-4">Payment History</h3>
-      <div *ngIf="payments().length === 0" class="text-center text-gray-400 py-8 border-2 border-dashed rounded">
-        No payment history found.
-      </div>
-      <table *ngIf="payments().length > 0" class="w-full text-sm">
-        <thead class="bg-gray-50">
-          <tr>
-            <th class="px-4 py-3 text-left font-semibold text-gray-600">ID</th>
-            <th class="px-4 py-3 text-left font-semibold text-gray-600">Amount</th>
-            <th class="px-4 py-3 text-left font-semibold text-gray-600">Method</th>
-            <th class="px-4 py-3 text-left font-semibold text-gray-600">Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let p of payments()" class="border-t hover:bg-gray-50">
-            <td class="px-4 py-3">{{ p.id }}</td>
-            <td class="px-4 py-3">₹{{ p.amount }}</td>
-            <td class="px-4 py-3">{{ p.method }}</td>
-            <td class="px-4 py-3">
-              <span class="px-2 py-1 rounded-full text-xs font-bold"
-                [ngClass]="{'bg-green-100 text-green-700': p.status === 'PAID', 'bg-yellow-100 text-yellow-700': p.status === 'PENDING'}">
-                {{ p.status }}
-              </span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      @if (payments().length === 0) {
+        <div class="text-center text-gray-400 py-8 border-2 border-dashed rounded">
+          No payment history found.
+        </div>
+      }
+      @if (payments().length > 0) {
+        <table class="w-full text-sm">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-4 py-3 text-left font-semibold text-gray-600">ID</th>
+              <th class="px-4 py-3 text-left font-semibold text-gray-600">Amount</th>
+              <th class="px-4 py-3 text-left font-semibold text-gray-600">Method</th>
+              <th class="px-4 py-3 text-left font-semibold text-gray-600">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (p of payments(); track p.id) {
+              <tr class="border-t hover:bg-gray-50">
+                <td class="px-4 py-3">{{ p.id }}</td>
+                <td class="px-4 py-3">₹{{ p.amount }}</td>
+                <td class="px-4 py-3">{{ p.method }}</td>
+                <td class="px-4 py-3">
+                  <span class="px-2 py-1 rounded-full text-xs font-bold"
+                    [ngClass]="{'bg-green-100 text-green-700': p.status === 'PAID', 'bg-yellow-100 text-yellow-700': p.status === 'PENDING'}">
+                    {{ p.status }}
+                  </span>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
     </div>
   </div>
 </div>

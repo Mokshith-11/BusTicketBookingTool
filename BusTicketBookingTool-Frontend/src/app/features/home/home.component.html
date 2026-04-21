@@ -7,20 +7,23 @@
     </div>
     
     <div class="flex-1 overflow-y-auto pt-2">
-      <button 
-        *ngFor="let member of team" 
-        (click)="selectMember(member)"
-        class="w-full text-left px-6 py-4 font-bold border-l-4 transition-colors hover:bg-gray-700"
-        [ngClass]="{
-          'bg-gray-700 border-blue-500 text-blue-300': selectedMember()?.key === member.key,
-          'border-transparent text-gray-300': selectedMember()?.key !== member.key
-        }">
-        <div class="flex flex-col">
-          <span>{{ member.name }}</span>
-          <span class="text-xs font-normal text-gray-500 mt-1">{{ member.modules }}</span>
-          <span *ngIf="selectedMember()?.key === member.key" class="text-xs text-yellow-400 mt-1">Password: {{ member.password }}</span>
-        </div>
-      </button>
+      @for (member of team; track member.key) {
+        <button 
+          (click)="selectMember(member)"
+          class="w-full text-left px-6 py-4 font-bold border-l-4 transition-colors hover:bg-gray-700"
+          [ngClass]="{
+            'bg-gray-700 border-blue-500 text-blue-300': selectedMember()?.key === member.key,
+            'border-transparent text-gray-300': selectedMember()?.key !== member.key
+          }">
+          <div class="flex flex-col">
+            <span>{{ member.name }}</span>
+            <span class="text-xs font-normal text-gray-500 mt-1">{{ member.modules }}</span>
+            @if (selectedMember()?.key === member.key) {
+              <span class="text-xs text-yellow-400 mt-1">Password: {{ member.password }}</span>
+            }
+          </div>
+        </button>
+      }
     </div>
   </div>
 
@@ -41,37 +44,42 @@
         <h3 class="text-2xl font-bold text-gray-800 mb-6 text-center border-b pb-4">Portal Access</h3>
 
         <!-- No member selected -->
-        <div *ngIf="!selectedMember()" class="text-center text-gray-500 my-8 py-8 border-2 border-dashed border-gray-200 rounded-lg">
-          <p>Please select your name from the sidebar<br>to access your assigned modules.</p>
-        </div>
+        @if (!selectedMember()) {
+          <div class="text-center text-gray-500 my-8 py-8 border-2 border-dashed border-gray-200 rounded-lg">
+            <p>Please select your name from the sidebar<br>to access your assigned modules.</p>
+          </div>
+        }
 
         <!-- Login form when member is selected -->
-        <div *ngIf="selectedMember()">
-          
-          <div class="bg-blue-50 border border-blue-200 rounded-md px-4 py-3 text-sm text-blue-700 mb-4">
-            Logging in as <strong>{{ selectedMember()!.name }}</strong> — modules: {{ selectedMember()!.modules }}
-          </div>
-
-          <div *ngIf="loginError()" class="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm mb-4">
-            Invalid password for {{ selectedMember()!.name }}.
-          </div>
-
-          <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="space-y-5">
-            <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-1">Username</label>
-              <input type="text" formControlName="username" class="w-full px-4 py-2 rounded border border-gray-300 bg-gray-100 text-gray-500 cursor-not-allowed outline-none font-bold" />
+        @if (selectedMember()) {
+          <div>
+            <div class="bg-blue-50 border border-blue-200 rounded-md px-4 py-3 text-sm text-blue-700 mb-4">
+              Logging in as <strong>{{ selectedMember()!.name }}</strong> — modules: {{ selectedMember()!.modules }}
             </div>
 
-            <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-1">Password</label>
-              <input type="password" formControlName="password" class="w-full px-4 py-2 rounded border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none transition" />
-            </div>
-            
-            <button [disabled]="loginForm.invalid" type="submit" class="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold py-3 px-4 rounded shadow transition-colors mt-6">
-              LOGIN
-            </button>
-          </form>
-        </div>
+            @if (loginError()) {
+              <div class="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm mb-4">
+                Invalid password for {{ selectedMember()!.name }}.
+              </div>
+            }
+
+            <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="space-y-5">
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Username</label>
+                <input type="text" formControlName="username" class="w-full px-4 py-2 rounded border border-gray-300 bg-gray-100 text-gray-500 cursor-not-allowed outline-none font-bold" />
+              </div>
+
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Password</label>
+                <input type="password" formControlName="password" class="w-full px-4 py-2 rounded border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none transition" />
+              </div>
+              
+              <button [disabled]="loginForm.invalid" type="submit" class="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold py-3 px-4 rounded shadow transition-colors mt-6">
+                LOGIN
+              </button>
+            </form>
+          </div>
+        }
         
       </div>
 

@@ -23,8 +23,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     MatInputModule, MatButtonToggleModule, MatIconModule,
     MatBadgeModule, MatToolbarModule
   ],
-  templateUrl: './landing.component.html',
-  styleUrls: ['./landing.component.scss']
+  templateUrl: './landing.component.html'
 })
 export class LandingComponent {
   private fb = inject(FormBuilder);
