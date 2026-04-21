@@ -28,10 +28,10 @@ export class DashboardComponent {
   ];
 
   get visibleModules() {
-    const user = this.auth.username();
+    const user = this.auth.username()?.toLowerCase();
     if (!user) return [];
-    // Only return modules where the owner matches the logged in user
-    return this.allModules.filter(m => m.owner === user);
+    // Case-insensitive match: backend config has 'Vignesh', login stores 'vignesh'
+    return this.allModules.filter(m => m.owner.toLowerCase() === user);
   }
 
   logout() {

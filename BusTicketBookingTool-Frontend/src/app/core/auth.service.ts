@@ -2,6 +2,7 @@ import { Injectable, signal, computed } from '@angular/core';
 
 export interface AuthSession {
   username: string | null;
+  password?: string; // stored for Basic Auth header construction
   member?: string; // Team member name
 }
 
@@ -31,6 +32,7 @@ export class AuthService {
     if (cred && cred.password === pass) {
       const session: AuthSession = {
         username: key,
+        password: pass, // stored to build Basic Auth in interceptor
         member: key
       };
       sessionStorage.setItem('authSession', JSON.stringify(session));
@@ -46,6 +48,7 @@ export class AuthService {
   }
 
   getUser(): string | null { return this.username(); }
+  getPassword(): string | null { return this.sessionSignal().password ?? null; }
 
   private hydrate(): void {
     const raw = sessionStorage.getItem('authSession');

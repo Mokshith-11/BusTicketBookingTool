@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { AuthService } from '../../core/auth.service';
 import { MODULE_CONFIGS, ModuleConfig, EndpointDef } from '../../core/config/module-endpoints.config';
 
 @Component({
@@ -16,6 +17,7 @@ export class ModuleEndpointsComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private http = inject(HttpClient);
+  private auth = inject(AuthService);
 
   config = signal<ModuleConfig | null>(null);
   activeEndpoint = signal<EndpointDef | null>(null);
@@ -29,7 +31,11 @@ export class ModuleEndpointsComponent implements OnInit {
   ngOnInit() {
     const moduleKey = this.route.snapshot.data['moduleKey'];
     if (moduleKey && MODULE_CONFIGS[moduleKey]) {
-      this.config.set(MODULE_CONFIGS[moduleKey]);
+      const conf = { ...MODULE_CONFIGS[moduleKey] };
+      const user = this.auth.username()?.toLowerCase();
+      // Dynamically determine ownership
+      conf.isMine = conf.owner.toLowerCase() === user;
+      this.config.set(conf);
     }
   }
 
