@@ -50,12 +50,12 @@ export class ModuleEndpointsComponent implements OnInit {
 
   getMethodColor(method: string): string {
     switch (method) {
-      case 'GET': return 'bg-green-500';
-      case 'POST': return 'bg-blue-500';
-      case 'PUT': return 'bg-yellow-500';
-      case 'PATCH': return 'bg-purple-500';
-      case 'DELETE': return 'bg-red-500';
-      default: return 'bg-gray-500';
+      case 'GET': return 'bg-teal-500 shadow-teal-500/40';
+      case 'POST': return 'bg-indigo-500 shadow-indigo-500/40';
+      case 'PUT': return 'bg-amber-500 shadow-amber-500/40';
+      case 'PATCH': return 'bg-violet-500 shadow-violet-500/40';
+      case 'DELETE': return 'bg-rose-500 shadow-rose-500/40';
+      default: return 'bg-slate-500';
     }
   }
 
@@ -89,7 +89,9 @@ export class ModuleEndpointsComponent implements OnInit {
       body = {};
       for (const field of ep.bodyFields) {
         const val = this.bodyValues[field.name];
-        body[field.name] = field.type === 'number' ? Number(val) : val;
+        if (val !== undefined && val !== null && val !== '') {
+          body[field.name] = field.type === 'number' ? Number(val) : val;
+        }
       }
     }
 

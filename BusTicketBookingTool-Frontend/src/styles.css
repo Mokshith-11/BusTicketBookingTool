@@ -1,3 +1,59 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  /* User-Defined Steel Blue Palette */
+  --bg-reference-hex: #DBE2EF;
+  --accent-primary-hex: #3F72AF;
+
+  /* Lumina Precise Mapping (Using Hex for exact parity) */
+  --bg-reference: 220 40% 95%; /* Derived from #DBE2EF */
+  --accent-primary: 213 47% 46%; /* Derived from #3F72AF */
+  --accent-secondary: var(--accent-primary); /* Unifying with the requested 2-color theme */
+  
+  --sidebar-dark: 222 47% 6%; 
+}
+
+@layer base {
+  body {
+    background-color: var(--bg-reference-hex);
+    @apply text-slate-900 antialiased selection:bg-blue-500/10;
+    font-family: 'Outfit', sans-serif;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply border border-slate-300/30 bg-white/80 backdrop-blur-3xl shadow-2xl shadow-slate-300/40;
+  }
+
+  .btn-primary {
+    background-color: var(--accent-primary-hex);
+    @apply relative overflow-hidden rounded-[1.5rem] px-10 py-5 font-black uppercase tracking-[0.2em] text-white shadow-xl shadow-blue-900/20 transition-all duration-300 hover:opacity-90 hover:scale-[1.01] active:scale-95 disabled:opacity-50;
+  }
+
+  .input-field {
+    @apply w-full rounded-[1.5rem] border border-slate-300/60 bg-white/60 p-6 text-slate-900 font-bold placeholder-slate-400 outline-none transition-all duration-300 focus:border-[#3F72AF] focus:ring-4 focus:ring-blue-500/5 shadow-sm;
+  }
+
+  /* INCREASED FONT SIZE: Standardizing labels to 12px (text-xs) from 10px */
+  .label-purple {
+    color: var(--accent-primary-hex);
+    @apply flex items-center gap-3 text-xs font-black uppercase tracking-[0.2em];
+  }
+
+  .dot-purple {
+    background-color: var(--accent-primary-hex);
+    @apply w-2 h-2 rounded-full shadow-[0_0_10px_rgba(63,114,175,0.3)];
+  }
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-thumb {
+  @apply rounded-full bg-slate-400/30 border-4 border-transparent bg-clip-padding;
+}

@@ -17,18 +17,21 @@ export interface ModuleConfig {
   moduleName: string;
   owner: string;
   isMine: boolean;
+  description: string;
   endpoints: EndpointDef[];
 }
 
 export const MODULE_CONFIGS: { [key: string]: ModuleConfig } = {
 
-  // ─── AKSHA's MODULES ───
   agencies: {
     moduleName: 'Agency', owner: 'Aksha', isMine: false,
+    description: 'Master data ownership hierarchy (Insurer level).',
     endpoints: [
       { method: 'POST', path: '/agencies', label: 'Create Agency', params: [], bodyFields: [
         { name: 'name', label: 'Agency Name', type: 'text' },
-        { name: 'details', label: 'Details', type: 'text' }
+        { name: 'contactPersonName', label: 'Contact Person', type: 'text' },
+        { name: 'email', label: 'Email', type: 'text' },
+        { name: 'phone', label: 'Phone', type: 'text' }
       ]},
       { method: 'GET', path: '/agencies', label: 'Get All Agencies', params: [] },
       { method: 'GET', path: '/agencies/{agencyId}', label: 'Get Agency by ID', params: [
@@ -38,9 +41,11 @@ export const MODULE_CONFIGS: { [key: string]: ModuleConfig } = {
         { name: 'agencyId', label: 'Agency ID', type: 'number' }
       ], bodyFields: [
         { name: 'name', label: 'Agency Name', type: 'text' },
-        { name: 'details', label: 'Details', type: 'text' }
+        { name: 'contactPersonName', label: 'Contact Person', type: 'text' },
+        { name: 'email', label: 'Email', type: 'text' },
+        { name: 'phone', label: 'Phone', type: 'text' }
       ]},
-      { method: 'DELETE', path: '/agencies/{agencyId}', label: 'Delete Agency', params: [
+      { method: 'DELETE', path: '/agencies/{agencyId}', label: 'Deactivate Agency', params: [
         { name: 'agencyId', label: 'Agency ID', type: 'number' }
       ]}
     ]
@@ -48,26 +53,31 @@ export const MODULE_CONFIGS: { [key: string]: ModuleConfig } = {
 
   'agency-offices': {
     moduleName: 'Agency Office', owner: 'Aksha', isMine: false,
+    description: 'Branch hierarchy under primary master data.',
     endpoints: [
-      { method: 'POST', path: '/agencies/{agencyId}/offices', label: 'Create Office', params: [
+      { method: 'POST', path: '/agencies/{agencyId}/offices', label: 'Add Office', params: [
         { name: 'agencyId', label: 'Agency ID', type: 'number' }
       ], bodyFields: [
-        { name: 'name', label: 'Office Name', type: 'text' },
-        { name: 'phone', label: 'Phone', type: 'text' }
+        { name: 'officeMail', label: 'Office Email', type: 'text' },
+        { name: 'officeContactPersonName', label: 'Contact Person', type: 'text' },
+        { name: 'officeContactNumber', label: 'Contact Phone', type: 'text' },
+        { name: 'officeAddressId', label: 'Address ID', type: 'number' }
       ]},
-      { method: 'GET', path: '/agencies/{agencyId}/offices', label: 'Get Offices by Agency', params: [
+      { method: 'GET', path: '/agencies/{agencyId}/offices', label: 'List Offices by Agency', params: [
         { name: 'agencyId', label: 'Agency ID', type: 'number' }
       ]},
-      { method: 'GET', path: '/offices/{officeId}', label: 'Get Office by ID', params: [
+      { method: 'GET', path: '/offices/{officeId}', label: 'Get Office Details', params: [
         { name: 'officeId', label: 'Office ID', type: 'number' }
       ]},
       { method: 'PUT', path: '/offices/{officeId}', label: 'Update Office', params: [
         { name: 'officeId', label: 'Office ID', type: 'number' }
       ], bodyFields: [
-        { name: 'name', label: 'Office Name', type: 'text' },
-        { name: 'phone', label: 'Phone', type: 'text' }
+        { name: 'officeMail', label: 'Email', type: 'text' },
+        { name: 'officeContactPersonName', label: 'Contact Person', type: 'text' },
+        { name: 'officeContactNumber', label: 'Phone', type: 'text' },
+        { name: 'officeAddressId', label: 'Address ID', type: 'number' }
       ]},
-      { method: 'DELETE', path: '/offices/{officeId}', label: 'Delete Office', params: [
+      { method: 'DELETE', path: '/offices/{officeId}', label: 'Deactivate Office', params: [
         { name: 'officeId', label: 'Office ID', type: 'number' }
       ]}
     ]
@@ -75,9 +85,10 @@ export const MODULE_CONFIGS: { [key: string]: ModuleConfig } = {
 
   addresses: {
     moduleName: 'Address', owner: 'Aksha', isMine: false,
+    description: 'Shared reference for all physical location data.',
     endpoints: [
       { method: 'POST', path: '/addresses', label: 'Create Address', params: [], bodyFields: [
-        { name: 'street', label: 'Street', type: 'text' },
+        { name: 'address', label: 'Street', type: 'text' },
         { name: 'city', label: 'City', type: 'text' },
         { name: 'state', label: 'State', type: 'text' },
         { name: 'zipCode', label: 'Zip Code', type: 'text' }
@@ -88,31 +99,31 @@ export const MODULE_CONFIGS: { [key: string]: ModuleConfig } = {
     ]
   },
 
-  // ─── NITHISH's MODULES ───
   buses: {
     moduleName: 'Bus', owner: 'Nithish', isMine: false,
+    description: 'Asset management and fleet specification control.',
     endpoints: [
-      { method: 'POST', path: '/offices/{officeId}/buses', label: 'Create Bus', params: [
+      { method: 'POST', path: '/offices/{officeId}/buses', label: 'Register Bus', params: [
         { name: 'officeId', label: 'Office ID', type: 'number' }
       ], bodyFields: [
-        { name: 'registrationNumber', label: 'Registration Number', type: 'text' },
-        { name: 'totalSeats', label: 'Total Seats', type: 'number' },
-        { name: 'busType', label: 'Bus Type', type: 'text' }
+        { name: 'registrationNumber', label: 'Reg Plate', type: 'text' },
+        { name: 'capacity', label: 'Total Seats', type: 'number' },
+        { name: 'type', label: 'Bus Type', type: 'text' }
       ]},
-      { method: 'GET', path: '/offices/{officeId}/buses', label: 'Get Buses by Office', params: [
+      { method: 'GET', path: '/offices/{officeId}/buses', label: 'List Buses by Office', params: [
         { name: 'officeId', label: 'Office ID', type: 'number' }
       ]},
-      { method: 'GET', path: '/buses/{busId}', label: 'Get Bus by ID', params: [
+      { method: 'GET', path: '/buses/{busId}', label: 'Get Bus Details', params: [
         { name: 'busId', label: 'Bus ID', type: 'number' }
       ]},
       { method: 'PUT', path: '/buses/{busId}', label: 'Update Bus', params: [
         { name: 'busId', label: 'Bus ID', type: 'number' }
       ], bodyFields: [
-        { name: 'registrationNumber', label: 'Registration Number', type: 'text' },
-        { name: 'totalSeats', label: 'Total Seats', type: 'number' },
-        { name: 'busType', label: 'Bus Type', type: 'text' }
+        { name: 'registrationNumber', label: 'Plate', type: 'text' },
+        { name: 'capacity', label: 'Seats', type: 'number' },
+        { name: 'type', label: 'Type', type: 'text' }
       ]},
-      { method: 'DELETE', path: '/buses/{busId}', label: 'Delete Bus', params: [
+      { method: 'DELETE', path: '/buses/{busId}', label: 'Retire Bus', params: [
         { name: 'busId', label: 'Bus ID', type: 'number' }
       ]}
     ]
@@ -120,105 +131,83 @@ export const MODULE_CONFIGS: { [key: string]: ModuleConfig } = {
 
   drivers: {
     moduleName: 'Driver', owner: 'Nithish', isMine: false,
+    description: 'Workforce management and profile validations.',
     endpoints: [
-      { method: 'POST', path: '/offices/{officeId}/drivers', label: 'Create Driver', params: [
+      { method: 'POST', path: '/offices/{officeId}/drivers', label: 'Register Driver', params: [
         { name: 'officeId', label: 'Office ID', type: 'number' }
       ], bodyFields: [
-        { name: 'name', label: 'Driver Name', type: 'text' },
-        { name: 'licenseNumber', label: 'License Number', type: 'text' },
-        { name: 'phone', label: 'Phone', type: 'text' }
+        { name: 'name', label: 'Full Name', type: 'text' },
+        { name: 'phone', label: 'Phone', type: 'text' },
+        { name: 'licenseNumber', label: 'License #', type: 'text' },
+        { name: 'addressId', label: 'Address ID', type: 'number' }
       ]},
-      { method: 'GET', path: '/offices/{officeId}/drivers', label: 'Get Drivers by Office', params: [
+      { method: 'GET', path: '/offices/{officeId}/drivers', label: 'List Drivers by Office', params: [
         { name: 'officeId', label: 'Office ID', type: 'number' }
       ]},
-      { method: 'GET', path: '/drivers/{driverId}', label: 'Get Driver by ID', params: [
+      { method: 'GET', path: '/drivers/{driverId}', label: 'Driver Profile', params: [
         { name: 'driverId', label: 'Driver ID', type: 'number' }
       ]},
       { method: 'PUT', path: '/drivers/{driverId}', label: 'Update Driver', params: [
         { name: 'driverId', label: 'Driver ID', type: 'number' }
       ], bodyFields: [
-        { name: 'name', label: 'Driver Name', type: 'text' },
-        { name: 'licenseNumber', label: 'License Number', type: 'text' },
+        { name: 'name', label: 'Name', type: 'text' },
         { name: 'phone', label: 'Phone', type: 'text' }
       ]},
-      { method: 'DELETE', path: '/drivers/{driverId}', label: 'Delete Driver', params: [
+      { method: 'DELETE', path: '/drivers/{driverId}', label: 'Remove Driver', params: [
         { name: 'driverId', label: 'Driver ID', type: 'number' }
       ]}
     ]
   },
 
-  // ─── AJITHA's MODULES ───
   'routes-mgmt': {
     moduleName: 'Route', owner: 'Ajitha', isMine: false,
+    description: 'Operational logic for policy plans and schedules.',
     endpoints: [
       { method: 'POST', path: '/routes', label: 'Create Route', params: [], bodyFields: [
-        { name: 'origin', label: 'Origin City', type: 'text' },
-        { name: 'destination', label: 'Destination City', type: 'text' },
-        { name: 'distance', label: 'Distance (km)', type: 'number' }
+        { name: 'fromCity', label: 'From City', type: 'text' },
+        { name: 'toCity', label: 'To City', type: 'text' },
+        { name: 'breakPoints', label: 'Break Points', type: 'number' },
+        { name: 'duration', label: 'Duration (Hrs)', type: 'number' }
       ]},
       { method: 'GET', path: '/routes', label: 'Get All Routes', params: [] },
-      { method: 'GET', path: '/routes/{routeId}', label: 'Get Route by ID', params: [
+      { method: 'GET', path: '/routes/{routeId}', label: 'Route Details', params: [
         { name: 'routeId', label: 'Route ID', type: 'number' }
       ]},
-      { method: 'PUT', path: '/routes/{routeId}', label: 'Update Route', params: [
+      { method: 'PUT', path: '/routes/{routeId}', label: 'Modify Route', params: [
         { name: 'routeId', label: 'Route ID', type: 'number' }
       ], bodyFields: [
-        { name: 'origin', label: 'Origin City', type: 'text' },
-        { name: 'destination', label: 'Destination City', type: 'text' },
-        { name: 'distance', label: 'Distance (km)', type: 'number' }
+        { name: 'duration', label: 'New Duration', type: 'number' }
       ]},
-      { method: 'DELETE', path: '/routes/{routeId}', label: 'Delete Route', params: [
+      { method: 'DELETE', path: '/routes/{routeId}', label: 'Disable Route', params: [
         { name: 'routeId', label: 'Route ID', type: 'number' }
       ]}
     ]
   },
 
-  customers: {
-    moduleName: 'Customer', owner: 'Ajitha', isMine: false,
-    endpoints: [
-      { method: 'POST', path: '/customers', label: 'Create Customer', params: [], bodyFields: [
-        { name: 'name', label: 'Customer Name', type: 'text' },
-        { name: 'email', label: 'Email', type: 'text' },
-        { name: 'phone', label: 'Phone', type: 'text' }
-      ]},
-      { method: 'GET', path: '/customers/{customerId}', label: 'Get Customer by ID', params: [
-        { name: 'customerId', label: 'Customer ID', type: 'number' }
-      ]},
-      { method: 'PUT', path: '/customers/{customerId}', label: 'Update Customer', params: [
-        { name: 'customerId', label: 'Customer ID', type: 'number' }
-      ], bodyFields: [
-        { name: 'name', label: 'Customer Name', type: 'text' },
-        { name: 'email', label: 'Email', type: 'text' },
-        { name: 'phone', label: 'Phone', type: 'text' }
-      ]},
-      { method: 'GET', path: '/customers', label: 'Get All Customers (Admin)', params: [] }
-    ]
-  },
-
-  // ─── PRIYADHARSHINI's MODULES ───
   trips: {
     moduleName: 'Trip', owner: 'Priyadharshini', isMine: false,
+    description: 'Core operational scheduling and trip search engine.',
     endpoints: [
       { method: 'POST', path: '/trips', label: 'Create Trip', params: [], bodyFields: [
         { name: 'busId', label: 'Bus ID', type: 'number' },
         { name: 'routeId', label: 'Route ID', type: 'number' },
-        { name: 'departureTime', label: 'Departure Time', type: 'text' },
-        { name: 'arrivalTime', label: 'Arrival Time', type: 'text' },
+        { name: 'departureTime', label: 'Departure', type: 'text' },
+        { name: 'arrivalTime', label: 'Arrival', type: 'text' },
         { name: 'fare', label: 'Fare', type: 'number' }
       ]},
-      { method: 'GET', path: '/trips', label: 'Get All Trips', params: [] },
-      { method: 'GET', path: '/trips/{tripId}', label: 'Get Trip by ID', params: [
+      { method: 'GET', path: '/trips', label: 'List All Trips', params: [] },
+      { method: 'GET', path: '/trips/{tripId}', label: 'Trip Details', params: [
         { name: 'tripId', label: 'Trip ID', type: 'number' }
       ]},
       { method: 'GET', path: '/trips/search', label: 'Search Trips', params: [], queryParams: [
         { name: 'fromCity', label: 'From City', type: 'text' },
         { name: 'toCity', label: 'To City', type: 'text' },
-        { name: 'date', label: 'Date (YYYY-MM-DD)', type: 'text' }
+        { name: 'date', label: 'Date', type: 'text' }
       ]},
       { method: 'PUT', path: '/trips/{tripId}', label: 'Update Trip', params: [
         { name: 'tripId', label: 'Trip ID', type: 'number' }
       ], bodyFields: [
-        { name: 'fare', label: 'Fare', type: 'number' }
+        { name: 'fare', label: 'New Fare', type: 'number' }
       ]},
       { method: 'PATCH', path: '/trips/{tripId}/close', label: 'Close Trip', params: [
         { name: 'tripId', label: 'Trip ID', type: 'number' }
@@ -226,51 +215,55 @@ export const MODULE_CONFIGS: { [key: string]: ModuleConfig } = {
     ]
   },
 
-  reviews: {
-    moduleName: 'Review', owner: 'Priyadharshini', isMine: false,
+  customers: {
+    moduleName: 'Customer', owner: 'Ajitha', isMine: false,
+    description: 'Customer lifecycle and profile registry.',
     endpoints: [
-      { method: 'POST', path: '/trips/{tripId}/reviews', label: 'Create Review', params: [
-        { name: 'tripId', label: 'Trip ID', type: 'number' }
-      ], bodyFields: [
-        { name: 'customerId', label: 'Customer ID', type: 'number' },
-        { name: 'rating', label: 'Rating (1-5)', type: 'number' },
-        { name: 'comment', label: 'Comment', type: 'text' }
+      { method: 'POST', path: '/customers', label: 'Register Customer', params: [], bodyFields: [
+        { name: 'name', label: 'Name', type: 'text' },
+        { name: 'email', label: 'Email', type: 'text' },
+        { name: 'phone', label: 'Phone', type: 'text' },
+        { name: 'addressId', label: 'Address ID', type: 'number' }
       ]},
-      { method: 'GET', path: '/trips/{tripId}/reviews', label: 'Get Reviews by Trip', params: [
-        { name: 'tripId', label: 'Trip ID', type: 'number' }
-      ]},
-      { method: 'GET', path: '/customers/{customerId}/reviews', label: 'Get Reviews by Customer', params: [
+      { method: 'GET', path: '/customers/{customerId}', label: 'Customer Profile', params: [
         { name: 'customerId', label: 'Customer ID', type: 'number' }
       ]},
-      { method: 'DELETE', path: '/reviews/{reviewId}', label: 'Delete Review', params: [
-        { name: 'reviewId', label: 'Review ID', type: 'number' }
-      ]}
+      { method: 'PUT', path: '/customers/{customerId}', label: 'Update Customer', params: [
+        { name: 'customerId', label: 'Customer ID', type: 'number' }
+      ], bodyFields: [
+        { name: 'name', label: 'New Name', type: 'text' },
+        { name: 'phone', label: 'New Phone', type: 'text' }
+      ]},
+      { method: 'GET', path: '/customers', label: 'Customer List (Admin)', params: [] }
     ]
   },
 
-  // ─── VIGNESH's MODULES ───
   bookings: {
     moduleName: 'Booking', owner: 'Vignesh', isMine: true,
+    description: 'Transactional flow for seat reservation and inventory.',
     endpoints: [
-      { method: 'POST', path: '/trips/{tripId}/bookings', label: 'Book a Seat', params: [
+      { method: 'POST', path: '/trips/{tripId}/bookings', label: 'Book Seat', params: [
         { name: 'tripId', label: 'Trip ID', type: 'number' }
       ], bodyFields: [
         { name: 'customerId', label: 'Customer ID', type: 'number' },
-        { name: 'seatNumber', label: 'Seat Number', type: 'text' }
+        { name: 'seatNumber', label: 'Seat #', type: 'number' }
       ]},
-      { method: 'GET', path: '/customers/{customerId}/bookings', label: 'Get Customer Bookings', params: [
+      { method: 'GET', path: '/customers/{customerId}/bookings', label: 'Customer Bookings', params: [
         { name: 'customerId', label: 'Customer ID', type: 'number' }
       ]},
-      { method: 'GET', path: '/bookings/{bookingId}', label: 'Get Booking by ID', params: [
+      { method: 'GET', path: '/bookings/{bookingId}', label: 'Booking Details', params: [
         { name: 'bookingId', label: 'Booking ID', type: 'number' }
       ]},
       { method: 'PATCH', path: '/bookings/{bookingId}/cancel', label: 'Cancel Booking', params: [
         { name: 'bookingId', label: 'Booking ID', type: 'number' }
       ]},
-      { method: 'GET', path: '/trips/{tripId}/seats/available', label: 'Get Available Seats', params: [
+      { method: 'GET', path: '/trips/{tripId}/seats', label: 'Seat Availability', params: [
         { name: 'tripId', label: 'Trip ID', type: 'number' }
       ]},
-      { method: 'GET', path: '/trips/{tripId}/seats/booked', label: 'Get Booked Seats', params: [
+      { method: 'GET', path: '/trips/{tripId}/seats/booked', label: 'Booked Seats', params: [
+        { name: 'tripId', label: 'Trip ID', type: 'number' }
+      ]},
+      { method: 'GET', path: '/trips/{tripId}/seats/available', label: 'Available Seats', params: [
         { name: 'tripId', label: 'Trip ID', type: 'number' }
       ]}
     ]
@@ -278,25 +271,49 @@ export const MODULE_CONFIGS: { [key: string]: ModuleConfig } = {
 
   payments: {
     moduleName: 'Payment', owner: 'Vignesh', isMine: true,
+    description: 'Financial transactions and reconciliation history.',
     endpoints: [
-      { method: 'POST', path: '/payments', label: 'Create Payment', params: [], bodyFields: [
+      { method: 'POST', path: '/payments', label: 'Make Payment', params: [], bodyFields: [
         { name: 'bookingId', label: 'Booking ID', type: 'number' },
-        { name: 'amount', label: 'Amount', type: 'number' },
-        { name: 'paymentMethod', label: 'Payment Method (CARD/CASH/UPI)', type: 'text' }
+        { name: 'customerId', label: 'Customer ID', type: 'number' },
+        { name: 'amount', label: 'Amount', type: 'number' }
       ]},
-      { method: 'GET', path: '/payments/{paymentId}', label: 'Get Payment by ID', params: [
+      { method: 'GET', path: '/payments/{paymentId}', label: 'Payment Details', params: [
         { name: 'paymentId', label: 'Payment ID', type: 'number' }
       ]},
-      { method: 'GET', path: '/customers/{customerId}/payments', label: 'Get Customer Payments', params: [
+      { method: 'GET', path: '/customers/{customerId}/payments', label: 'Payment History', params: [
         { name: 'customerId', label: 'Customer ID', type: 'number' }
       ]},
-      { method: 'GET', path: '/bookings/{bookingId}/payment', label: 'Get Booking Payment', params: [
+      { method: 'GET', path: '/bookings/{bookingId}/payment', label: 'Booking Payment Info', params: [
         { name: 'bookingId', label: 'Booking ID', type: 'number' }
       ]},
       { method: 'PATCH', path: '/payments/{paymentId}/status', label: 'Update Payment Status', params: [
         { name: 'paymentId', label: 'Payment ID', type: 'number' }
       ], bodyFields: [
-        { name: 'status', label: 'Status (PAID/REFUNDED/PENDING)', type: 'text' }
+        { name: 'paymentStatus', label: 'New Status', type: 'text' }
+      ]}
+    ]
+  },
+
+  reviews: {
+    moduleName: 'Review', owner: 'Priyadharshini', isMine: false,
+    description: 'Feedback loop for service quality and trip evaluation.',
+    endpoints: [
+      { method: 'POST', path: '/trips/{tripId}/reviews', label: 'Submit Review', params: [
+        { name: 'tripId', label: 'Trip ID', type: 'number' }
+      ], bodyFields: [
+        { name: 'customerId', label: 'Customer ID', type: 'number' },
+        { name: 'rating', label: 'Rating (1-5)', type: 'number' },
+        { name: 'comment', label: 'Comment', type: 'text' }
+      ]},
+      { method: 'GET', path: '/trips/{tripId}/reviews', label: 'Trip Reviews', params: [
+        { name: 'tripId', label: 'Trip ID', type: 'number' }
+      ]},
+      { method: 'GET', path: '/customers/{customerId}/reviews', label: 'Customer Reviews', params: [
+        { name: 'customerId', label: 'Customer ID', type: 'number' }
+      ]},
+      { method: 'DELETE', path: '/reviews/{reviewId}', label: 'Remove Review', params: [
+        { name: 'reviewId', label: 'Review ID', type: 'number' }
       ]}
     ]
   }

@@ -1,95 +1,138 @@
-<!-- Top Navbar -->
-<mat-toolbar color="primary" class="navbar shadow-sm">
-  <span>BusTicket System</span>
-  <span class="spacer"></span>
-  <span class="college-text">Panimalar Engineering College</span>
-</mat-toolbar>
+<div class="min-h-screen bg-[hsl(var(--bg-reference))] text-slate-900 selection:bg-blue-500/10 selection:text-blue-600 relative overflow-y-auto">
+  
+  <!-- Subtle Header Decoration -->
+  <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 shadow-xl opacity-80"></div>
 
-<div class="landing-container">
-  <!-- Hero Section -->
-  <section class="hero-section text-center">
-    <div class="badge-tag">BE CSE · Group Project · 2026</div>
-    <h1 class="mat-headline-1 mt-3">Bus Ticket Booking System</h1>
-    <h3 class="mat-headline-4 text-muted">Spring Boot · Angular 21 · MySQL</h3>
-  </section>
-
-  <div class="main-content-split">
+  <!-- Content Area -->
+  <div class="max-w-7xl mx-auto px-8 pt-20 pb-24 relative z-10 flex flex-col items-center">
     
-    <!-- Left Col: Content & Grid -->
-    <div class="content-panel mt-4">
-      
-      <div class="modules-grid">
-        @for (mod of modules; track mod.name) {
-          <mat-card [ngClass]="{'mine-card': mod.isMine}">
-            <mat-card-header>
-              <mat-card-title>{{ mod.name }}</mat-card-title>
-              <mat-card-subtitle>{{ mod.owner }}</mat-card-subtitle>
-            </mat-card-header>
-            @if (mod.isMine) {
-              <mat-card-content>
-                <span class="mine-badge mt-2 block">★ My module</span>
-              </mat-card-content>
-            }
-          </mat-card>
-        }
+    <!-- Unified Lumina Navbar -->
+    <nav class="w-full flex items-center justify-between mb-24">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-[1.2rem] bg-blue-600 flex items-center justify-center shadow-2xl shadow-blue-500/20">
+          <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 21v-2a1 1 0 00-1-1H8a1 1 0 00-1 1v2m10-4H7a2 2 0 01-2-2V5a2 2 0 012-2h10a2 2 0 012 2v10a2 2 0 01-2 2zM7 13h10M9 17h.01M15 17h.01" />
+          </svg>
+        </div>
+        <div class="flex flex-col">
+          <span class="text-2xl font-black tracking-tighter text-slate-900 leading-tight">BusTicketBookingTool</span>
+          <span class="text-[10px] font-black text-blue-500 uppercase tracking-widest leading-none">Enterprise Infrastructure</span>
+        </div>
       </div>
-
-      <!-- Team Row -->
-      <h2 class="mat-headline-5 mt-6 mb-4">Development Team</h2>
-      <div class="team-grid">
-        @for (member of team; track member.name) {
-          <mat-card [ngClass]="{'mine-card': member.isMine}">
-            <mat-card-header>
-              <mat-card-title>{{ member.name }}</mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-              <p>{{ member.modules }}</p>
-            </mat-card-content>
-          </mat-card>
-        }
+      <div class="hidden md:flex flex-col items-end">
+        <span class="text-xs font-black text-blue-600 uppercase tracking-[0.2em] mt-1">Lumina Precise</span>
       </div>
+    </nav>
 
+    <!-- Header Section (Dashboard Parity) -->
+    <header class="text-center mb-20 animate-slide-up">
+      <div class="flex items-center justify-center gap-3 mb-6">
+        <div class="h-1 w-10 bg-blue-600 rounded-full"></div>
+        <span class="text-xs font-black text-blue-600 uppercase tracking-widest">Authentication Terminal</span>
+      </div>
+      <h1 class="text-7xl lg:text-9xl font-black tracking-tighter text-slate-900 leading-none">
+        Portal <span class="text-slate-300">Access.</span>
+      </h1>
+      <p class="text-slate-500 mt-10 text-xl max-w-xl leading-relaxed mx-auto font-medium">
+        Initialize your management session to oversee fleet operations, operational logic, and transactional flows.
+      </p>
+    </header>
+
+    <!-- Landing / Login Module (Dashboard Card Parity) -->
+    <div class="w-full max-w-xl animate-slide-up" style="animation-delay: 150ms">
+      <div class="glass-card glass-card-hover p-12 md:p-16 rounded-[4.5rem] shadow-2xl border-slate-200/50 bg-white/90 relative group">
+        
+        <!-- Hover Glow -->
+        <div class="absolute -inset-1 bg-gradient-to-r from-blue-500/20 to-indigo-500/20 rounded-[4.6rem] blur opacity-0 group-hover:opacity-100 transition-opacity"></div>
+
+        <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="relative z-10 space-y-10">
+          
+          <!-- Controller Toggle -->
+          <div class="flex p-2 bg-slate-50 rounded-[2.5rem] border border-slate-200/60 shadow-inner">
+            <button 
+              type="button"
+              (click)="loginForm.patchValue({roleType: 'admin'})"
+              [class]="(loginForm.get('roleType')?.value === 'admin' ? 'bg-white shadow-2xl text-blue-600 border border-slate-100' : 'text-slate-400 hover:text-slate-600') + ' flex-1 py-4 text-[10px] font-black uppercase tracking-widest rounded-[2rem] transition-all duration-500'"
+            >Admin Access</button>
+            <button 
+              type="button"
+              (click)="loginForm.patchValue({roleType: 'customer'})"
+              [class]="(loginForm.get('roleType')?.value === 'customer' ? 'bg-white shadow-2xl text-blue-600 border border-slate-100' : 'text-slate-400 hover:text-slate-600') + ' flex-1 py-4 text-[10px] font-black uppercase tracking-widest rounded-[2rem] transition-all duration-500'"
+            >User Gateway</button>
+          </div>
+
+          <!-- Interaction Fields -->
+          <div class="space-y-8">
+            <div class="space-y-3">
+              <label class="label-purple ml-2">
+                <div class="dot-purple"></div>
+                System Identity
+              </label>
+              <input 
+                type="text" 
+                formControlName="username" 
+                placeholder="User identifier"
+                class="input-field"
+              >
+            </div>
+
+            <div class="space-y-3">
+              <label class="label-purple ml-2">
+                <div class="dot-purple"></div>
+                Security Protocol
+              </label>
+              <input 
+                type="password" 
+                formControlName="password" 
+                placeholder="••••••••"
+                class="input-field"
+              >
+            </div>
+          </div>
+
+          @if (loginError()) {
+            <div class="flex items-center gap-4 p-6 rounded-[2.5rem] bg-rose-50 border border-rose-100 text-rose-600 text-[11px] font-black uppercase tracking-widest animate-shake">
+              <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+              <span>Handshake Denied · Validate Credentials</span>
+            </div>
+          }
+
+          <button 
+            type="submit" 
+            [disabled]="loginForm.invalid"
+            class="btn-primary w-full py-7 text-base tracking-[0.4em]"
+          >
+            Execute Handshake
+          </button>
+          
+        </form>
+
+        <div class="mt-16 pt-10 border-t border-slate-100 text-center relative z-10">
+          <span class="text-[11px] font-black text-slate-300 uppercase tracking-[0.3em]">SECURE COMMS HANDLER · BUILD 24.1</span>
+        </div>
+      </div>
     </div>
 
-    <!-- Right Col: Login Form -->
-    <div class="login-panel">
-      <mat-card class="login-card elevation-z6">
-        <mat-card-header class="mb-4">
-          <mat-card-title>Authentication</mat-card-title>
-          <mat-card-subtitle>Sign in to access your modules</mat-card-subtitle>
-        </mat-card-header>
-
-        <mat-card-content>
-          <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="flex-col">
-            
-            <mat-button-toggle-group formControlName="roleType" class="w-100 mb-4 role-toggle">
-              <mat-button-toggle value="admin" class="w-50">Admin</mat-button-toggle>
-              <mat-button-toggle value="customer" class="w-50">Customer</mat-button-toggle>
-            </mat-button-toggle-group>
-
-            <mat-form-field appearance="outline" class="w-100 mb-2">
-              <mat-label>Username</mat-label>
-              <input matInput formControlName="username" type="text" autocomplete="off">
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="w-100 mb-2">
-              <mat-label>Password</mat-label>
-              <input matInput formControlName="password" type="password">
-            </mat-form-field>
-
-            @if (loginError()) {
-              <div class="error-msg my-3">
-                <mat-icon color="warn">error</mat-icon>
-                <span>{{ loginError() }}</span>
-              </div>
-            }
-
-            <button mat-flat-button color="primary" class="w-100 py-2 mt-2" type="submit" [disabled]="loginForm.invalid">Sign In</button>
-          
-          </form>
-        </mat-card-content>
-      </mat-card>
+    <!-- Features Overview -->
+    <div class="mt-32 grid grid-cols-1 md:grid-cols-3 gap-10 w-full max-w-6xl animate-slide-up" style="animation-delay: 300ms">
+      <div class="text-center p-10">
+        <h4 class="text-xl font-black text-slate-900 mb-2 uppercase tracking-tighter">Master Data</h4>
+        <p class="text-sm text-slate-400 font-medium">Agency & branch hierarchy ownership.</p>
+      </div>
+      <div class="text-center p-10 border-x border-slate-200/50">
+        <h4 class="text-xl font-black text-slate-900 mb-2 uppercase tracking-tighter">Asset Flow</h4>
+        <p class="text-sm text-slate-400 font-medium">Real-time bus & driver workforce control.</p>
+      </div>
+      <div class="text-center p-10">
+        <h4 class="text-xl font-black text-slate-900 mb-2 uppercase tracking-tighter">Financials</h4>
+        <p class="text-sm text-slate-400 font-medium">Bespoke payment gateway reconciliation.</p>
+      </div>
     </div>
 
   </div>
+
+  <footer class="max-w-7xl mx-auto px-8 py-20 border-t border-slate-200/50 text-center flex flex-col items-center gap-6 text-slate-300">
+    <span class="text-xs font-black uppercase tracking-[0.4em]">BusTicketBookingTool</span>
+    <span class="text-[10px] font-bold">Encrypted via TLS 1.3 · Lumina Precise Design Language</span>
+  </footer>
 </div>

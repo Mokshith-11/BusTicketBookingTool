@@ -1,89 +1,104 @@
-<div class="h-screen flex bg-gray-100">
-
-  <!-- Left Sidebar (Team Members - Clickable) -->
-  <div class="w-64 bg-gray-800 text-white flex flex-col shadow-lg z-10">
-    <div class="p-6 bg-gray-900 border-b border-gray-700">
-      <h2 class="text-xl font-bold tracking-wider uppercase text-center">Login</h2>
+<div class="h-screen bg-[hsl(var(--bg-reference))] flex overflow-hidden">
+  
+  <!-- Lumina Dark Sidebar (High Contrast Split) -->
+  <aside class="w-80 bg-[hsl(var(--sidebar-dark))] flex flex-col p-8 z-20">
+    <div class="mb-12">
+      <div class="w-10 h-10 rounded-xl bg-[hsl(var(--accent-primary))] flex items-center justify-center shadow-2xl shadow-blue-900/20 mb-4">
+        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 21v-2a1 1 0 00-1-1H8a1 1 0 00-1 1v2m10-4H7a2 2 0 01-2-2V5a2 2 0 012-2h10a2 2 0 012 2v10a2 2 0 01-2 2zM7 13h10M9 17h.01M15 17h.01" />
+        </svg>
+      </div>
+      <h2 class="text-xl font-black tracking-tighter text-white leading-tight">BusTicketBookingTool</h2>
+      <span class="text-xs font-black text-[#DBE2EF] uppercase tracking-widest leading-none mt-1">Management System</span>
     </div>
-    
-    <div class="flex-1 overflow-y-auto pt-2">
+
+    <div class="flex-1 space-y-3 overflow-y-auto scroll-custom pr-2">
       @for (member of team; track member.key) {
         <button 
           (click)="selectMember(member)"
-          class="w-full text-left px-6 py-4 font-bold border-l-4 transition-colors hover:bg-gray-700"
+          class="w-full text-left p-5 rounded-2xl transition-all duration-300 flex flex-col group"
           [ngClass]="{
-            'bg-gray-700 border-blue-500 text-blue-300': selectedMember()?.key === member.key,
-            'border-transparent text-gray-300': selectedMember()?.key !== member.key
+            'bg-white text-slate-900 shadow-2xl': selectedMember()?.key === member.key,
+            'text-slate-400 hover:text-slate-100 hover:bg-white/5': selectedMember()?.key !== member.key
           }">
-          <div class="flex flex-col">
-            <span>{{ member.name }}</span>
-            <span class="text-xs font-normal text-gray-500 mt-1">{{ member.modules }}</span>
-            @if (selectedMember()?.key === member.key) {
-              <span class="text-xs text-yellow-400 mt-1">Password: {{ member.password }}</span>
-            }
-          </div>
+          <span class="text-base font-black tracking-tight">{{ member.name }}</span>
+          @if (selectedMember()?.key === member.key) {
+             <div class="mt-3 pt-3 border-t border-slate-100 flex flex-col gap-1">
+                <span class="text-[9px] font-black uppercase tracking-widest text-slate-400">Security Key</span>
+                <span class="text-xs font-mono font-bold">{{ member.password }}</span>
+             </div>
+          }
         </button>
       }
     </div>
-  </div>
 
-  <!-- Right Panel -->
-  <div class="flex-1 flex flex-col bg-gray-50">
+    <div class="mt-8 pt-6 border-t border-white/5 flex flex-col gap-1">
+        <span class="text-[9px] font-black text-slate-500 uppercase tracking-widest">&copy; BusTicketBookingTool</span>
+    </div>
+  </aside>
+
+  <!-- Main Pure Interface -->
+  <main class="flex-1 flex flex-col items-center justify-center p-10 relative">
     
-    <!-- Header -->
-    <div class="bg-blue-600 text-white p-8 shadow-md">
-      <h1 class="text-3xl font-extrabold tracking-tight mb-2">Bus Ticket Booking System</h1>
-      <p class="text-blue-100 font-medium">Spring Boot · Angular 21 · PostgreSQL</p>
+    <div class="w-full max-w-lg mb-10 text-center">
+       <span class="text-2xl font-bold text-[#3F72AF] uppercase tracking-[0.2em]">Authentication Terminal</span>
     </div>
 
-    <!-- Login Form -->
-    <div class="flex-1 flex items-center justify-center p-6">
-      
-      <div class="w-full max-w-md bg-white border border-gray-200 shadow-xl rounded-lg p-8">
+    <div class="w-full max-w-lg">
+      <div class="glass-card p-12 md:p-14 rounded-[3.5rem] bg-white border-none shadow-2xl shadow-slate-200">
         
-        <h3 class="text-2xl font-bold text-gray-800 mb-6 text-center border-b pb-4">Portal Access</h3>
-
-        <!-- No member selected -->
         @if (!selectedMember()) {
-          <div class="text-center text-gray-500 my-8 py-8 border-2 border-dashed border-gray-200 rounded-lg">
-            <p>Please select your name from the sidebar<br>to access your assigned modules.</p>
+          <div class="py-16 flex flex-col items-center justify-center text-center opacity-40">
+             <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-8">
+                <svg class="w-8 h-8 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+             </div>
+             <p class="text-sm font-black uppercase tracking-widest text-slate-400">Initialize Identity</p>
           </div>
         }
 
-        <!-- Login form when member is selected -->
         @if (selectedMember()) {
-          <div>
-            <div class="bg-blue-50 border border-blue-200 rounded-md px-4 py-3 text-sm text-blue-700 mb-4">
-              Logging in as <strong>{{ selectedMember()!.name }}</strong> — modules: {{ selectedMember()!.modules }}
+          <div class="space-y-10 animate-slide-up">
+            
+            <div class="flex items-center gap-5 p-5 bg-slate-50 rounded-[1.5rem]">
+               <div class="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center text-white font-black text-lg">
+                  {{ selectedMember()!.name[0] }}
+               </div>
+               <div class="flex flex-col">
+                  <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Selected Identity</span>
+                  <span class="text-lg font-black text-slate-900 leading-tight">{{ selectedMember()!.name }}</span>
+               </div>
             </div>
 
-            @if (loginError()) {
-              <div class="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm mb-4">
-                Invalid password for {{ selectedMember()!.name }}.
-              </div>
-            }
+            <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="space-y-8">
+              <div class="space-y-6">
+                <div class="space-y-2">
+                  <label class="label-purple ml-1">
+                    <div class="dot-purple"></div>
+                    Identifier
+                  </label>
+                  <input type="text" formControlName="username" class="input-field opacity-60">
+                </div>
 
-            <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="space-y-5">
-              <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-1">Username</label>
-                <input type="text" formControlName="username" class="w-full px-4 py-2 rounded border border-gray-300 bg-gray-100 text-gray-500 cursor-not-allowed outline-none font-bold" />
+                <div class="space-y-2">
+                  <label class="label-purple ml-1">
+                    <div class="dot-purple"></div>
+                    Security Key
+                  </label>
+                  <input type="password" formControlName="password" placeholder="••••" class="input-field">
+                </div>
               </div>
 
-              <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-1">Password</label>
-                <input type="password" formControlName="password" class="w-full px-4 py-2 rounded border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none transition" />
-              </div>
-              
-              <button [disabled]="loginForm.invalid" type="submit" class="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold py-3 px-4 rounded shadow transition-colors mt-6">
-                LOGIN
+              <button type="submit" [disabled]="loginForm.invalid" class="btn-primary w-full py-6 text-sm">
+                Confirm Identity
               </button>
             </form>
           </div>
         }
-        
-      </div>
 
+      </div>
     </div>
-  </div>
+  </main>
 
 </div>
