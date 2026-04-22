@@ -46,4 +46,20 @@ public class TripRequest {
     @NotNull(message = "Trip date is required")
     @FutureOrPresent(message = "Trip date cannot be in the past")
     private LocalDate tripDate;
+
+    @AssertTrue(message = "Arrival time must be after departure time")
+    public boolean isArrivalAfterDeparture() {
+        if (departureTime == null || arrivalTime == null) {
+            return true;
+        }
+        return arrivalTime.isAfter(departureTime);
+    }
+
+    @AssertTrue(message = "Trip date must match departure date")
+    public boolean isTripDateSameAsDepartureDate() {
+        if (departureTime == null || tripDate == null) {
+            return true;
+        }
+        return tripDate.equals(departureTime.toLocalDate());
+    }
 }

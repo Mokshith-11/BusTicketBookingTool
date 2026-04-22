@@ -237,6 +237,14 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/customers/**").hasRole("AJITHA")
                         .requestMatchers("/api/v1/routes/**").hasRole("AJITHA")
 
+                        // PRIYADHARSHINI: Trip + Review
+                        // Seat endpoints need to be accessible by VIGNESH (to book) and PRIYA (to manage)
+                        .requestMatchers(
+                                "/api/v1/trips/*/seats",
+                                "/api/v1/trips/*/seats/available",
+                                "/api/v1/trips/*/seats/booked"
+                        ).hasAnyRole("VIGNESH", "PRIYA")
+
                         // ── PRIYADHARSHINI: Trip + Review ────────────────────────────
                         // /api/v1/trips/**          covers: POST, GET, GET/{id}, GET/search,
                         //                                   PUT/{id}, PATCH/{id}/close,

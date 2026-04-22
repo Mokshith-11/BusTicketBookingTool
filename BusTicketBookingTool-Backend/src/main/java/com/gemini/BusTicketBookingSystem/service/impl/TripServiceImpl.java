@@ -73,6 +73,7 @@ import java.util.stream.Collectors;
             trip.setAvailableSeats(bus.getCapacity()); // Initialize with full capacity
             trip.setFare(requestDTO.getFare());
             trip.setTripDate(requestDTO.getTripDate().atStartOfDay());
+            trip.setClosed(false);
 
             Trip savedTrip = tripRepository.save(trip);
             return convertToResponseDTO(savedTrip);
@@ -133,6 +134,7 @@ import java.util.stream.Collectors;
                     .orElseThrow(() -> new ResourceNotFoundException("Trip", "tripId", tripId));
 
             trip.setAvailableSeats(0);
+            trip.setClosed(true);
             tripRepository.save(trip);
         }
 
@@ -149,6 +151,7 @@ import java.util.stream.Collectors;
             dto.setAvailableSeats(trip.getAvailableSeats());
             dto.setFare(trip.getFare());
             dto.setTripDate(trip.getTripDate());
+            dto.setClosed(Boolean.TRUE.equals(trip.getClosed()));
             return dto;
         }
     }

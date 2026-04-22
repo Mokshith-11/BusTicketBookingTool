@@ -17,7 +17,6 @@ public class DriverRequest {
     @NotBlank(message = "Phone is required")
     private String phone;
 
-    @NotNull(message = "Office ID is required")
     private Integer officeId;
 
     @NotNull(message = "Address ID is required")

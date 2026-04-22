@@ -1,0 +1,183 @@
+@if (config()) {
+  <div class="min-h-screen bg-[hsl(var(--bg-reference))] text-slate-900 pb-20">
+    
+    <!-- Minimal Lumina Navbar -->
+    <nav class="sticky top-0 z-50 bg-white/60 backdrop-blur-3xl border-b border-slate-200/50 px-8 py-5">
+      <div class="max-w-[1600px] mx-auto flex items-center">
+        <button (click)="back()" class="group flex items-center gap-3 text-slate-400 hover:text-blue-600 transition-all font-black text-xs uppercase tracking-widest mr-12">
+          <svg class="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          Back
+        </button>
+        
+        <div class="h-8 w-px bg-slate-200/60 mr-12 hidden md:block"></div>
+
+        <div class="flex flex-col">
+          <h1 class="text-3xl font-black tracking-tighter text-slate-950 leading-none">{{ config()!.moduleName }} Console</h1>
+          <div class="flex items-center gap-3 mt-1.5 ">
+            <span class="text-xs font-black text-[#3F72AF] uppercase tracking-widest leading-none">BusTicketBookingTool</span>
+            <div class="w-1 h-1 rounded-full bg-slate-300"></div>
+            <span class="text-xs font-bold text-slate-500">{{ config()!.description }}</span>
+          </div>
+        </div>
+
+        <div class="ml-auto flex items-center gap-6">
+           <div class="hidden md:flex flex-col items-end">
+              <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">Security context</span>
+              <span class="text-sm font-black text-slate-800 capitalize mt-1">{{ config()!.owner }}</span>
+           </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="max-w-[1600px] mx-auto p-8 grid grid-cols-1 lg:grid-cols-12 gap-10">
+
+      <!-- Left Sidebar: Operations Selector -->
+      <div class="lg:col-span-3 flex flex-col space-y-6">
+        <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest px-2">API Methods ({{ config()!.endpoints.length }})</h3>
+        
+        <div class="space-y-3">
+          @for (ep of config()!.endpoints; track ep.path + ep.method) {
+            <button
+              (click)="selectEndpoint(ep)"
+              class="w-full text-left p-6 glass-card rounded-3xl border-slate-200/40 bg-white/40 hover:bg-white hover:border-blue-300 transition-all flex items-center gap-5 group"
+              [ngClass]="{
+                'bg-white border-blue-500 shadow-2xl shadow-blue-500/10 ring-4 ring-blue-500/5': activeEndpoint() === ep
+              }">
+              
+              <div class="px-3 py-1 rounded-lg text-[9px] font-black text-white"
+                [ngClass]="getMethodColor(ep.method)">
+                {{ ep.method }}
+              </div>
+
+              <div class="flex flex-col overflow-hidden">
+                <span class="text-base font-black text-slate-800 group-hover:text-blue-600 truncate tracking-tight">{{ ep.label }}</span>
+                <span class="text-xs font-bold text-slate-400 truncate uppercase mt-1">{{ ep.path }}</span>
+              </div>
+            </button>
+          }
+        </div>
+      </div>
+
+      <!-- Execution Grid -->
+      <div class="lg:col-span-9 grid grid-cols-1 xl:grid-cols-2 gap-10">
+
+        @if (!activeEndpoint()) {
+          <div class="xl:col-span-2 flex flex-col items-center justify-center p-32 glass-card rounded-[4rem] border-dashed border-slate-200 bg-white/30 text-slate-300">
+             <p class="text-xs font-black uppercase tracking-widest">Select Operation</p>
+          </div>
+        }
+
+        @if (activeEndpoint()) {
+          <!-- Request View -->
+          <div class="space-y-6 animate-slide-up">
+            
+            <div class="glass-card p-10 rounded-[3rem] bg-white border-none shadow-xl shadow-slate-200/40">
+              <div class="flex items-center gap-3 mb-6">
+                <div class="px-3.5 py-1 rounded-lg text-[10px] font-black text-white"
+                  [ngClass]="getMethodColor(activeEndpoint()!.method)">
+                  {{ activeEndpoint()!.method }}
+                </div>
+                <span class="text-xs font-mono font-black text-slate-400 bg-slate-50 px-3 py-1 rounded-full uppercase tracking-widest">{{ activeEndpoint()!.path }}</span>
+              </div>
+              <h2 class="text-4xl font-black tracking-tighter text-slate-950">{{ activeEndpoint()!.label }}</h2>
+            </div>
+
+            <!-- Parameters (Exact Match for Screenshot 2) -->
+            <div class="space-y-6">
+              
+              <!-- Body Section -->
+              @if (activeEndpoint()!.bodyFields && activeEndpoint()!.bodyFields!.length > 0) {
+                <div class="glass-card p-10 rounded-[3rem] bg-white border-none">
+                  <div class="label-purple mb-8">
+                    <div class="dot-purple"></div>
+                    Request Content
+                  </div>
+                  <div class="space-y-6">
+                    @for (f of activeEndpoint()!.bodyFields; track f.name) {
+                      <div class="space-y-2.5">
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{{ f.label }}</label>
+                        <input [type]="f.type" [(ngModel)]="bodyValues[f.name]" class="input-field" [placeholder]="'Enter ' + f.label">
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+
+              <!-- Query Params Section -->
+              @if (activeEndpoint()!.queryParams && activeEndpoint()!.queryParams!.length > 0) {
+                <div class="glass-card p-10 rounded-[3rem] bg-white border-none">
+                  <div class="label-purple mb-8">
+                    <div class="dot-purple"></div>
+                    Query Constraints
+                  </div>
+                  <div class="space-y-6">
+                    @for (q of activeEndpoint()!.queryParams; track q.name) {
+                      <div class="space-y-2.5">
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{{ q.label }}</label>
+                        <input [type]="q.type" [(ngModel)]="queryValues[q.name]" class="input-field" [placeholder]="'Enter ' + q.label">
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+
+              <!-- Path Section -->
+              @if (activeEndpoint()!.params.length > 0) {
+                <div class="glass-card p-10 rounded-[3rem] bg-white border-none">
+                  <div class="label-purple mb-8">
+                    <div class="dot-purple"></div>
+                    Identifier
+                  </div>
+                  <div class="space-y-6">
+                    @for (p of activeEndpoint()!.params; track p.name) {
+                      <div class="space-y-2.5">
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{{ p.label }}</label>
+                        <input [type]="p.type" [(ngModel)]="paramValues[p.name]" class="input-field" placeholder="ID Segment">
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+
+            <button (click)="submit()"
+              class="btn-primary w-full py-6 text-sm lowercase tracking-[0.4em]"
+              [disabled]="loading()">
+              {{ loading() ? 'processing...' : 'submit operation' }}
+            </button>
+          </div>
+
+          <!-- Response View -->
+          <div class="flex flex-col h-full space-y-6 animate-slide-up" style="animation-delay: 100ms">
+             <div class="flex items-center justify-between px-3">
+               <div class="label-purple opacity-40">
+                 <div class="w-1.5 h-1.5 rounded-full bg-slate-300"></div>
+                 Response
+               </div>
+               @if (response()) {
+                <span class="px-4 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest"
+                  [ngClass]="responseStatus() === 'success' ? 'bg-emerald-500 text-white shadow-xl shadow-emerald-500/20' : 'bg-rose-500 text-white shadow-xl shadow-rose-500/20'">
+                  {{ responseStatus() === 'success' ? 'success' : 'failure' }}
+                </span>
+               }
+             </div>
+
+             <div class="flex-1 bg-[#0f172a] rounded-[3.5rem] shadow-2xl p-10 font-mono text-sm leading-relaxed flex flex-col group relative border-[12px] border-white overflow-hidden">
+               @if (!response()) {
+                 <div class="flex-1 flex flex-col items-center justify-center text-slate-600 opacity-20">
+                    <span class="text-xs font-black uppercase tracking-[0.4em]">STANDBY</span>
+                 </div>
+               } @else {
+                 <div class="flex-1 overflow-y-auto scroll-custom pr-4">
+                    <pre class="text-blue-100 selection:bg-blue-500/20">{{ response() }}</pre>
+                 </div>
+               }
+             </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+}

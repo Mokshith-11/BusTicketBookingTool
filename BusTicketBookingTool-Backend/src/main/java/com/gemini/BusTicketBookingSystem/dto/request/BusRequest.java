@@ -10,7 +10,6 @@ import lombok.*;
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class BusRequest {
 
-    @NotNull(message = "Office ID is required")
     private Integer officeId;
 
     @NotBlank(message = "Registration number is required")
