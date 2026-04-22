@@ -299,7 +299,7 @@ export const MODULE_CONFIGS: { [key: string]: ModuleConfig } = {
         { name: 'bookingId', label: 'Booking ID', type: 'number' },
         { name: 'customerId', label: 'Customer ID', type: 'number' },
         { name: 'amount', label: 'Amount', type: 'number' },
-        { name: 'paymentStatus', label: 'Payment Status', type: 'text' }
+        { name: 'paymentStatus', label: 'Payment Status (Success/Failed)', type: 'text' }
       ]},
       { method: 'GET', path: '/payments/{paymentId}', label: 'Payment Details', params: [
         { name: 'paymentId', label: 'Payment ID', type: 'number' }
@@ -313,7 +313,7 @@ export const MODULE_CONFIGS: { [key: string]: ModuleConfig } = {
       { method: 'PATCH', path: '/payments/{paymentId}/status', label: 'Update Payment Status', params: [
         { name: 'paymentId', label: 'Payment ID', type: 'number' }
       ], queryParams: [
-        { name: 'status', label: 'New Status', type: 'text' }
+        { name: 'status', label: 'New Status (Success/Failed)', type: 'text' }
       ]}
     ]
   },
