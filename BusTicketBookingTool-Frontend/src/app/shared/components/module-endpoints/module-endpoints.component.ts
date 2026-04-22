@@ -94,6 +94,17 @@ export class ModuleEndpointsComponent implements OnInit {
           body[field.name] = field.type === 'number' ? Number(val) : val;
         }
       }
+
+      for (const param of ep.params) {
+        if (Object.prototype.hasOwnProperty.call(body, param.name)) {
+          continue;
+        }
+
+        const val = this.paramValues[param.name];
+        if (val !== undefined && val !== null && val !== '') {
+          body[param.name] = param.type === 'number' ? Number(val) : val;
+        }
+      }
     }
 
     let req$: Observable<unknown>;

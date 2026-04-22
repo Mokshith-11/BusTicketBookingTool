@@ -72,6 +72,7 @@ export const MODULE_CONFIGS: { [key: string]: ModuleConfig } = {
       { method: 'PUT', path: '/offices/{officeId}', label: 'Update Office', params: [
         { name: 'officeId', label: 'Office ID', type: 'number' }
       ], bodyFields: [
+        { name: 'agencyId', label: 'Agency ID', type: 'number' },
         { name: 'officeMail', label: 'Email', type: 'text' },
         { name: 'officeContactPersonName', label: 'Contact Person', type: 'text' },
         { name: 'officeContactNumber', label: 'Phone', type: 'text' },
@@ -119,6 +120,7 @@ export const MODULE_CONFIGS: { [key: string]: ModuleConfig } = {
       { method: 'PUT', path: '/buses/{busId}', label: 'Update Bus', params: [
         { name: 'busId', label: 'Bus ID', type: 'number' }
       ], bodyFields: [
+        { name: 'officeId', label: 'Office ID', type: 'number' },
         { name: 'registrationNumber', label: 'Plate', type: 'text' },
         { name: 'capacity', label: 'Seats', type: 'number' },
         { name: 'type', label: 'Type', type: 'text' }
@@ -151,7 +153,10 @@ export const MODULE_CONFIGS: { [key: string]: ModuleConfig } = {
         { name: 'driverId', label: 'Driver ID', type: 'number' }
       ], bodyFields: [
         { name: 'name', label: 'Name', type: 'text' },
-        { name: 'phone', label: 'Phone', type: 'text' }
+        { name: 'phone', label: 'Phone', type: 'text' },
+        { name: 'licenseNumber', label: 'License #', type: 'text' },
+        { name: 'officeId', label: 'Office ID', type: 'number' },
+        { name: 'addressId', label: 'Address ID', type: 'number' }
       ]},
       { method: 'DELETE', path: '/drivers/{driverId}', label: 'Remove Driver', params: [
         { name: 'driverId', label: 'Driver ID', type: 'number' }
@@ -176,7 +181,10 @@ export const MODULE_CONFIGS: { [key: string]: ModuleConfig } = {
       { method: 'PUT', path: '/routes/{routeId}', label: 'Modify Route', params: [
         { name: 'routeId', label: 'Route ID', type: 'number' }
       ], bodyFields: [
-        { name: 'duration', label: 'New Duration', type: 'number' }
+        { name: 'fromCity', label: 'From City', type: 'text' },
+        { name: 'toCity', label: 'To City', type: 'text' },
+        { name: 'breakPoints', label: 'Break Points', type: 'number' },
+        { name: 'duration', label: 'Duration (Hrs)', type: 'number' }
       ]},
       { method: 'DELETE', path: '/routes/{routeId}', label: 'Disable Route', params: [
         { name: 'routeId', label: 'Route ID', type: 'number' }
@@ -243,8 +251,10 @@ export const MODULE_CONFIGS: { [key: string]: ModuleConfig } = {
       { method: 'PUT', path: '/customers/{customerId}', label: 'Update Customer', params: [
         { name: 'customerId', label: 'Customer ID', type: 'number' }
       ], bodyFields: [
-        { name: 'name', label: 'New Name', type: 'text' },
-        { name: 'phone', label: 'New Phone', type: 'text' }
+        { name: 'name', label: 'Name', type: 'text' },
+        { name: 'email', label: 'Email', type: 'text' },
+        { name: 'phone', label: 'Phone', type: 'text' },
+        { name: 'addressId', label: 'Address ID', type: 'number' }
       ]},
       { method: 'GET', path: '/customers', label: 'Customer List (Admin)', params: [] }
     ]

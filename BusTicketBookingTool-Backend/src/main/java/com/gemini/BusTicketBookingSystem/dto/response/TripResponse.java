@@ -31,6 +31,7 @@ public class TripResponse {
 
     private Integer availableSeats;
     private BigDecimal fare;
+    private Boolean closed;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime tripDate;
