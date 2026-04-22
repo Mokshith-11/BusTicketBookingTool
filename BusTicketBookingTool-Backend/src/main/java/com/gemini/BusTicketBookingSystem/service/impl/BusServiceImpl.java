@@ -17,11 +17,22 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Service implementation for managing buses.
+ * Contains business logic for registering, retrieving, updating,
+ * and retiring buses that belong to agency offices.
+ */
 @Service
 public class BusServiceImpl implements IBusService {
 
 
     private final IBusRepository iBusRepository;
+
+    /**
+     * Constructor injection for the bus repository.
+     *
+     * @param iBusRepository - the repository for bus database operations
+     */
     public BusServiceImpl(IBusRepository iBusRepository) {
         this.iBusRepository = iBusRepository;
     }
@@ -34,6 +45,16 @@ public class BusServiceImpl implements IBusService {
 
 
 
+    /**
+     * Registers a new bus under a specific agency office.
+     * First verifies the office exists, then checks that the registration number
+     * is not already in use by another bus. Creates and saves the new bus.
+     * This method is transactional to ensure data consistency.
+     *
+     * @param officeId   - the ID of the office this bus belongs to
+     * @param requestDTO - contains registrationNumber, capacity, type
+     * @return BusResponse - the registered bus data with generated ID
+     */
     @Override
     @Transactional
     public BusResponse registerBus(Integer officeId, BusRequest requestDTO) {
@@ -55,6 +76,13 @@ public class BusServiceImpl implements IBusService {
         return convertToResponseDTO(savedBus);
     }
 
+    /**
+     * Retrieves all buses assigned to a specific agency office.
+     * First verifies the office exists, then fetches all buses linked to it.
+     *
+     * @param officeId - the ID of the office whose buses to retrieve
+     * @return List of BusResponse - all buses for that office
+     */
     @Override
     public List<BusResponse> getBusesByOffice(Integer officeId) {
         if (!officeRepository.existsById(officeId)) {
@@ -66,6 +94,13 @@ public class BusServiceImpl implements IBusService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves a single bus by its unique bus ID.
+     * Throws ResourceNotFoundException if no bus exists with that ID.
+     *
+     * @param busId - the unique ID of the bus to find
+     * @return BusResponse - the bus details
+     */
     @Override
     public BusResponse getBusById(Integer busId) {
         Bus bus = iBusRepository.findById(busId)
@@ -73,6 +108,16 @@ public class BusServiceImpl implements IBusService {
         return convertToResponseDTO(bus);
     }
 
+    /**
+     * Updates an existing bus's details.
+     * Finds the bus by ID, checks for duplicate registration numbers
+     * (only if the number is being changed), then updates all fields.
+     * This method is transactional to ensure data consistency.
+     *
+     * @param busId      - the ID of the bus to update
+     * @param requestDTO - the new bus data (registrationNumber, capacity, type)
+     * @return BusResponse - the updated bus data
+     */
     @Override
     @Transactional
     public BusResponse updateBus(Integer busId, BusRequest requestDTO) {
@@ -93,6 +138,14 @@ public class BusServiceImpl implements IBusService {
         return convertToResponseDTO(updatedBus);
     }
 
+    /**
+     * Retires (permanently deletes) a bus from the system.
+     * Finds the bus by ID and removes it from the database.
+     * Throws ResourceNotFoundException if the bus doesn't exist.
+     * This method is transactional to ensure data consistency.
+     *
+     * @param busId - the ID of the bus to retire
+     */
     @Override
     @Transactional
     public void retireBus(Integer busId) {
@@ -101,6 +154,13 @@ public class BusServiceImpl implements IBusService {
         iBusRepository.delete(bus);
     }
 
+    /**
+     * Helper method to convert a Bus entity to a BusResponse DTO.
+     * Maps bus ID, office ID, registration number, capacity, and type.
+     *
+     * @param bus - the Bus entity to convert
+     * @return BusResponse - the mapped DTO
+     */
     private BusResponse convertToResponseDTO(Bus bus) {
         BusResponse dto = new BusResponse();
         dto.setBusId(bus.getBusId());
@@ -111,4 +171,3 @@ public class BusServiceImpl implements IBusService {
         return dto;
     }
 }
- 

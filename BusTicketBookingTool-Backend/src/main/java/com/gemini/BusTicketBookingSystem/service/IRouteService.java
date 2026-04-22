@@ -6,10 +6,24 @@ import com.gemini.BusTicketBookingSystem.dto.response.RouteResponse;
 
 import java.util.List;
 
+/**
+ * Service interface for route management.
+ * Defines the contract for creating, viewing, updating, and disabling bus routes.
+ * Implemented by RouteServiceImpl.
+ */
 public interface IRouteService {
+    /** Creates a new route from one city to another */
     RouteResponse createRoute(RouteRequest requestDTO);
+
+    /** Retrieves all routes from the database */
     List<RouteResponse> getAllRoutes();
+
+    /** Retrieves a route by its unique ID */
     RouteResponse getRouteById(Integer routeId);
+
+    /** Updates an existing route with new data */
     RouteResponse updateRoute(Integer routeId, RouteRequest requestDTO);
+
+    /** Disables (deletes) a route from the system */
     void disableRoute(Integer routeId);
 }

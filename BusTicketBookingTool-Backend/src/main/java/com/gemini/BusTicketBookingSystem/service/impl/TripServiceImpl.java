@@ -16,6 +16,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
+/**
+ * Service implementation for managing trips.
+ * Contains business logic for creating, retrieving, searching,
+ * updating, and closing trips. A trip connects a route, bus,
+ * drivers, and addresses with a schedule and fare.
+ */
     @Service
     public class TripServiceImpl implements ITripService {
 
@@ -34,6 +40,18 @@ import java.util.stream.Collectors;
         @Autowired
         private IAddressesRepository addressRepository;
 
+        /**
+         * Creates a new trip in the system.
+         * Validates that all referenced entities exist (route, bus, drivers, addresses).
+         * Sets the available seats to the bus's full capacity.
+         * Driver 2 is optional — only loaded if a driver2Id is provided.
+         * This method is transactional to ensure data consistency.
+         *
+         * @param requestDTO - contains routeId, busId, driver1Id, driver2Id (optional),
+         *                     boardingAddressId, droppingAddressId, departureTime,
+         *                     arrivalTime, fare, tripDate
+         * @return TripResponse - the created trip data with generated ID
+         */
         @Override
         @Transactional
         public TripResponse createTrip(TripRequest requestDTO) {
@@ -78,6 +96,12 @@ import java.util.stream.Collectors;
             return convertToResponseDTO(savedTrip);
         }
 
+        /**
+         * Retrieves all trips stored in the database.
+         * Maps each Trip entity to a TripResponse DTO.
+         *
+         * @return List of TripResponse - all trips
+         */
         @Override
         public List<TripResponse> getAllTrips() {
             return tripRepository.findAll().stream()
@@ -85,6 +109,13 @@ import java.util.stream.Collectors;
                     .collect(Collectors.toList());
         }
 
+        /**
+         * Retrieves a single trip by its unique trip ID.
+         * Throws ResourceNotFoundException if no trip exists with that ID.
+         *
+         * @param tripId - the unique ID of the trip
+         * @return TripResponse - the trip details
+         */
         @Override
         public TripResponse getTripById(Integer tripId) {
             Trip trip = tripRepository.findById(tripId)
@@ -92,6 +123,17 @@ import java.util.stream.Collectors;
             return convertToResponseDTO(trip);
         }
 
+        /**
+         * Searches for trips by departure city, destination city, and date.
+         * Finds all trips whose route matches the fromCity-toCity pair
+         * and whose trip date falls within the given day (midnight to 23:59:59).
+         * This is the main search method used by customers to find available buses.
+         *
+         * @param fromCity - the departure city name
+         * @param toCity   - the destination city name
+         * @param date     - the travel date to search for
+         * @return List of TripResponse - matching trips
+         */
         @Override
         public List<TripResponse> searchTrips(String fromCity, String toCity, LocalDate date) {
             LocalDateTime startOfDay = date.atStartOfDay();
@@ -103,6 +145,17 @@ import java.util.stream.Collectors;
                     .collect(Collectors.toList());
         }
 
+        /**
+         * Updates an existing trip's details.
+         * Finds the trip by ID, validates that the new route and bus exist,
+         * then updates route, bus, times, fare, and date.
+         * Note: Does not update driver assignments.
+         * This method is transactional to ensure data consistency.
+         *
+         * @param tripId     - the ID of the trip to update
+         * @param requestDTO - the new trip data
+         * @return TripResponse - the updated trip data
+         */
         @Override
         @Transactional
         public TripResponse updateTrip(Integer tripId, TripRequest requestDTO) {
@@ -126,6 +179,14 @@ import java.util.stream.Collectors;
             return convertToResponseDTO(updatedTrip);
         }
 
+        /**
+         * Closes a trip so that no more bookings can be made.
+         * Sets the available seats to 0, effectively blocking new bookings.
+         * Throws ResourceNotFoundException if the trip doesn't exist.
+         * This method is transactional to ensure data consistency.
+         *
+         * @param tripId - the ID of the trip to close
+         */
         @Override
         @Transactional
         public void closeTrip(Integer tripId) {
@@ -136,6 +197,14 @@ import java.util.stream.Collectors;
             tripRepository.save(trip);
         }
 
+        /**
+         * Helper method to convert a Trip entity to a TripResponse DTO.
+         * Maps trip details including route info (from/to cities),
+         * bus info (ID, registration number), times, seats, fare, and date.
+         *
+         * @param trip - the Trip entity to convert
+         * @return TripResponse - the mapped DTO
+         */
         private TripResponse convertToResponseDTO(Trip trip) {
             TripResponse dto = new TripResponse();
             dto.setTripId(trip.getTripId());

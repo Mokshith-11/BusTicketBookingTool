@@ -15,12 +15,29 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Service implementation for managing bus routes.
+ * Contains business logic for creating, retrieving, updating,
+ * and disabling routes. Ensures no duplicate routes exist and
+ * validates that source and destination cities are different.
+ */
 @Service
 public class RouteServiceImpl implements IRouteService {
 
     @Autowired
     private IRouteRepository routeRepository;
 
+    /**
+     * Creates a new bus route from one city to another.
+     * Validates two business rules:
+     * 1. From city and to city cannot be the same
+     * 2. A route with the same fromCity-toCity combination must not already exist
+     * Sets break points (number of stops) and duration for the route.
+     * This method is transactional to ensure data consistency.
+     *
+     * @param requestDTO - contains fromCity, toCity, breakPoints, duration
+     * @return RouteResponse - the created route data with generated ID
+     */
     @Override
     @Transactional
     public RouteResponse createRoute(RouteRequest requestDTO) {
@@ -48,6 +65,12 @@ public class RouteServiceImpl implements IRouteService {
         return convertToResponseDTO(savedRoute);
     }
 
+    /**
+     * Retrieves all routes stored in the database.
+     * Maps each Route entity to a RouteResponse DTO.
+     *
+     * @return List of RouteResponse - all routes
+     */
     @Override
     public List<RouteResponse> getAllRoutes() {
         return routeRepository.findAll().stream()
@@ -55,6 +78,13 @@ public class RouteServiceImpl implements IRouteService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves a single route by its unique route ID.
+     * Throws ResourceNotFoundException if no route exists with that ID.
+     *
+     * @param routeId - the unique ID of the route
+     * @return RouteResponse - the route details
+     */
     @Override
     public RouteResponse getRouteById(Integer routeId) {
         Route route = routeRepository.findById(routeId)
@@ -62,6 +92,19 @@ public class RouteServiceImpl implements IRouteService {
         return convertToResponseDTO(route);
     }
 
+    /**
+     * Updates an existing route's details.
+     * Validates two business rules:
+     * 1. From city and to city cannot be the same
+     * 2. No other route with the same fromCity-toCity pair should exist
+     *    (excludes the current route being updated from the duplicate check)
+     * Updates fromCity, toCity, breakPoints, and duration.
+     * This method is transactional to ensure data consistency.
+     *
+     * @param routeId    - the ID of the route to update
+     * @param requestDTO - the new route data
+     * @return RouteResponse - the updated route data
+     */
     @Override
     @Transactional
     public RouteResponse updateRoute(Integer routeId, RouteRequest requestDTO) {
@@ -94,6 +137,14 @@ public class RouteServiceImpl implements IRouteService {
         return convertToResponseDTO(updatedRoute);
     }
 
+    /**
+     * Disables (deletes) a route from the database.
+     * Finds the route by ID and permanently removes it.
+     * Throws ResourceNotFoundException if the route doesn't exist.
+     * This method is transactional to ensure data consistency.
+     *
+     * @param routeId - the ID of the route to disable
+     */
     @Override
     @Transactional
     public void disableRoute(Integer routeId) {
@@ -104,6 +155,13 @@ public class RouteServiceImpl implements IRouteService {
         routeRepository.delete(route);
     }
 
+    /**
+     * Helper method to convert a Route entity to a RouteResponse DTO.
+     * Maps route ID, fromCity, toCity, breakPoints, and duration.
+     *
+     * @param route - the Route entity to convert
+     * @return RouteResponse - the mapped DTO
+     */
     private RouteResponse convertToResponseDTO(Route route) {
         RouteResponse dto = new RouteResponse();
         dto.setRouteId(route.getRouteId());
@@ -114,4 +172,3 @@ public class RouteServiceImpl implements IRouteService {
         return dto;
     }
 }
-

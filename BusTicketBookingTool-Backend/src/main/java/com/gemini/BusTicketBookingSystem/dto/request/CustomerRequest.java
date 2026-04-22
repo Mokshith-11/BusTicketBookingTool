@@ -6,19 +6,27 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+/**
+ * DTO for registering/updating a customer.
+ * Contains customer details with validation for unique email and phone.
+ */
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class CustomerRequest {
 
+    /** Full name of the customer — required */
     @NotBlank(message = "Name is required")
     private String name;
 
+    /** Email address — required, must be valid format, must be unique */
     @Email(message = "Invalid email format")
     @NotBlank(message = "Email is required")
     private String email;
 
+    /** Phone number — required, must be unique */
     @NotBlank(message = "Phone is required")
     private String phone;
 
+    /** ID of the customer's residential address — required */
     @NotNull(message = "Address ID is required")
     private Integer addressId;
 }

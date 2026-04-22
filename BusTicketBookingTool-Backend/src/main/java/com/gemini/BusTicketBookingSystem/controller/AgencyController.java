@@ -12,6 +12,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * REST Controller for managing travel agencies.
+ * Handles CRUD operations (Create, Read, Update, Delete) for agencies.
+ * Base URL: /api/v1/agencies
+ */
 @RestController
 @RequestMapping("/api/v1/agencies")
 public class AgencyController {
@@ -20,6 +25,14 @@ public class AgencyController {
     private IAgencyService agencyService;
 
 
+    /**
+     * Creates a new travel agency.
+     * Validates the request body and saves the agency details (name, contact person,
+     * email, phone) to the database.
+     *
+     * @param requestDTO - the agency details to create (validated with @Valid)
+     * @return ResponseEntity with HTTP 201 (Created) status and the saved agency data
+     */
     @PostMapping
     public ResponseEntity<ApiResponse<AgencyResponse>> createAgency(
             @Valid @RequestBody AgencyRequest requestDTO) {
@@ -35,6 +48,12 @@ public class AgencyController {
     }
 
 
+    /**
+     * Retrieves a list of all registered travel agencies.
+     * Returns all agencies stored in the database.
+     *
+     * @return ResponseEntity with HTTP 200 (OK) status and a list of all agencies
+     */
     @GetMapping
     public ResponseEntity<ApiResponse<List<AgencyResponse>>> getAllAgencies() {
 
@@ -49,6 +68,13 @@ public class AgencyController {
     }
 
 
+    /**
+     * Retrieves a single agency by its unique ID.
+     * If no agency is found with the given ID, a ResourceNotFoundException is thrown.
+     *
+     * @param agencyId - the unique identifier of the agency to retrieve
+     * @return ResponseEntity with HTTP 200 (OK) status and the agency data
+     */
     @GetMapping("/{agencyId}")
     public ResponseEntity<ApiResponse<AgencyResponse>> getAgencyById(
             @PathVariable Integer agencyId) {
@@ -64,6 +90,15 @@ public class AgencyController {
     }
 
 
+    /**
+     * Updates an existing agency's details.
+     * Finds the agency by ID and updates its fields (name, contact person, email, phone)
+     * with the values provided in the request body. Validates input before updating.
+     *
+     * @param agencyId   - the unique ID of the agency to update
+     * @param requestDTO - the new agency details (validated with @Valid)
+     * @return ResponseEntity with HTTP 200 (OK) status and the updated agency data
+     */
     @PutMapping("/{agencyId}")
     public ResponseEntity<ApiResponse<AgencyResponse>> updateAgency(
             @PathVariable Integer agencyId,
@@ -78,6 +113,15 @@ public class AgencyController {
 
         return ResponseEntity.ok(apiResponse);
     }
+
+    /**
+     * Deactivates (soft deletes) an agency by its ID.
+     * Removes the agency from the system. If the agency is not found,
+     * a ResourceNotFoundException is thrown.
+     *
+     * @param agencyId - the unique ID of the agency to deactivate
+     * @return ResponseEntity with HTTP 200 (OK) status and a success message
+     */
     @DeleteMapping("/{agencyId}")
     public ResponseEntity<ApiResponse<String>> deactivateAgency(
             @PathVariable Integer agencyId) {

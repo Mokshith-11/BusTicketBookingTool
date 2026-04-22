@@ -8,8 +8,22 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * Repository interface for performing database operations on Route entities.
+ * Extends JpaRepository to get built-in CRUD methods.
+ * Contains a custom query to find routes by source and destination cities.
+ */
 @Repository
 public interface IRouteRepository extends JpaRepository<Route,Integer> {
+
+    /**
+     * Finds all routes that go from a specific city to another.
+     * Used to check for duplicate routes (same fromCity-toCity pair).
+     *
+     * @param fromCity - the departure city name
+     * @param toCity   - the destination city name
+     * @return List of Route - routes matching the city pair
+     */
     @Query("SELECT r FROM Route r WHERE r.fromCity = :fromCity AND r.toCity = :toCity")
     List<Route> findByFromCityAndToCity(@Param("fromCity") String fromCity,
                                         @Param("toCity") String toCity);

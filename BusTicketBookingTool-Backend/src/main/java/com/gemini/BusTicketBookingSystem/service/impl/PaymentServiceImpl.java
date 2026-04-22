@@ -22,6 +22,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Service implementation for managing payments.
+ * Contains business logic for processing payments, retrieving payment records,
+ * and updating payment statuses. Each payment is linked to a booking and customer.
+ */
 @Service
 public class PaymentServiceImpl implements IPaymentService {
 
@@ -34,6 +39,20 @@ public class PaymentServiceImpl implements IPaymentService {
     @Autowired
     private ICustomerRepository customerRepository;
 
+    /**
+     * Processes a payment for a booking.
+     * Performs several validations before creating the payment:
+     * 1. Verifies the booking exists
+     * 2. Verifies the customer exists
+     * 3. Checks the booking is in "Booked" status (not cancelled)
+     * 4. Ensures no duplicate payment exists for the same booking
+     * 5. Validates the payment amount matches the trip fare exactly
+     * Sets the payment status to "Success" and records the current timestamp.
+     * This method is transactional to ensure data consistency.
+     *
+     * @param requestDTO - contains bookingId, customerId, amount
+     * @return PaymentResponse - the payment confirmation with all details
+     */
     @Override
     @Transactional
     public PaymentResponse makePayment(PaymentRequest requestDTO) {
@@ -70,6 +89,13 @@ public class PaymentServiceImpl implements IPaymentService {
         return convertToResponseDTO(savedPayment);
     }
 
+    /**
+     * Retrieves a single payment by its unique payment ID.
+     * Throws ResourceNotFoundException if no payment exists with that ID.
+     *
+     * @param paymentId - the unique ID of the payment
+     * @return PaymentResponse - the payment details
+     */
     @Override
     public PaymentResponse getPaymentById(Integer paymentId) {
         Payment payment = paymentRepository.findById(paymentId)
@@ -77,6 +103,13 @@ public class PaymentServiceImpl implements IPaymentService {
         return convertToResponseDTO(payment);
     }
 
+    /**
+     * Retrieves all payments made by a specific customer.
+     * First checks that the customer exists, then fetches all their payment records.
+     *
+     * @param customerId - the ID of the customer
+     * @return List of PaymentResponse - all payments by that customer
+     */
     @Override
     public List<PaymentResponse> getCustomerPayments(Integer customerId) {
         if (!customerRepository.existsById(customerId)) {
@@ -88,6 +121,14 @@ public class PaymentServiceImpl implements IPaymentService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves the payment linked to a specific booking.
+     * First checks that the booking exists, then finds its associated payment.
+     * Throws ResourceNotFoundException if the booking or payment is not found.
+     *
+     * @param bookingId - the ID of the booking
+     * @return PaymentResponse - the payment details for that booking
+     */
     @Override
     public PaymentResponse getBookingPayment(Integer bookingId) {
         if (!bookingRepository.existsById(bookingId)) {
@@ -100,6 +141,16 @@ public class PaymentServiceImpl implements IPaymentService {
         return convertToResponseDTO(payment);
     }
 
+    /**
+     * Updates the status of an existing payment.
+     * Business rule: cannot change a "Success" payment to "Failed"
+     * (once a payment succeeds, it cannot be marked as failed).
+     * This method is transactional to ensure data consistency.
+     *
+     * @param paymentId - the ID of the payment to update
+     * @param status    - the new PaymentStatus (Success, Failed, Pending)
+     * @return PaymentResponse - the updated payment details
+     */
     @Override
     @Transactional
     public PaymentResponse updatePaymentStatus(Integer paymentId, PaymentStatus status) {
@@ -118,6 +169,13 @@ public class PaymentServiceImpl implements IPaymentService {
     }
 
 
+    /**
+     * Helper method to convert a Payment entity to a PaymentResponse DTO.
+     * Maps payment details including booking info, customer info, trip ID, and seat number.
+     *
+     * @param payment - the Payment entity to convert
+     * @return PaymentResponse - the mapped DTO
+     */
     private PaymentResponse convertToResponseDTO(Payment payment) {
         PaymentResponse dto = new PaymentResponse();
         dto.setPaymentId(payment.getPaymentId());
@@ -132,5 +190,3 @@ public class PaymentServiceImpl implements IPaymentService {
         return dto;
     }
 }
-
-

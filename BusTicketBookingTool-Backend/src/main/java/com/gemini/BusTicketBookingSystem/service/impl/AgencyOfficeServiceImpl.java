@@ -18,6 +18,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Service implementation for managing agency offices (branch offices).
+ * Contains business logic for adding, retrieving, updating,
+ * and deleting offices that belong to a travel agency.
+ */
 @Service
 
 public class AgencyOfficeServiceImpl implements IAgencyOfficeService {
@@ -28,6 +33,15 @@ public class AgencyOfficeServiceImpl implements IAgencyOfficeService {
     @Autowired
     private  IAddressesRepository addressRepository;
 
+    /**
+     * Adds a new office to an existing agency.
+     * First verifies that both the agency and the address exist,
+     * then creates the office and links it to the agency and address.
+     *
+     * @param agencyId - the ID of the agency this office belongs to
+     * @param request  - office details: officeMail, contactPersonName, contactNumber, addressId
+     * @return AgencyOfficeResponse - the saved office data with generated ID
+     */
     @Override
     public AgencyOfficeResponse addOffice(Integer agencyId, AgencyOfficeRequest request) {
         Agency agency = agencyRepository.findById(agencyId)
@@ -44,6 +58,13 @@ public class AgencyOfficeServiceImpl implements IAgencyOfficeService {
         return mapToResponse(officeRepository.save(office));
     }
 
+    /**
+     * Retrieves a single office by its unique ID.
+     * Throws ResourceNotFoundException if the office doesn't exist.
+     *
+     * @param officeId - the unique ID of the office to find
+     * @return AgencyOfficeResponse - the office data including agency info and address
+     */
     @Override
     public AgencyOfficeResponse getOfficeById(Integer officeId) {
         AgencyOffice office = officeRepository.findById(officeId)
@@ -51,6 +72,13 @@ public class AgencyOfficeServiceImpl implements IAgencyOfficeService {
         return mapToResponse(office);
     }
 
+    /**
+     * Retrieves all offices belonging to a specific agency.
+     * First verifies the agency exists, then fetches all its offices.
+     *
+     * @param agencyId - the ID of the agency whose offices to retrieve
+     * @return List of AgencyOfficeResponse - all offices for that agency
+     */
     @Override
     public List<AgencyOfficeResponse> getOfficesByAgency(Integer agencyId) {
         agencyRepository.findById(agencyId)
@@ -59,6 +87,15 @@ public class AgencyOfficeServiceImpl implements IAgencyOfficeService {
                 .stream().map(this::mapToResponse).collect(Collectors.toList());
     }
 
+    /**
+     * Updates an existing office's details.
+     * Finds the office by ID, verifies the new address exists,
+     * then updates mail, contact person, contact number, and address.
+     *
+     * @param officeId - the ID of the office to update
+     * @param request  - the new office data
+     * @return AgencyOfficeResponse - the updated office data
+     */
     @Override
     public AgencyOfficeResponse updateOffice(Integer officeId, AgencyOfficeRequest request) {
         AgencyOffice office = officeRepository.findById(officeId)
@@ -72,6 +109,12 @@ public class AgencyOfficeServiceImpl implements IAgencyOfficeService {
         return mapToResponse(officeRepository.save(office));
     }
 
+    /**
+     * Deletes an office from the database by its ID.
+     * Throws ResourceNotFoundException if the office doesn't exist.
+     *
+     * @param officeId - the ID of the office to delete
+     */
     @Override
     public void deleteOffice(Integer officeId) {
         AgencyOffice office = officeRepository.findById(officeId)
@@ -79,6 +122,13 @@ public class AgencyOfficeServiceImpl implements IAgencyOfficeService {
         officeRepository.delete(office);
     }
 
+    /**
+     * Helper method to convert an AgencyOffice entity to an AgencyOfficeResponse DTO.
+     * Also maps the nested address entity to an AddressResponse if the address exists.
+     *
+     * @param office - the AgencyOffice entity to convert
+     * @return AgencyOfficeResponse - the mapped DTO with agency and address info
+     */
     private AgencyOfficeResponse mapToResponse(AgencyOffice office) {
         AddressResponse addressResponse = null;
         if (office.getOfficeAddress() != null) {

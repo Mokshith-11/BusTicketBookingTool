@@ -20,6 +20,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Service implementation for managing trip reviews.
+ * Contains business logic for submitting reviews, retrieving reviews
+ * by trip or customer, and deleting reviews.
+ */
 @Service
 public class ReviewServiceImpl implements IReviewService {
 
@@ -32,6 +37,21 @@ public class ReviewServiceImpl implements IReviewService {
     @Autowired
     private ICustomerRepository customerRepository;
 
+    /**
+     * Submits a new review for a completed trip.
+     * Performs several validations before saving the review:
+     * 1. Verifies the trip exists
+     * 2. Verifies the customer exists
+     * 3. Checks rating is between 1 and 5
+     * 4. Ensures the trip has been completed (arrival time has passed)
+     * 5. Prevents duplicate reviews (same customer cannot review same trip twice)
+     * Records the current timestamp as the review date.
+     * This method is transactional to ensure data consistency.
+     *
+     * @param tripId     - the ID of the trip being reviewed
+     * @param requestDTO - contains customerId, rating (1-5), comment
+     * @return ReviewResponse - the submitted review data
+     */
     @Override
     @Transactional
     public ReviewResponse submitReview(Integer tripId, ReviewRequest requestDTO) {
@@ -42,19 +62,19 @@ public class ReviewServiceImpl implements IReviewService {
                 .orElseThrow(() -> new ResourceNotFoundException("Customer", "customerId",
                         requestDTO.getCustomerId()));
 
-        // Validate rating is between 1 and 5
+        // Validate that the rating is within the allowed range (1 to 5 stars)
         if (requestDTO.getRating() < 1 || requestDTO.getRating() > 5) {
             throw new InvalidOperationException("Submit Review",
                     "Rating must be between 1 and 5");
         }
 
-        // Check if trip has already departed (can only review completed trips)
+        // Only allow reviews for trips that have already been completed
         if (trip.getArrivalTime().isAfter(LocalDateTime.now())) {
             throw new InvalidOperationException("Submit Review",
                     "Cannot review a trip that hasn't been completed yet");
         }
 
-        // Check if customer has already reviewed this trip
+        // Prevent a customer from reviewing the same trip more than once
         if (reviewRepository. existsByTripAndCustomer(tripId,
                 requestDTO.getCustomerId())) {
             throw new DuplicateResourceException("Review",
@@ -73,6 +93,13 @@ public class ReviewServiceImpl implements IReviewService {
         return convertToResponseDTO(savedReview);
     }
 
+    /**
+     * Retrieves all reviews for a specific trip.
+     * First verifies the trip exists, then fetches all its reviews.
+     *
+     * @param tripId - the ID of the trip
+     * @return List of ReviewResponse - all reviews for that trip
+     */
     @Override
     public List<ReviewResponse> getTripReviews(Integer tripId) {
         if (!tripRepository.existsById(tripId)) {
@@ -84,6 +111,13 @@ public class ReviewServiceImpl implements IReviewService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves all reviews written by a specific customer.
+     * First verifies the customer exists, then fetches all their reviews.
+     *
+     * @param customerId - the ID of the customer
+     * @return List of ReviewResponse - all reviews by that customer
+     */
     @Override
     public List<ReviewResponse> getCustomerReviews(Integer customerId) {
         if (!customerRepository.existsById(customerId)) {
@@ -95,6 +129,14 @@ public class ReviewServiceImpl implements IReviewService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Deletes a review permanently from the database.
+     * Finds the review by ID and removes it.
+     * Throws ResourceNotFoundException if the review doesn't exist.
+     * This method is transactional to ensure data consistency.
+     *
+     * @param reviewId - the ID of the review to delete
+     */
     @Override
     @Transactional
     public void removeReview(Integer reviewId) {
@@ -105,6 +147,14 @@ public class ReviewServiceImpl implements IReviewService {
         reviewRepository.delete(review);
     }
 
+    /**
+     * Helper method to convert a Review entity to a ReviewResponse DTO.
+     * Maps review details including trip info (from/to cities, date)
+     * and customer info (ID, name).
+     *
+     * @param review - the Review entity to convert
+     * @return ReviewResponse - the mapped DTO
+     */
     private ReviewResponse convertToResponseDTO(Review review) {
         ReviewResponse dto = new ReviewResponse();
         dto.setReviewId(review.getReviewId());
