@@ -245,6 +245,12 @@ public class SecurityConfig {
                         //                                   POST/{id}/reviews, GET/{id}/reviews
                         //                           (bookings under /trips/ already claimed above)
                         // /api/v1/reviews/**        covers: DELETE /reviews/{reviewId}
+                        // Add BEFORE the .requestMatchers("/api/v1/trips/**").hasRole("PRIYA") line:
+                        .requestMatchers(
+                                "/api/v1/trips/*/seats",
+                                "/api/v1/trips/*/seats/available",
+                                "/api/v1/trips/*/seats/booked"
+                        ).hasAnyRole("VIGNESH", "PRIYA")
                         .requestMatchers("/api/v1/trips/**").hasRole("PRIYA")
                         .requestMatchers("/api/v1/reviews/**").hasRole("PRIYA")
 
