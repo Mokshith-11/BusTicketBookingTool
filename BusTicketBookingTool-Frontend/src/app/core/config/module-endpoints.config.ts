@@ -191,8 +191,12 @@ export const MODULE_CONFIGS: { [key: string]: ModuleConfig } = {
       { method: 'POST', path: '/trips', label: 'Create Trip', params: [], bodyFields: [
         { name: 'busId', label: 'Bus ID', type: 'number' },
         { name: 'routeId', label: 'Route ID', type: 'number' },
+        { name: 'driver1Id', label: 'Driver 1 ID', type: 'number' },
+        { name: 'boardingAddressId', label: 'Boarding ID', type: 'number' },
+        { name: 'droppingAddressId', label: 'Dropping ID', type: 'number' },
         { name: 'departureTime', label: 'Departure', type: 'text' },
         { name: 'arrivalTime', label: 'Arrival', type: 'text' },
+        { name: 'tripDate', label: 'Trip Date', type: 'text' },
         { name: 'fare', label: 'Fare', type: 'number' }
       ]},
       { method: 'GET', path: '/trips', label: 'List All Trips', params: [] },
@@ -207,7 +211,15 @@ export const MODULE_CONFIGS: { [key: string]: ModuleConfig } = {
       { method: 'PUT', path: '/trips/{tripId}', label: 'Update Trip', params: [
         { name: 'tripId', label: 'Trip ID', type: 'number' }
       ], bodyFields: [
-        { name: 'fare', label: 'New Fare', type: 'number' }
+        { name: 'busId', label: 'Bus ID', type: 'number' },
+        { name: 'routeId', label: 'Route ID', type: 'number' },
+        { name: 'driver1Id', label: 'Driver 1 ID', type: 'number' },
+        { name: 'boardingAddressId', label: 'Boarding ID', type: 'number' },
+        { name: 'droppingAddressId', label: 'Dropping ID', type: 'number' },
+        { name: 'departureTime', label: 'Departure', type: 'text' },
+        { name: 'arrivalTime', label: 'Arrival', type: 'text' },
+        { name: 'tripDate', label: 'Trip Date', type: 'text' },
+        { name: 'fare', label: 'Fare', type: 'number' }
       ]},
       { method: 'PATCH', path: '/trips/{tripId}/close', label: 'Close Trip', params: [
         { name: 'tripId', label: 'Trip ID', type: 'number' }
@@ -290,8 +302,8 @@ export const MODULE_CONFIGS: { [key: string]: ModuleConfig } = {
       ]},
       { method: 'PATCH', path: '/payments/{paymentId}/status', label: 'Update Payment Status', params: [
         { name: 'paymentId', label: 'Payment ID', type: 'number' }
-      ], bodyFields: [
-        { name: 'paymentStatus', label: 'New Status', type: 'text' }
+      ], queryParams: [
+        { name: 'status', label: 'New Status', type: 'text' }
       ]}
     ]
   },

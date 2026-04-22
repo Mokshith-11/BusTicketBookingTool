@@ -105,6 +105,24 @@
                 </div>
               }
 
+              <!-- Query Params Section -->
+              @if (activeEndpoint()!.queryParams && activeEndpoint()!.queryParams!.length > 0) {
+                <div class="glass-card p-10 rounded-[3rem] bg-white border-none">
+                  <div class="label-purple mb-8">
+                    <div class="dot-purple"></div>
+                    Query Constraints
+                  </div>
+                  <div class="space-y-6">
+                    @for (q of activeEndpoint()!.queryParams; track q.name) {
+                      <div class="space-y-2.5">
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{{ q.label }}</label>
+                        <input [type]="q.type" [(ngModel)]="queryValues[q.name]" class="input-field" [placeholder]="'Enter ' + q.label">
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+
               <!-- Path Section -->
               @if (activeEndpoint()!.params.length > 0) {
                 <div class="glass-card p-10 rounded-[3rem] bg-white border-none">
