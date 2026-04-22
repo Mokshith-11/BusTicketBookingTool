@@ -55,7 +55,7 @@ export const MODULE_CONFIGS: { [key: string]: ModuleConfig } = {
     moduleName: 'Agency Office', owner: 'Aksha', isMine: false,
     description: 'Branch hierarchy under primary master data.',
     endpoints: [
-      { method: 'POST', path: '/agencies/{agencyId}/offices', label: 'Add Office', params: [
+{ method: 'POST', path: '/agencies/{agencyId}/offices', label: 'Add Office', params: [
         { name: 'agencyId', label: 'Agency ID', type: 'number' }
       ], bodyFields: [
         { name: 'officeMail', label: 'Office Email', type: 'text' },
@@ -87,8 +87,8 @@ export const MODULE_CONFIGS: { [key: string]: ModuleConfig } = {
     moduleName: 'Address', owner: 'Aksha', isMine: false,
     description: 'Shared reference for all physical location data.',
     endpoints: [
-      { method: 'POST', path: '/addresses', label: 'Create Address', params: [], bodyFields: [
-        { name: 'address', label: 'Street', type: 'text' },
+{ method: 'POST', path: '/addresses', label: 'Create Address', params: [], bodyFields: [
+        { name: 'address', label: 'Address', type: 'text' },
         { name: 'city', label: 'City', type: 'text' },
         { name: 'state', label: 'State', type: 'text' },
         { name: 'zipCode', label: 'Zip Code', type: 'text' }
@@ -219,7 +219,7 @@ export const MODULE_CONFIGS: { [key: string]: ModuleConfig } = {
     moduleName: 'Customer', owner: 'Ajitha', isMine: false,
     description: 'Customer lifecycle and profile registry.',
     endpoints: [
-      { method: 'POST', path: '/customers', label: 'Register Customer', params: [], bodyFields: [
+{ method: 'POST', path: '/customers', label: 'Register Customer', params: [], bodyFields: [
         { name: 'name', label: 'Name', type: 'text' },
         { name: 'email', label: 'Email', type: 'text' },
         { name: 'phone', label: 'Phone', type: 'text' },
@@ -273,18 +273,19 @@ export const MODULE_CONFIGS: { [key: string]: ModuleConfig } = {
     moduleName: 'Payment', owner: 'Vignesh', isMine: true,
     description: 'Financial transactions and reconciliation history.',
     endpoints: [
-      { method: 'POST', path: '/payments', label: 'Make Payment', params: [], bodyFields: [
+{ method: 'POST', path: '/payments', label: 'Make Payment', params: [], bodyFields: [
         { name: 'bookingId', label: 'Booking ID', type: 'number' },
         { name: 'customerId', label: 'Customer ID', type: 'number' },
-        { name: 'amount', label: 'Amount', type: 'number' }
+        { name: 'amount', label: 'Amount', type: 'number' },
+        { name: 'paymentStatus', label: 'Payment Status', type: 'text' }
       ]},
       { method: 'GET', path: '/payments/{paymentId}', label: 'Payment Details', params: [
         { name: 'paymentId', label: 'Payment ID', type: 'number' }
       ]},
-      { method: 'GET', path: '/customers/{customerId}/payments', label: 'Payment History', params: [
+      { method: 'GET', path: '/payments/customers/{customerId}/payments', label: 'Payment History', params: [
         { name: 'customerId', label: 'Customer ID', type: 'number' }
       ]},
-      { method: 'GET', path: '/bookings/{bookingId}/payment', label: 'Booking Payment Info', params: [
+      { method: 'GET', path: '/payments/bookings/{bookingId}/payment', label: 'Booking Payment Info', params: [
         { name: 'bookingId', label: 'Booking ID', type: 'number' }
       ]},
       { method: 'PATCH', path: '/payments/{paymentId}/status', label: 'Update Payment Status', params: [

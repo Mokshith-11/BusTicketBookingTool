@@ -208,7 +208,7 @@ class PaymentServiceImplTest {
     void testGetBookingPayment_Success() {
 
         when(bookingRepository.existsById(1)).thenReturn(true);
-        when(paymentRepository.findPaymentByBookingId(1))
+        when(paymentRepository.findFirstByBooking_BookingIdOrderByPaymentIdDesc(1))
                 .thenReturn(Optional.of(payment));
 
         PaymentResponse response = paymentService.getBookingPayment(1);

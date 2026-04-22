@@ -15,14 +15,14 @@ export class PaymentService {
   }
 
   getCustomerPayments(customerId: number): Observable<any> {
-    return this.http.get(`/customers/${customerId}/payments`);
+    return this.http.get(`/payments/customers/${customerId}/payments`);
   }
 
   getBookingPayment(bookingId: number): Observable<any> {
-    return this.http.get(`/bookings/${bookingId}/payment`);
+    return this.http.get(`/payments/bookings/${bookingId}/payment`);
   }
 
-  updatePaymentStatus(paymentId: number, statusPayload: any): Observable<any> {
-    return this.http.patch(`/payments/${paymentId}/status`, statusPayload);
+  updatePaymentStatus(paymentId: number, status: string): Observable<any> {
+    return this.http.patch(`/payments/${paymentId}/status?status=${status}`, {});
   }
 }
