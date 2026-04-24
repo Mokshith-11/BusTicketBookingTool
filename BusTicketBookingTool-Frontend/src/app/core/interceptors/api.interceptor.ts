@@ -1,7 +1,6 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 
 /*
- * Beginner guide:
  * - This interceptor runs automatically before Angular sends an HTTP request.
  * - It adds the backend base URL and authentication header so individual components do not repeat that setup.
  * - After this step the request continues to the Spring Boot backend.

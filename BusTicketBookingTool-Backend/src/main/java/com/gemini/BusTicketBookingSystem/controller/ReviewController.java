@@ -16,7 +16,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1")
 /*
- * Beginner guide:
  * - This controller is the API entry point for Review requests from Angular, Postman, or Swagger.
  * - Mapping annotations such as @PostMapping and @GetMapping decide which URL and HTTP method reaches each function.
  * - @Valid checks request DTO rules first; then the controller calls the service and wraps the result in ApiResponse.

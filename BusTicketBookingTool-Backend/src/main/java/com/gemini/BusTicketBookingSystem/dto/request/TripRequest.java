@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 // TripRequest describes the data the frontend must send to create or update a trip.
 // Bean Validation annotations stop invalid requests before service logic starts.
 /*
- * Beginner guide:
  * - This request DTO describes the JSON input required to create or update Trip data.
  * - Validation annotations like @NotBlank, @NotNull, @Min, or @Email protect the service from bad input.
  * - Controllers receive this object with @RequestBody and pass the clean data to the service layer.

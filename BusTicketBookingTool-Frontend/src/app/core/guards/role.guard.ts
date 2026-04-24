@@ -3,7 +3,6 @@ import { inject } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 
 /*
- * Beginner guide:
  * - This route guard protects frontend pages before Angular opens them.
  * - It checks login/role information from AuthService and decides whether the user can continue.
  * - If the check fails, Angular redirects the user instead of showing a restricted page.

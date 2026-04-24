@@ -1,7 +1,6 @@
 import { Injectable, signal, computed } from '@angular/core';
 
 /*
- * Beginner guide:
  * - This Angular service keeps API calls for this feature in one reusable place.
  * - Components call service methods instead of writing HttpClient requests directly in every screen.
  * - The service returns Observables, and the component subscribes to show success/error data in the UI.

@@ -29,7 +29,6 @@ const routes: Routes = [
   exports: [RouterModule]
 })
 /*
- * Beginner guide:
  * - This routing module decides which URL opens each component in this feature.
  * - It keeps navigation rules grouped with the feature so app-routing stays clean.
  * - Angular uses these routes when the browser path changes or when router.navigate is called.

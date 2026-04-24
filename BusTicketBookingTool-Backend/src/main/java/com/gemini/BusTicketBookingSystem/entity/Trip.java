@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 @Table(name = "trips")
 @Builder
 /*
- * Beginner guide:
  * - This entity represents the Trip table/object stored in PostgreSQL.
  * - JPA annotations such as @Entity, @Id, @Column, @ManyToOne, and @OneToMany explain how Java fields map to database columns and relationships.
  * - Repositories save and read this entity; services convert it to DTOs before sending data back to the frontend.

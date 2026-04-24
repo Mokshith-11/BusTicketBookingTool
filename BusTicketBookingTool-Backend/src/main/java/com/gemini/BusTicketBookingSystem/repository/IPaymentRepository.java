@@ -12,7 +12,6 @@ import java.util.Optional;
 
 @Repository
 /*
- * Beginner guide:
  * - This repository is the database access layer for Payment records.
  * - Spring Data JPA automatically provides common CRUD methods like save, findById, findAll, and delete.
  * - Service classes call this repository so SQL/database work stays separate from business rules.
