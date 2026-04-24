@@ -2,6 +2,9 @@ package com.gemini.BusTicketBookingSystem.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -12,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import java.util.List;
 
 /**
  * ════════════════════════════════════════════════════════════════════════════
@@ -148,10 +152,23 @@ public class SecurityConfig {
         );
     }
 
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of("http://localhost:4200"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
+
     // ── SECURITY FILTER CHAIN ────────────────────────────────────────────────
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
 
@@ -219,6 +236,14 @@ public class SecurityConfig {
                         // /api/v1/routes/**         covers: POST, GET, GET/{id}, PUT/{id}, DELETE/{id}
                         .requestMatchers("/api/v1/customers/**").hasRole("AJITHA")
                         .requestMatchers("/api/v1/routes/**").hasRole("AJITHA")
+
+                        // PRIYADHARSHINI: Trip + Review
+                        // Seat endpoints need to be accessible by VIGNESH (to book) and PRIYA (to manage)
+                        .requestMatchers(
+                                "/api/v1/trips/*/seats",
+                                "/api/v1/trips/*/seats/available",
+                                "/api/v1/trips/*/seats/booked"
+                        ).hasAnyRole("VIGNESH", "PRIYA")
 
                         // ── PRIYADHARSHINI: Trip + Review ────────────────────────────
                         // /api/v1/trips/**          covers: POST, GET, GET/{id}, GET/search,

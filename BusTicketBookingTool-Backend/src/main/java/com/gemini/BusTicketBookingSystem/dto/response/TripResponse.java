@@ -50,6 +50,7 @@ public class TripResponse {
 
     /** Ticket fare per seat */
     private BigDecimal fare;
+    private Boolean closed;
 
     /** Date of the trip (formatted as "yyyy-MM-dd") */
     @JsonFormat(pattern = "yyyy-MM-dd")

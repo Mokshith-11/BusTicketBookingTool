@@ -135,7 +135,7 @@ public class PaymentServiceImpl implements IPaymentService {
             throw new ResourceNotFoundException("Booking", "bookingId", bookingId);
         }
 
-        Payment payment = paymentRepository.findPaymentByBookingId(bookingId)
+        Payment payment = paymentRepository.findFirstByBooking_BookingIdOrderByPaymentIdDesc(bookingId)
                 .orElseThrow(() -> new ResourceNotFoundException("Payment", "bookingId", bookingId));
 
         return convertToResponseDTO(payment);

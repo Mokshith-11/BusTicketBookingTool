@@ -127,9 +127,9 @@ public class PaymentController {
     @PatchMapping("/{paymentId}/status")
     public ResponseEntity<ApiResponse<PaymentResponse>> updatePaymentStatus(
             @PathVariable Integer paymentId,
-            @RequestParam PaymentStatus status) {
+            @RequestParam String status) {
 
-        PaymentResponse response = paymentService.updatePaymentStatus(paymentId, status);
+        PaymentResponse response = paymentService.updatePaymentStatus(paymentId, PaymentStatus.fromValue(status));
 
         ApiResponse<PaymentResponse> apiResponse =
                 new ApiResponse<>(HttpStatus.OK.value(),

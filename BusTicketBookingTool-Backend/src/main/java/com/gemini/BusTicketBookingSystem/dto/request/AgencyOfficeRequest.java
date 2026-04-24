@@ -1,9 +1,7 @@
 package com.gemini.BusTicketBookingSystem.dto.request;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
-
-/**
+import lombok.*;/**
  * DTO for creating/updating an agency office (branch office).
  * Contains office details like email, contact info, and address reference.
  */

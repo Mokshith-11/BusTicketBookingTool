@@ -36,6 +36,8 @@ public interface IPaymentRepository extends JpaRepository<Payment, Integer> {
     @Query("SELECT p FROM Payment p WHERE p.booking.bookingId = :bookingId")
     Optional<Payment> findPaymentByBookingId(@Param("bookingId") Integer bookingId);
 
+    Optional<Payment> findFirstByBooking_BookingIdOrderByPaymentIdDesc(Integer bookingId);
+
     /**
      * Checks if a payment already exists for a specific booking.
      * Used to prevent duplicate payments for the same booking.
