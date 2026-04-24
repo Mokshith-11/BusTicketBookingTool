@@ -22,6 +22,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+// BookingServiceImpl controls seat reservation rules and seat count updates.
+/*
+ * - This class contains the real business logic for Booking operations.
+ * - It checks rules, loads related records from repositories, throws clear exceptions when something is wrong, and saves valid changes.
+ * - At the end it converts entities into response DTOs so controllers can return clean API output.
+ */
 public class BookingServiceImpl implements IBookingService {
 
         @Autowired
@@ -35,24 +41,25 @@ public class BookingServiceImpl implements IBookingService {
 
         @Override
         @Transactional
+        // Main booking flow: validate trip, validate seat, validate customer, then save booking.
         public BookingResponse bookSeat(Integer tripId, BookingRequest requestDTO) {
                 Trip trip = tripRepository.findById(tripId)
                                 .orElseThrow(() -> new ResourceNotFoundException("Trip", "tripId", tripId));
 
-                // Validate seat number
+                // Seat number must stay inside the physical bus capacity.
                 if (requestDTO.getSeatNumber() < 1 ||
                                 requestDTO.getSeatNumber() > trip.getBus().getCapacity()) {
                         throw new SeatNotAvailableException(tripId,
                                         "Invalid seat number. Bus capacity is " + trip.getBus().getCapacity());
                 }
 
-                // Check if trip is still open for booking
+                // Past trips should not accept new bookings.
                 if (trip.getDepartureTime().isBefore(LocalDateTime.now())) {
                         throw new InvalidOperationException("Book Seat",
                                         "Cannot book seat for a trip that has already departed");
                 }
 
-                // Check seat availability
+                // Only one active booking is allowed for a seat on a trip.
                 List<Booking> existingBookings = bookingRepository.findBookingsByTripIdAndStatus(tripId,
                                 BookingStatus.Booked);
                 boolean seatAlreadyBooked = existingBookings.stream()
@@ -62,7 +69,7 @@ public class BookingServiceImpl implements IBookingService {
                         throw new SeatNotAvailableException(tripId, requestDTO.getSeatNumber());
                 }
 
-                // Check if trip has available seats
+                // availableSeats is the quick inventory counter used by the UI and backend.
                 if (trip.getAvailableSeats() <= 0) {
                         throw new SeatNotAvailableException(tripId, "No seats available for this trip");
                 }
@@ -76,7 +83,7 @@ public class BookingServiceImpl implements IBookingService {
                 booking.setSeatNumber(requestDTO.getSeatNumber());
                 booking.setStatus(BookingStatus.Booked);
 
-                // Update available seats
+                // Saving a booking also reduces the trip's remaining seat count.
                 trip.setAvailableSeats(trip.getAvailableSeats() - 1);
                 tripRepository.save(trip);
 
@@ -85,6 +92,7 @@ public class BookingServiceImpl implements IBookingService {
         }
 
         @Override
+        // Used by the customer booking history screen.
         public List<BookingResponse> getCustomerBookings(Integer customerId) {
                 if (!customerRepository.existsById(customerId)) {
                         throw new ResourceNotFoundException("Customer", "customerId", customerId);
@@ -96,6 +104,7 @@ public class BookingServiceImpl implements IBookingService {
         }
 
         @Override
+        // Returns one booking with linked trip and customer details flattened into a DTO.
         public BookingResponse getBookingById(Integer bookingId) {
                 Booking booking = bookingRepository.findById(bookingId)
                                 .orElseThrow(() -> new ResourceNotFoundException("Booking", "bookingId", bookingId));
@@ -104,6 +113,7 @@ public class BookingServiceImpl implements IBookingService {
 
         @Override
         @Transactional
+        // Cancelling a booking flips its status and gives the seat back to the trip.
         public void cancelBooking(Integer bookingId) {
                 Booking booking = bookingRepository.findById(bookingId)
                                 .orElseThrow(() -> new ResourceNotFoundException("Booking", "bookingId", bookingId));
@@ -115,7 +125,7 @@ public class BookingServiceImpl implements IBookingService {
 
                 booking.setStatus(BookingStatus.Available);
 
-                // Restore available seats
+                // The seat becomes reusable for future bookings on the same trip.
                 Trip trip = booking.getTrip();
                 trip.setAvailableSeats(trip.getAvailableSeats() + 1);
                 tripRepository.save(trip);
@@ -124,6 +134,7 @@ public class BookingServiceImpl implements IBookingService {
         }
 
         @Override
+        // Builds a list of free seat numbers by removing booked seats from the full seat range.
         public List<Integer> getAvailableSeats(Integer tripId) {
                 Trip trip = tripRepository.findById(tripId)
                                 .orElseThrow(() -> new ResourceNotFoundException("Trip", "tripId", tripId));
@@ -141,6 +152,7 @@ public class BookingServiceImpl implements IBookingService {
         }
 
         @Override
+        // Returns only booked seat numbers so the frontend can mark them as unavailable.
         public List<Integer> getBookedSeats(Integer tripId) {
                 Trip trip = tripRepository.findById(tripId)
                                 .orElseThrow(() -> new ResourceNotFoundException("Trip", "tripId", tripId));
@@ -150,6 +162,7 @@ public class BookingServiceImpl implements IBookingService {
                                 .collect(Collectors.toList());
         }
 
+        // Converts entity data into the compact response shape expected by the frontend.
         private BookingResponse convertToResponseDTO(Booking booking) {
                 BookingResponse dto = new BookingResponse();
                 dto.setBookingId(booking.getBookingId());

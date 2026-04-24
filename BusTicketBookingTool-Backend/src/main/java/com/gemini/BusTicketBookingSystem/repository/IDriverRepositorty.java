@@ -9,6 +9,11 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
+/*
+ * - This repository is the database access layer for Driver Repositorty records.
+ * - Spring Data JPA automatically provides common CRUD methods like save, findById, findAll, and delete.
+ * - Service classes call this repository so SQL/database work stays separate from business rules.
+ */
 public interface IDriverRepositorty extends JpaRepository<Driver,Integer> {
     @Query("SELECT COUNT(d) > 0 FROM Driver d WHERE d.licenseNumber = :licenseNumber")
     boolean existsByLicenseNumber(@Param("licenseNumber") String licenseNumber);

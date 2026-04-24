@@ -10,6 +10,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
+/*
+ * - This repository is the database access layer for Trip records.
+ * - Spring Data JPA automatically provides common CRUD methods like save, findById, findAll, and delete.
+ * - Service classes call this repository so SQL/database work stays separate from business rules.
+ */
 public interface ITripRepository extends JpaRepository<Trip, Integer> {
     @Query("SELECT t FROM Trip t " +
             "WHERE t.route.fromCity = :fromCity " +

@@ -104,6 +104,11 @@ import java.util.List;
  */
 @Configuration
 @EnableWebSecurity
+/*
+ * - This class configures backend security for the API.
+ * - It decides which requests need authentication, how Basic Auth is checked, and which frontend origin can call the backend through CORS.
+ * - Frontend requests pass through this security layer before reaching controllers.
+ */
 public class SecurityConfig {
 
     // ── PASSWORD ENCODER ─────────────────────────────────────────────────────

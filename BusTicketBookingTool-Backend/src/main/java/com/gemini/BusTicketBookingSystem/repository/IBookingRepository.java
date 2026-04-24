@@ -11,6 +11,11 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
+/*
+ * - This repository is the database access layer for Booking records.
+ * - Spring Data JPA automatically provides common CRUD methods like save, findById, findAll, and delete.
+ * - Service classes call this repository so SQL/database work stays separate from business rules.
+ */
 public interface IBookingRepository extends JpaRepository<Booking, Integer> {
     @Query("SELECT b FROM Booking b WHERE b.trip.tripId = :tripId")
     List<Booking> findBookingsByTripId(@Param("tripId") Integer tripId);

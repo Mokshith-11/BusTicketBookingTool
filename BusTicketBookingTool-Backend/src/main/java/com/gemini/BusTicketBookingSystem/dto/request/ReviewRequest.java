@@ -10,6 +10,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+/*
+ * - This request DTO describes the JSON input required to create or update Review data.
+ * - Validation annotations like @NotBlank, @NotNull, @Min, or @Email protect the service from bad input.
+ * - Controllers receive this object with @RequestBody and pass the clean data to the service layer.
+ */
 public class ReviewRequest {
 
     @NotNull(message = "Customer ID is required")

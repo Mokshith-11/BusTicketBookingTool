@@ -7,6 +7,11 @@ import lombok.*;
 @Entity
 @Table(name = "drivers")
 @Builder
+/*
+ * - This entity represents the Driver table/object stored in PostgreSQL.
+ * - JPA annotations such as @Entity, @Id, @Column, @ManyToOne, and @OneToMany explain how Java fields map to database columns and relationships.
+ * - Repositories save and read this entity; services convert it to DTOs before sending data back to the frontend.
+ */
 public class Driver {
 
     @Id

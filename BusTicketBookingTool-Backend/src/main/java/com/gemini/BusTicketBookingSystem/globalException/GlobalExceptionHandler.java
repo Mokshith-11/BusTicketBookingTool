@@ -19,8 +19,15 @@ import java.util.Map;
 
 
 @RestControllerAdvice
+// Central place for API error responses so controllers and services can stay focused on business logic.
+/*
+ * - This class is the central error handler for the backend.
+ * - When validation or service logic throws an exception, Spring comes here instead of crashing the request.
+ * - Each handler method builds a clear JSON error response with status, message, timestamp, and field errors when needed.
+ */
 public class GlobalExceptionHandler {
 
+    // ErrorResponse is the common JSON shape returned for non-validation errors.
     public static class ErrorResponse {
         private LocalDateTime timestamp;
         private int status;
@@ -36,7 +43,7 @@ public class GlobalExceptionHandler {
             this.path = path;
         }
 
-        // Getters and setters
+        // Standard getters/setters keep this response serializable by Spring/Jackson.
         public LocalDateTime getTimestamp() {
             return timestamp;
         }
@@ -163,6 +170,8 @@ public class GlobalExceptionHandler {
             MethodArgumentNotValidException ex,
             WebRequest request) {
 
+        // Spring gives validation errors as objects; we reshape them into field -> message pairs
+        // so the frontend can show readable feedback.
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach((error) -> {
             String fieldName = ((FieldError) error).getField();
