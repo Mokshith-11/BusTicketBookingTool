@@ -4,6 +4,7 @@ export interface EndpointParam {
   type: 'number' | 'text' | 'date';
 }
 
+// EndpointDef is the blueprint for one API action shown in the module console.
 export interface EndpointDef {
   method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
   path: string;
@@ -13,6 +14,7 @@ export interface EndpointDef {
   queryParams?: EndpointParam[];
 }
 
+// ModuleConfig groups the API actions, owner, and description for one module card.
 export interface ModuleConfig {
   moduleName: string;
   owner: string;
@@ -21,6 +23,7 @@ export interface ModuleConfig {
   endpoints: EndpointDef[];
 }
 
+// The UI is mostly data-driven: adding or editing an endpoint here changes what the module console renders.
 export const MODULE_CONFIGS: { [key: string]: ModuleConfig } = {
 
   agencies: {

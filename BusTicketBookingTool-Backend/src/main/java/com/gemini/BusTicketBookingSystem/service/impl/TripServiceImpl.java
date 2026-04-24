@@ -15,8 +15,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
     @Service
+    // Service classes hold the main business flow between controller input and repository calls.
     public class TripServiceImpl implements ITripService {
 
         @Autowired
@@ -36,6 +36,7 @@ import java.util.stream.Collectors;
 
         @Override
         @Transactional
+        // Creates a trip only after confirming all linked records really exist.
         public TripResponse createTrip(TripRequest requestDTO) {
             Route route = routeRepository.findById(requestDTO.getRouteId())
                     .orElseThrow(() -> new ResourceNotFoundException("Route", "routeId", requestDTO.getRouteId()));
@@ -70,7 +71,8 @@ import java.util.stream.Collectors;
             trip.setDroppingAddress(droppingAddress);
             trip.setDepartureTime(requestDTO.getDepartureTime());
             trip.setArrivalTime(requestDTO.getArrivalTime());
-            trip.setAvailableSeats(bus.getCapacity()); // Initialize with full capacity
+            // A new trip starts with all seats available.
+            trip.setAvailableSeats(bus.getCapacity());
             trip.setFare(requestDTO.getFare());
             trip.setTripDate(requestDTO.getTripDate().atStartOfDay());
             trip.setClosed(false);
@@ -80,6 +82,7 @@ import java.util.stream.Collectors;
         }
 
         @Override
+        // Returns every trip so the frontend can show the full list screen.
         public List<TripResponse> getAllTrips() {
             return tripRepository.findAll().stream()
                     .map(this::convertToResponseDTO)
@@ -87,6 +90,7 @@ import java.util.stream.Collectors;
         }
 
         @Override
+        // Fetches one trip by primary key and throws 404-style error if missing.
         public TripResponse getTripById(Integer tripId) {
             Trip trip = tripRepository.findById(tripId)
                     .orElseThrow(() -> new ResourceNotFoundException("Trip", "tripId", tripId));
@@ -94,6 +98,7 @@ import java.util.stream.Collectors;
         }
 
         @Override
+        // Search works by converting a date into a full start/end range for that day.
         public List<TripResponse> searchTrips(String fromCity, String toCity, LocalDate date) {
             LocalDateTime startOfDay = date.atStartOfDay();
             LocalDateTime endOfDay = date.atTime(23, 59, 59);
@@ -106,6 +111,7 @@ import java.util.stream.Collectors;
 
         @Override
         @Transactional
+        // Updates the core trip details used by schedule and booking flows.
         public TripResponse updateTrip(Integer tripId, TripRequest requestDTO) {
             Trip trip = tripRepository.findById(tripId)
                     .orElseThrow(() -> new ResourceNotFoundException("Trip", "tripId", tripId));
@@ -129,6 +135,7 @@ import java.util.stream.Collectors;
 
         @Override
         @Transactional
+        // Closing a trip prevents further booking by marking it closed and clearing remaining seats.
         public void closeTrip(Integer tripId) {
             Trip trip = tripRepository.findById(tripId)
                     .orElseThrow(() -> new ResourceNotFoundException("Trip", "tripId", tripId));
@@ -138,6 +145,7 @@ import java.util.stream.Collectors;
             tripRepository.save(trip);
         }
 
+        // Keeps controller responses clean by hiding entity structure behind a response DTO.
         private TripResponse convertToResponseDTO(Trip trip) {
             TripResponse dto = new TripResponse();
             dto.setTripId(trip.getTripId());

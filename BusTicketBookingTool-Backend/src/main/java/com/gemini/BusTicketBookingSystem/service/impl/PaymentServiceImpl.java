@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+// PaymentServiceImpl manages payment creation, lookup, and status changes.
 public class PaymentServiceImpl implements IPaymentService {
 
     @Autowired
@@ -36,6 +37,7 @@ public class PaymentServiceImpl implements IPaymentService {
 
     @Override
     @Transactional
+    // A payment is allowed only for a valid booked trip and for the exact trip fare amount.
     public PaymentResponse makePayment(PaymentRequest requestDTO) {
         Booking booking = bookingRepository.findById(requestDTO.getBookingId())
                 .orElseThrow(() -> new ResourceNotFoundException("Booking", "bookingId",
@@ -45,16 +47,19 @@ public class PaymentServiceImpl implements IPaymentService {
                 .orElseThrow(() -> new ResourceNotFoundException("Customer", "customerId",
                         requestDTO.getCustomerId()));
 
+        // Payments are only meaningful after a booking is successfully confirmed.
         if (booking.getStatus() != BookingStatus.Booked) {
             throw new InvalidOperationException("Make Payment",
                     "Cannot make payment for a booking that is not confirmed");
         }
 
+        // This project allows only one payment record per booking.
         if (paymentRepository.existsPaymentByBookingId(requestDTO.getBookingId())) {
             throw new DuplicateResourceException("Payment", "bookingId",
                     requestDTO.getBookingId());
         }
 
+        // The backend protects fare integrity even if the frontend sends a wrong amount.
         if (requestDTO.getAmount().compareTo(booking.getTrip().getFare()) != 0) {
             throw new InvalidOperationException("Make Payment",
                     "Payment amount must match trip fare of " + booking.getTrip().getFare());
@@ -71,6 +76,7 @@ public class PaymentServiceImpl implements IPaymentService {
     }
 
     @Override
+    // Used when the payment details page asks for one payment record.
     public PaymentResponse getPaymentById(Integer paymentId) {
         Payment payment = paymentRepository.findById(paymentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Payment", "paymentId", paymentId));
@@ -78,6 +84,7 @@ public class PaymentServiceImpl implements IPaymentService {
     }
 
     @Override
+    // Used for customer-level payment history screens.
     public List<PaymentResponse> getCustomerPayments(Integer customerId) {
         if (!customerRepository.existsById(customerId)) {
             throw new ResourceNotFoundException("Customer", "customerId", customerId);
@@ -89,6 +96,7 @@ public class PaymentServiceImpl implements IPaymentService {
     }
 
     @Override
+    // Returns the latest payment linked to a booking.
     public PaymentResponse getBookingPayment(Integer bookingId) {
         if (!bookingRepository.existsById(bookingId)) {
             throw new ResourceNotFoundException("Booking", "bookingId", bookingId);
@@ -102,6 +110,7 @@ public class PaymentServiceImpl implements IPaymentService {
 
     @Override
     @Transactional
+    // PATCH status changes are restricted by business rules, not only by enum values.
     public PaymentResponse updatePaymentStatus(Integer paymentId, PaymentStatus status) {
         Payment payment = paymentRepository.findById(paymentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Payment", "paymentId", paymentId));
@@ -118,6 +127,7 @@ public class PaymentServiceImpl implements IPaymentService {
     }
 
 
+    // Converts the payment entity and its linked booking/customer data into API response format.
     private PaymentResponse convertToResponseDTO(Payment payment) {
         PaymentResponse dto = new PaymentResponse();
         dto.setPaymentId(payment.getPaymentId());

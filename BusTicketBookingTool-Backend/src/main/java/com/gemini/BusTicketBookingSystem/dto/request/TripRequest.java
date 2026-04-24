@@ -12,8 +12,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+// TripRequest describes the data the frontend must send to create or update a trip.
+// Bean Validation annotations stop invalid requests before service logic starts.
 public class TripRequest {
 
+    // @NotNull means the request is rejected if this field is missing.
     @NotNull(message = "Route ID is required")
     private Integer routeId;
 
@@ -32,6 +35,7 @@ public class TripRequest {
     @NotNull(message = "Dropping address ID is required")
     private Integer droppingAddressId;
 
+    // @Future makes sure a new trip cannot be scheduled in the past.
     @NotNull(message = "Departure time is required")
     @Future(message = "Departure time must be in the future")
     private LocalDateTime departureTime;
@@ -47,6 +51,7 @@ public class TripRequest {
     @FutureOrPresent(message = "Trip date cannot be in the past")
     private LocalDate tripDate;
 
+    // @AssertTrue is used for cross-field validation when one field depends on another.
     @AssertTrue(message = "Arrival time must be after departure time")
     public boolean isArrivalAfterDeparture() {
         if (departureTime == null || arrivalTime == null) {
@@ -55,6 +60,7 @@ public class TripRequest {
         return arrivalTime.isAfter(departureTime);
     }
 
+    // The tripDate shown in the UI must match the actual date part of departureTime.
     @AssertTrue(message = "Trip date must match departure date")
     public boolean isTripDateSameAsDepartureDate() {
         if (departureTime == null || tripDate == null) {
