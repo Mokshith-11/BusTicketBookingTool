@@ -76,7 +76,7 @@ class BookingServiceImplTest {
         request.setCustomerId(1);
     }
 
-    // ✅ BOOK SEAT SUCCESS
+    // BOOK SEAT SUCCESS
     @Test
     void testBookSeat_Success() {
 
@@ -122,7 +122,7 @@ class BookingServiceImplTest {
         );
     }
 
-    // ✅ GET BOOKING BY ID
+    // GET BOOKING BY ID
     @Test
     void testGetBookingById_Success() {
 
@@ -146,7 +146,7 @@ class BookingServiceImplTest {
         );
     }
 
-    // ✅ CANCEL BOOKING
+    // CANCEL BOOKING
     @Test
     void testCancelBooking_Success() {
 
@@ -173,7 +173,7 @@ class BookingServiceImplTest {
         );
     }
 
-    // ✅ GET AVAILABLE SEATS
+    // GET AVAILABLE SEATS
     @Test
     void testGetAvailableSeats() {
 
@@ -197,7 +197,7 @@ class BookingServiceImplTest {
         );
     }
 
-    // ✅ GET BOOKED SEATS
+    // GET BOOKED SEATS
     @Test
     void testGetBookedSeats() {
 

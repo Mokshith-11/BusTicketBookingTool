@@ -1,9 +1,8 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { roleGuard } from './core/guards/role.guard';
 
-const routes: Routes = [
+export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: 'home', loadComponent: () => import('./shared/components/home/home.component').then(m => m.HomeComponent) },
   { path: 'dashboard', canActivate: [authGuard], loadComponent: () => import('./shared/components/dashboard/dashboard.component').then(m => m.DashboardComponent) },
@@ -21,16 +20,5 @@ const routes: Routes = [
   { path: 'routes-mgmt', canActivate: [authGuard, roleGuard], data: { roles: ['admin'] }, loadComponent: () => import('./route-trip/components/route/route.component').then(m => m.RouteComponent) },
   { path: 'customers', canActivate: [authGuard, roleGuard], data: { roles: ['admin'] }, loadComponent: () => import('./customer/components/customer-list/customer-list.component').then(m => m.CustomerListComponent) },
 
-  { path: '**', redirectTo: '' }
+  { path: '**', redirectTo: 'home' }
 ];
-
-@NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
-})
-/*
- * - This routing module decides which URL opens each component in this feature.
- * - It keeps navigation rules grouped with the feature so app-routing stays clean.
- * - Angular uses these routes when the browser path changes or when router.navigate is called.
- */
-export class AppRoutingModule {}

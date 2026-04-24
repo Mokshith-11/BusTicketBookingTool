@@ -79,7 +79,7 @@ class ReviewServiceImplTest {
         request.setComment("Good trip");
     }
 
-    // ✅ SUCCESS
+    // SUCCESS
     @Test
     void testSubmitReview_Success() {
 
@@ -155,7 +155,7 @@ class ReviewServiceImplTest {
                 () -> reviewService.submitReview(1, request));
     }
 
-    // ✅ GET TRIP REVIEWS
+    // GET TRIP REVIEWS
     @Test
     void testGetTripReviews_Success() {
 
@@ -177,7 +177,7 @@ class ReviewServiceImplTest {
                 () -> reviewService.getTripReviews(1));
     }
 
-    // ✅ GET CUSTOMER REVIEWS
+    // GET CUSTOMER REVIEWS
     @Test
     void testGetCustomerReviews_Success() {
 
@@ -199,7 +199,7 @@ class ReviewServiceImplTest {
                 () -> reviewService.getCustomerReviews(1));
     }
 
-    // ✅ DELETE REVIEW
+    // DELETE REVIEW
     @Test
     void testRemoveReview_Success() {
 

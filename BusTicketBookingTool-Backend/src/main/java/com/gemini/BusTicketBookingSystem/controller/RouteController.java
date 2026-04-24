@@ -25,7 +25,7 @@ public class RouteController {
     @Autowired
     private IRouteService routeService;
 
-    // ✅ CREATE ROUTE
+    // CREATE ROUTE
     /*
      * POST flow:
      * - Frontend sends JSON data in the request body.
@@ -46,7 +46,7 @@ public class RouteController {
         return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
     }
 
-    // ✅ GET ALL ROUTES
+    // GET ALL ROUTES
     /*
      * GET flow:
      * - Frontend asks for existing data using an ID, filter, or list endpoint.
@@ -66,7 +66,7 @@ public class RouteController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    // ✅ GET ROUTE BY ID
+    // GET ROUTE BY ID
     /*
      * GET flow:
      * - Frontend asks for existing data using an ID, filter, or list endpoint.
@@ -87,7 +87,7 @@ public class RouteController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    // ✅ UPDATE ROUTE
+    // UPDATE ROUTE
     /*
      * PUT flow:
      * - URL gives the record ID and the body gives the new values.
@@ -109,7 +109,7 @@ public class RouteController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    // ✅ DISABLE ROUTE (DELETE)
+    // DISABLE ROUTE (DELETE)
     // DELETE disables or removes a resource by ID.
     @DeleteMapping("/{routeId}")
     public ResponseEntity<ApiResponse<String>> disableRoute(

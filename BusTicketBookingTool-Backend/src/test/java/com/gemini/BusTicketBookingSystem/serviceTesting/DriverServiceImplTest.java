@@ -76,7 +76,7 @@ class DriverServiceImplTest {
         request.setAddressId(1);
     }
 
-    // ✅ REGISTER SUCCESS
+    // REGISTER SUCCESS
     @Test
     void testRegisterDriver_Success() {
 
@@ -126,7 +126,7 @@ class DriverServiceImplTest {
                 () -> driverService.registerDriver(1, request));
     }
 
-    // ✅ GET DRIVER BY ID
+    // GET DRIVER BY ID
     @Test
     void testGetDriverById_Success() {
 
@@ -147,7 +147,7 @@ class DriverServiceImplTest {
                 () -> driverService.getDriverById(1));
     }
 
-    // ✅ GET DRIVERS BY OFFICE
+    // GET DRIVERS BY OFFICE
     @Test
     void testGetDriversByOffice_Success() {
 
@@ -169,7 +169,7 @@ class DriverServiceImplTest {
                 () -> driverService.getDriversByOffice(1));
     }
 
-    // ✅ UPDATE SUCCESS
+    // UPDATE SUCCESS
     @Test
     void testUpdateDriver_Success() {
 
@@ -207,7 +207,7 @@ class DriverServiceImplTest {
                 () -> driverService.updateDriver(1, request));
     }
 
-    // ✅ DELETE SUCCESS
+    // DELETE SUCCESS
     @Test
     void testRemoveDriver_Success() {
 

@@ -69,7 +69,7 @@ class AgencyOfficeServiceImplTest {
         request.setOfficeAddressId(1);
     }
 
-    // ✅ ADD OFFICE
+    // ADD OFFICE
     @Test
     void testAddOffice_Success() {
 
@@ -118,7 +118,7 @@ class AgencyOfficeServiceImplTest {
         verify(officeRepository, never()).save(any());
     }
 
-    // ✅ GET BY ID
+    // GET BY ID
     @Test
     void testGetOfficeById_Success() {
 
@@ -144,7 +144,7 @@ class AgencyOfficeServiceImplTest {
         verify(officeRepository).findById(1);
     }
 
-    // ✅ GET OFFICES BY AGENCY
+    // GET OFFICES BY AGENCY
     @Test
     void testGetOfficesByAgency_Success() {
 
@@ -173,7 +173,7 @@ class AgencyOfficeServiceImplTest {
         verify(officeRepository, never()).findOfficesByAgencyId(any());
     }
 
-    // ✅ UPDATE OFFICE
+    // UPDATE OFFICE
     @Test
     void testUpdateOffice_Success() {
 
@@ -219,7 +219,7 @@ class AgencyOfficeServiceImplTest {
         verify(officeRepository, never()).save(any());
     }
 
-    // ✅ DELETE OFFICE
+    // DELETE OFFICE
     @Test
     void testDeleteOffice_Success() {
 
