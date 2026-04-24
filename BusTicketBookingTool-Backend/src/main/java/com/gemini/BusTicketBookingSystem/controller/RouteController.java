@@ -15,12 +15,24 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/routes")
+/*
+ * Beginner guide:
+ * - This controller is the API entry point for Route requests from Angular, Postman, or Swagger.
+ * - Mapping annotations such as @PostMapping and @GetMapping decide which URL and HTTP method reaches each function.
+ * - @Valid checks request DTO rules first; then the controller calls the service and wraps the result in ApiResponse.
+ */
 public class RouteController {
 
     @Autowired
     private IRouteService routeService;
 
     // ✅ CREATE ROUTE
+    /*
+     * POST flow:
+     * - Frontend sends JSON data in the request body.
+     * - @Valid checks the request DTO before business logic runs.
+     * - Service creates/saves the new record and the controller returns CREATED with ApiResponse.
+     */
     @PostMapping
     public ResponseEntity<ApiResponse<RouteResponse>> createRoute(
             @Valid @RequestBody RouteRequest requestDTO) {
@@ -36,6 +48,12 @@ public class RouteController {
     }
 
     // ✅ GET ALL ROUTES
+    /*
+     * GET flow:
+     * - Frontend asks for existing data using an ID, filter, or list endpoint.
+     * - Service reads from the repository and maps entities into response DTOs.
+     * - No database data is changed in this request.
+     */
     @GetMapping
     public ResponseEntity<ApiResponse<List<RouteResponse>>> getAllRoutes() {
 
@@ -50,6 +68,12 @@ public class RouteController {
     }
 
     // ✅ GET ROUTE BY ID
+    /*
+     * GET flow:
+     * - Frontend asks for existing data using an ID, filter, or list endpoint.
+     * - Service reads from the repository and maps entities into response DTOs.
+     * - No database data is changed in this request.
+     */
     @GetMapping("/{routeId}")
     public ResponseEntity<ApiResponse<RouteResponse>> getRouteById(
             @PathVariable Integer routeId) {
@@ -65,6 +89,12 @@ public class RouteController {
     }
 
     // ✅ UPDATE ROUTE
+    /*
+     * PUT flow:
+     * - URL gives the record ID and the body gives the new values.
+     * - @Valid checks the body, then service finds the old record and updates it.
+     * - If the ID does not exist, the service throws ResourceNotFoundException.
+     */
     @PutMapping("/{routeId}")
     public ResponseEntity<ApiResponse<RouteResponse>> updateRoute(
             @PathVariable Integer routeId,
@@ -81,6 +111,7 @@ public class RouteController {
     }
 
     // ✅ DISABLE ROUTE (DELETE)
+    // DELETE disables or removes a resource by ID.
     @DeleteMapping("/{routeId}")
     public ResponseEntity<ApiResponse<String>> disableRoute(
             @PathVariable Integer routeId) {

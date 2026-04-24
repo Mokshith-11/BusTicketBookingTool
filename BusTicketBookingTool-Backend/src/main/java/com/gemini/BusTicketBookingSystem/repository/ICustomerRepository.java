@@ -8,6 +8,12 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
+/*
+ * Beginner guide:
+ * - This repository is the database access layer for Customer records.
+ * - Spring Data JPA automatically provides common CRUD methods like save, findById, findAll, and delete.
+ * - Service classes call this repository so SQL/database work stays separate from business rules.
+ */
 public interface ICustomerRepository extends JpaRepository<Customer,Integer> {
     @Query("SELECT COUNT(c) > 0 FROM Customer c WHERE c.phone = :phone")
     boolean existsByPhone(@Param("phone") String phone);

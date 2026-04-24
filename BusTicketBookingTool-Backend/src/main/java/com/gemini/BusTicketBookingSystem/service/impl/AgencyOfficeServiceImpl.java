@@ -19,6 +19,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+/*
+ * Beginner guide:
+ * - This class contains the real business logic for Agency Office operations.
+ * - It checks rules, loads related records from repositories, throws clear exceptions when something is wrong, and saves valid changes.
+ * - At the end it converts entities into response DTOs so controllers can return clean API output.
+ */
 
 public class AgencyOfficeServiceImpl implements IAgencyOfficeService {
 @Autowired

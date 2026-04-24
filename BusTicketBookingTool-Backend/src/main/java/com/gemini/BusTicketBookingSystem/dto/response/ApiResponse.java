@@ -1,4 +1,10 @@
 package com.gemini.BusTicketBookingSystem.dto.response;
+/*
+ * Beginner guide:
+ * - This response DTO is the safe shape of Api data returned to the frontend.
+ * - Services convert database entities into this class so API responses do not expose unwanted internal fields.
+ * - Controllers usually place this object inside ApiResponse with status code, message, and data.
+ */
 
 public class ApiResponse<T> {
 

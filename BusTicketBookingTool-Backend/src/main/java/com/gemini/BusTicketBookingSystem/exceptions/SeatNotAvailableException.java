@@ -1,4 +1,10 @@
 package com.gemini.BusTicketBookingSystem.exceptions;
+/*
+ * Beginner guide:
+ * - This custom exception gives the service layer a readable way to report a specific Seat Not Available Exception problem.
+ * - Instead of returning random errors, services throw this exception when a known business rule fails.
+ * - GlobalExceptionHandler catches it and converts it into a proper JSON error response for the frontend.
+ */
 public class SeatNotAvailableException extends RuntimeException {
 
     private Integer tripId;

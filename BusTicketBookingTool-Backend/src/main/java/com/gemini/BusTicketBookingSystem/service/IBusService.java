@@ -5,6 +5,12 @@ import com.gemini.BusTicketBookingSystem.dto.request.BusRequest;
 import com.gemini.BusTicketBookingSystem.dto.response.BusResponse;
 
 import java.util.List;
+/*
+ * Beginner guide:
+ * - This service interface lists the Bus actions that controllers are allowed to call.
+ * - The interface shows the contract: method names, input DTOs/IDs, and response DTOs.
+ * - The implementation class contains the actual validations, repository calls, and save/update logic.
+ */
 
 public interface IBusService {
 

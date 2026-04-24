@@ -24,6 +24,12 @@ import java.util.stream.Collectors;
 
 @Service
 // PaymentServiceImpl manages payment creation, lookup, and status changes.
+/*
+ * Beginner guide:
+ * - This class contains the real business logic for Payment operations.
+ * - It checks rules, loads related records from repositories, throws clear exceptions when something is wrong, and saves valid changes.
+ * - At the end it converts entities into response DTOs so controllers can return clean API output.
+ */
 public class PaymentServiceImpl implements IPaymentService {
 
     @Autowired

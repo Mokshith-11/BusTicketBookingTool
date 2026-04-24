@@ -14,12 +14,22 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
+/*
+ * Beginner guide:
+ * - This controller is the API entry point for Agency Office requests from Angular, Postman, or Swagger.
+ * - Mapping annotations such as @PostMapping and @GetMapping decide which URL and HTTP method reaches each function.
+ * - @Valid checks request DTO rules first; then the controller calls the service and wraps the result in ApiResponse.
+ */
 public class AgencyOfficeController {
 
     @Autowired
     private IAgencyOfficeService officeService;
-
-
+    /*
+     * POST flow:
+     * - Frontend sends JSON data in the request body.
+     * - @Valid checks the request DTO before business logic runs.
+     * - Service creates/saves the new record and the controller returns CREATED with ApiResponse.
+     */
     @PostMapping("/agencies/{agencyId}/offices")
     public ResponseEntity<ApiResponse<AgencyOfficeResponse>> createOffice(
             @PathVariable Integer agencyId,
@@ -34,8 +44,12 @@ public class AgencyOfficeController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
     }
-
-
+    /*
+     * GET flow:
+     * - Frontend asks for existing data using an ID, filter, or list endpoint.
+     * - Service reads from the repository and maps entities into response DTOs.
+     * - No database data is changed in this request.
+     */
     @GetMapping("/agencies/{agencyId}/offices")
     public ResponseEntity<ApiResponse<List<AgencyOfficeResponse>>> getOfficesByAgency(
             @PathVariable Integer agencyId) {
@@ -49,8 +63,12 @@ public class AgencyOfficeController {
 
         return ResponseEntity.ok(apiResponse);
     }
-
-
+    /*
+     * GET flow:
+     * - Frontend asks for existing data using an ID, filter, or list endpoint.
+     * - Service reads from the repository and maps entities into response DTOs.
+     * - No database data is changed in this request.
+     */
     @GetMapping("/offices/{officeId}")
     public ResponseEntity<ApiResponse<AgencyOfficeResponse>> getOfficeById(
             @PathVariable Integer officeId) {
@@ -64,8 +82,12 @@ public class AgencyOfficeController {
 
         return ResponseEntity.ok(apiResponse);
     }
-
-
+    /*
+     * PUT flow:
+     * - URL gives the record ID and the body gives the new values.
+     * - @Valid checks the body, then service finds the old record and updates it.
+     * - If the ID does not exist, the service throws ResourceNotFoundException.
+     */
     @PutMapping("/offices/{officeId}")
     public ResponseEntity<ApiResponse<AgencyOfficeResponse>> updateOffice(
             @PathVariable Integer officeId,
@@ -82,6 +104,7 @@ public class AgencyOfficeController {
     }
 
 
+    // DELETE disables or removes a resource by ID.
     @DeleteMapping("/offices/{officeId}")
     public ResponseEntity<ApiResponse<String>> deactivateOffice(
             @PathVariable Integer officeId) {

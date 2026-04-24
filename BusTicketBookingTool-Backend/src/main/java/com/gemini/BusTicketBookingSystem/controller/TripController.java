@@ -18,6 +18,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/trips")
+/*
+ * Beginner guide:
+ * - This controller is the API entry point for Trip requests from Angular, Postman, or Swagger.
+ * - Mapping annotations such as @PostMapping and @GetMapping decide which URL and HTTP method reaches each function.
+ * - @Valid checks request DTO rules first; then the controller calls the service and wraps the result in ApiResponse.
+ */
 public class TripController {
 
         @Autowired
@@ -27,6 +33,12 @@ public class TripController {
         private IBookingService bookingService;
 
         // ✅ CREATE TRIP
+    /*
+     * POST flow:
+     * - Frontend sends JSON data in the request body.
+     * - @Valid checks the request DTO before business logic runs.
+     * - Service creates/saves the new record and the controller returns CREATED with ApiResponse.
+     */
         @PostMapping
         public ResponseEntity<ApiResponse<TripResponse>> createTrip(
                         @Valid @RequestBody TripRequest requestDTO) {
@@ -41,6 +53,12 @@ public class TripController {
         }
 
         // ✅ GET ALL TRIPS
+    /*
+     * GET flow:
+     * - Frontend asks for existing data using an ID, filter, or list endpoint.
+     * - Service reads from the repository and maps entities into response DTOs.
+     * - No database data is changed in this request.
+     */
         @GetMapping
         public ResponseEntity<ApiResponse<List<TripResponse>>> getAllTrips() {
 
@@ -54,6 +72,12 @@ public class TripController {
         }
 
         // ✅ GET TRIP BY ID
+    /*
+     * GET flow:
+     * - Frontend asks for existing data using an ID, filter, or list endpoint.
+     * - Service reads from the repository and maps entities into response DTOs.
+     * - No database data is changed in this request.
+     */
         @GetMapping("/{tripId}")
         public ResponseEntity<ApiResponse<TripResponse>> getTripById(
                         @PathVariable Integer tripId) {
@@ -68,6 +92,12 @@ public class TripController {
         }
 
         // ✅ SEARCH TRIPS
+    /*
+     * GET flow:
+     * - Frontend asks for existing data using an ID, filter, or list endpoint.
+     * - Service reads from the repository and maps entities into response DTOs.
+     * - No database data is changed in this request.
+     */
         @GetMapping("/search")
         public ResponseEntity<ApiResponse<List<TripResponse>>> searchTrips(
                         @RequestParam String fromCity,
@@ -84,6 +114,12 @@ public class TripController {
         }
 
         // ✅ UPDATE TRIP
+    /*
+     * PUT flow:
+     * - URL gives the record ID and the body gives the new values.
+     * - @Valid checks the body, then service finds the old record and updates it.
+     * - If the ID does not exist, the service throws ResourceNotFoundException.
+     */
         @PutMapping("/{tripId}")
         public ResponseEntity<ApiResponse<TripResponse>> updateTrip(
                         @PathVariable Integer tripId,
@@ -99,6 +135,12 @@ public class TripController {
         }
 
         // ✅ CLOSE TRIP
+    /*
+     * PATCH flow:
+     * - URL points to the existing record and the request changes only one small part, such as status or close action.
+     * - Service checks whether the operation is allowed before saving.
+     * - This is used when a full update is not needed.
+     */
         @PatchMapping("/{tripId}/close")
         public ResponseEntity<ApiResponse<String>> closeTrip(
                         @PathVariable Integer tripId) {
@@ -113,6 +155,12 @@ public class TripController {
         }
 
         // ✅ SEAT INFO MESSAGE
+    /*
+     * GET flow:
+     * - Frontend asks for existing data using an ID, filter, or list endpoint.
+     * - Service reads from the repository and maps entities into response DTOs.
+     * - No database data is changed in this request.
+     */
         @GetMapping("/{tripId}/seats")
         public ResponseEntity<ApiResponse<SeatAvailabilityResponse>> getSeatAvailability(
                         @PathVariable Integer tripId) {
@@ -127,6 +175,12 @@ public class TripController {
         }
 
         // ✅ BOOKED SEATS
+    /*
+     * GET flow:
+     * - Frontend asks for existing data using an ID, filter, or list endpoint.
+     * - Service reads from the repository and maps entities into response DTOs.
+     * - No database data is changed in this request.
+     */
         @GetMapping("/{tripId}/seats/booked")
         public ResponseEntity<ApiResponse<List<Integer>>> getBookedSeats(
                         @PathVariable Integer tripId) {
@@ -141,6 +195,12 @@ public class TripController {
         }
 
         // ✅ AVAILABLE SEATS
+    /*
+     * GET flow:
+     * - Frontend asks for existing data using an ID, filter, or list endpoint.
+     * - Service reads from the repository and maps entities into response DTOs.
+     * - No database data is changed in this request.
+     */
         @GetMapping("/{tripId}/seats/available")
         public ResponseEntity<ApiResponse<List<Integer>>> getAvailableSeats(
                         @PathVariable Integer tripId) {

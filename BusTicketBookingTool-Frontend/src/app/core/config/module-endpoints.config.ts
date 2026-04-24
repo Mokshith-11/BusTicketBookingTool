@@ -1,3 +1,9 @@
+/*
+ * Beginner guide:
+ * - This config is the menu/blueprint for the reusable API console screens.
+ * - Each endpoint object tells the UI which HTTP method, path, path IDs, query fields, and body fields to show.
+ * - When you click an API method in the frontend, ModuleEndpointsComponent reads this config and builds the request from it.
+ */
 export interface EndpointParam {
   name: string;
   label: string;

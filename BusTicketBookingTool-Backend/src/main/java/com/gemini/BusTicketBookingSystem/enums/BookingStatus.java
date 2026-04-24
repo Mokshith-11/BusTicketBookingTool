@@ -1,4 +1,10 @@
 package com.gemini.BusTicketBookingSystem.enums;
+/*
+ * Beginner guide:
+ * - This enum limits Booking Status to fixed allowed values instead of free text.
+ * - Fixed values make validation, database storage, and frontend display more predictable.
+ * - Services compare against these values when deciding whether an operation is allowed.
+ */
 
 public enum BookingStatus {
     Available,

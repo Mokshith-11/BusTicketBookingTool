@@ -15,6 +15,12 @@ import { MODULE_CONFIGS, ModuleConfig, EndpointDef } from '../../../core/config/
 })
 // This component is the generic API console used by every module page.
 // It reads endpoint config, shows the required inputs, sends the request, and prints the response.
+/*
+ * Beginner guide:
+ * - This component controls the screen shown in the browser for this feature.
+ * - The TypeScript file stores page state and user actions; the HTML file displays that state.
+ * - When the user clicks buttons or submits forms, this component calls services or shared console logic.
+ */
 export class ModuleEndpointsComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);

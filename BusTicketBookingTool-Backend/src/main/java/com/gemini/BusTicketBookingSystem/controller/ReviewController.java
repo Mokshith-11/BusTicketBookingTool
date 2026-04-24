@@ -15,12 +15,24 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
+/*
+ * Beginner guide:
+ * - This controller is the API entry point for Review requests from Angular, Postman, or Swagger.
+ * - Mapping annotations such as @PostMapping and @GetMapping decide which URL and HTTP method reaches each function.
+ * - @Valid checks request DTO rules first; then the controller calls the service and wraps the result in ApiResponse.
+ */
 public class ReviewController {
 
     @Autowired
     private IReviewService reviewService;
 
     // ✅ SUBMIT REVIEW
+    /*
+     * POST flow:
+     * - Frontend sends JSON data in the request body.
+     * - @Valid checks the request DTO before business logic runs.
+     * - Service creates/saves the new record and the controller returns CREATED with ApiResponse.
+     */
     @PostMapping("/trips/{tripId}/reviews")
     public ResponseEntity<ApiResponse<ReviewResponse>> submitReview(
             @PathVariable Integer tripId,
@@ -37,6 +49,12 @@ public class ReviewController {
     }
 
     // ✅ GET REVIEWS BY TRIP
+    /*
+     * GET flow:
+     * - Frontend asks for existing data using an ID, filter, or list endpoint.
+     * - Service reads from the repository and maps entities into response DTOs.
+     * - No database data is changed in this request.
+     */
     @GetMapping("/trips/{tripId}/reviews")
     public ResponseEntity<ApiResponse<List<ReviewResponse>>> getTripReviews(
             @PathVariable Integer tripId) {
@@ -52,6 +70,12 @@ public class ReviewController {
     }
 
     // ✅ GET REVIEWS BY CUSTOMER
+    /*
+     * GET flow:
+     * - Frontend asks for existing data using an ID, filter, or list endpoint.
+     * - Service reads from the repository and maps entities into response DTOs.
+     * - No database data is changed in this request.
+     */
     @GetMapping("/customers/{customerId}/reviews")
     public ResponseEntity<ApiResponse<List<ReviewResponse>>> getCustomerReviews(
             @PathVariable Integer customerId) {
@@ -67,6 +91,7 @@ public class ReviewController {
     }
 
     // ✅ DELETE REVIEW
+    // DELETE disables or removes a resource by ID.
     @DeleteMapping("/reviews/{reviewId}")
     public ResponseEntity<ApiResponse<String>> removeReview(
             @PathVariable Integer reviewId) {

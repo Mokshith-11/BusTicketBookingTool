@@ -20,6 +20,12 @@ import java.util.Map;
 
 @RestControllerAdvice
 // Central place for API error responses so controllers and services can stay focused on business logic.
+/*
+ * Beginner guide:
+ * - This class is the central error handler for the backend.
+ * - When validation or service logic throws an exception, Spring comes here instead of crashing the request.
+ * - Each handler method builds a clear JSON error response with status, message, timestamp, and field errors when needed.
+ */
 public class GlobalExceptionHandler {
 
     // ErrorResponse is the common JSON shape returned for non-validation errors.
