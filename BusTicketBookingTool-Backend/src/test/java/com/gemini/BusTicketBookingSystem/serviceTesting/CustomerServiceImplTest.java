@@ -60,7 +60,7 @@ class CustomerServiceImplTest {
         request.setAddressId(1);
     }
 
-    // ✅ REGISTER SUCCESS
+    // REGISTER SUCCESS
     @Test
     void registerCustomer_success() {
         when(customerRepository.existsByEmail(request.getEmail())).thenReturn(false);
@@ -107,7 +107,7 @@ class CustomerServiceImplTest {
                 () -> customerService.registerCustomer(request));
     }
 
-    // ✅ GET BY ID SUCCESS
+    // GET BY ID SUCCESS
     @Test
     void getCustomerById_success() {
         when(customerRepository.findById(1)).thenReturn(Optional.of(customer));
@@ -127,7 +127,7 @@ class CustomerServiceImplTest {
                 () -> customerService.getCustomerById(1));
     }
 
-    // ✅ UPDATE SUCCESS (no duplicate check triggered)
+    // UPDATE SUCCESS (no duplicate check triggered)
     @Test
     void updateCustomer_success() {
         when(customerRepository.findById(1)).thenReturn(Optional.of(customer));
@@ -179,7 +179,7 @@ class CustomerServiceImplTest {
                 () -> customerService.updateCustomer(1, request));
     }
 
-    // ✅ GET ALL
+    // GET ALL
     @Test
     void getAllCustomers_success() {
         when(customerRepository.findAll()).thenReturn(List.of(customer));

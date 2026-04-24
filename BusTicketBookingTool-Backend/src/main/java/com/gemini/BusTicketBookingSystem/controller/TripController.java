@@ -31,7 +31,7 @@ public class TripController {
         @Autowired
         private IBookingService bookingService;
 
-        // ✅ CREATE TRIP
+        // CREATE TRIP
     /*
      * POST flow:
      * - Frontend sends JSON data in the request body.
@@ -51,7 +51,7 @@ public class TripController {
                 return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
         }
 
-        // ✅ GET ALL TRIPS
+        // GET ALL TRIPS
     /*
      * GET flow:
      * - Frontend asks for existing data using an ID, filter, or list endpoint.
@@ -70,7 +70,7 @@ public class TripController {
                 return ResponseEntity.ok(apiResponse);
         }
 
-        // ✅ GET TRIP BY ID
+        // GET TRIP BY ID
     /*
      * GET flow:
      * - Frontend asks for existing data using an ID, filter, or list endpoint.
@@ -90,7 +90,7 @@ public class TripController {
                 return ResponseEntity.ok(apiResponse);
         }
 
-        // ✅ SEARCH TRIPS
+        // SEARCH TRIPS
     /*
      * GET flow:
      * - Frontend asks for existing data using an ID, filter, or list endpoint.
@@ -112,7 +112,7 @@ public class TripController {
                 return ResponseEntity.ok(apiResponse);
         }
 
-        // ✅ UPDATE TRIP
+        // UPDATE TRIP
     /*
      * PUT flow:
      * - URL gives the record ID and the body gives the new values.
@@ -133,7 +133,7 @@ public class TripController {
                 return ResponseEntity.ok(apiResponse);
         }
 
-        // ✅ CLOSE TRIP
+        // CLOSE TRIP
     /*
      * PATCH flow:
      * - URL points to the existing record and the request changes only one small part, such as status or close action.
@@ -153,7 +153,7 @@ public class TripController {
                 return ResponseEntity.ok(apiResponse);
         }
 
-        // ✅ SEAT INFO MESSAGE
+        // SEAT INFO MESSAGE
     /*
      * GET flow:
      * - Frontend asks for existing data using an ID, filter, or list endpoint.
@@ -173,7 +173,7 @@ public class TripController {
                 return ResponseEntity.ok(apiResponse);
         }
 
-        // ✅ BOOKED SEATS
+        // BOOKED SEATS
     /*
      * GET flow:
      * - Frontend asks for existing data using an ID, filter, or list endpoint.
@@ -193,7 +193,7 @@ public class TripController {
                 return ResponseEntity.ok(apiResponse);
         }
 
-        // ✅ AVAILABLE SEATS
+        // AVAILABLE SEATS
     /*
      * GET flow:
      * - Frontend asks for existing data using an ID, filter, or list endpoint.

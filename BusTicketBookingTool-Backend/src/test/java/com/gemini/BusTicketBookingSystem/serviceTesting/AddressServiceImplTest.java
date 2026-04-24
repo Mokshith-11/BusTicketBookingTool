@@ -52,7 +52,7 @@ class AddressServiceImplTest {
         request.setZipCode("600001");
     }
 
-    // ✅ CREATE ADDRESS
+    // CREATE ADDRESS
     @Test
     void testCreateAddress() {
 
@@ -66,7 +66,7 @@ class AddressServiceImplTest {
         verify(addressRepository, times(1)).save(any(Addresses.class));
     }
 
-    // ✅ GET BY ID - SUCCESS
+    // GET BY ID - SUCCESS
     @Test
     void testGetAddressById_Success() {
 
@@ -92,7 +92,7 @@ class AddressServiceImplTest {
         verify(addressRepository, times(1)).findById(1);
     }
 
-    // ✅ UPDATE ADDRESS - SUCCESS
+    // UPDATE ADDRESS - SUCCESS
     @Test
     void testUpdateAddress_Success() {
 
@@ -121,7 +121,7 @@ class AddressServiceImplTest {
         verify(addressRepository, never()).save(any());
     }
 
-    // ✅ DELETE ADDRESS - SUCCESS
+    // DELETE ADDRESS - SUCCESS
     @Test
     void testDeleteAddress_Success() {
 

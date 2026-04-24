@@ -52,7 +52,7 @@ class AgencyServiceImplTest {
         mockRequest.setPhone("9876543210");
     }
 
-    // ✅ CREATE
+    // CREATE
     @Test
     void testCreateAgency() {
 
@@ -66,7 +66,7 @@ class AgencyServiceImplTest {
         verify(agencyRepository, times(1)).save(any(Agency.class));
     }
 
-    // ✅ GET ALL
+    // GET ALL
     @Test
     void testGetAllAgencies() {
 
@@ -80,7 +80,7 @@ class AgencyServiceImplTest {
         verify(agencyRepository, times(1)).findAll();
     }
 
-    // ✅ GET BY ID - SUCCESS
+    // GET BY ID - SUCCESS
     @Test
     void testGetAgencyById_Success() {
 
@@ -106,7 +106,7 @@ class AgencyServiceImplTest {
         verify(agencyRepository, times(1)).findById(1);
     }
 
-    // ✅ UPDATE - SUCCESS
+    // UPDATE - SUCCESS
     @Test
     void testUpdateAgency_Success() {
 
@@ -135,7 +135,7 @@ class AgencyServiceImplTest {
         verify(agencyRepository, never()).save(any());
     }
 
-    // ✅ DELETE - SUCCESS
+    // DELETE - SUCCESS
     @Test
     void testDeleteAgency_Success() {
 

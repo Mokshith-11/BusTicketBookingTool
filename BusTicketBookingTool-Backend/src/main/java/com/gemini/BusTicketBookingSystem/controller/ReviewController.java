@@ -25,7 +25,7 @@ public class ReviewController {
     @Autowired
     private IReviewService reviewService;
 
-    // ✅ SUBMIT REVIEW
+    // SUBMIT REVIEW
     /*
      * POST flow:
      * - Frontend sends JSON data in the request body.
@@ -47,7 +47,7 @@ public class ReviewController {
         return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
     }
 
-    // ✅ GET REVIEWS BY TRIP
+    // GET REVIEWS BY TRIP
     /*
      * GET flow:
      * - Frontend asks for existing data using an ID, filter, or list endpoint.
@@ -68,7 +68,7 @@ public class ReviewController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    // ✅ GET REVIEWS BY CUSTOMER
+    // GET REVIEWS BY CUSTOMER
     /*
      * GET flow:
      * - Frontend asks for existing data using an ID, filter, or list endpoint.
@@ -89,7 +89,7 @@ public class ReviewController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    // ✅ DELETE REVIEW
+    // DELETE REVIEW
     // DELETE disables or removes a resource by ID.
     @DeleteMapping("/reviews/{reviewId}")
     public ResponseEntity<ApiResponse<String>> removeReview(

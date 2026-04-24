@@ -26,7 +26,7 @@ public class PaymentController {
     @Autowired
     private IPaymentService paymentService;
 
-    // ✅ MAKE PAYMENT
+    // MAKE PAYMENT
     /*
      * POST flow:
      * - Frontend sends JSON data in the request body.
@@ -47,7 +47,7 @@ public class PaymentController {
         return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
     }
 
-    // ✅ GET PAYMENT BY ID
+    // GET PAYMENT BY ID
     /*
      * GET flow:
      * - Frontend asks for existing data using an ID, filter, or list endpoint.
@@ -68,7 +68,7 @@ public class PaymentController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    // ✅ GET CUSTOMER PAYMENTS
+    // GET CUSTOMER PAYMENTS
     /*
      * GET flow:
      * - Frontend asks for existing data using an ID, filter, or list endpoint.
@@ -89,7 +89,7 @@ public class PaymentController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    // ✅ GET BOOKING PAYMENT
+    // GET BOOKING PAYMENT
     /*
      * GET flow:
      * - Frontend asks for existing data using an ID, filter, or list endpoint.
@@ -110,7 +110,7 @@ public class PaymentController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    // ✅ UPDATE PAYMENT STATUS
+    // UPDATE PAYMENT STATUS
     /*
      * PATCH flow:
      * - URL points to the existing record and the request changes only one small part, such as status or close action.
