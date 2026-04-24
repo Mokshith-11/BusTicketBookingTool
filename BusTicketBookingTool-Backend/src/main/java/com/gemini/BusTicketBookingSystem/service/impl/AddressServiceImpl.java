@@ -19,6 +19,11 @@ import java.util.stream.Collectors;
  * and deleting address records in the database.
  */
 @Service
+/*
+ * - This class contains the real business logic for Address operations.
+ * - It checks rules, loads related records from repositories, throws clear exceptions when something is wrong, and saves valid changes.
+ * - At the end it converts entities into response DTOs so controllers can return clean API output.
+ */
 
 public class AddressServiceImpl implements IAddressService {
 @Autowired

@@ -10,6 +10,11 @@ import lombok.*;
  * Contains driver details like license number, name, phone, and address.
  */
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+/*
+ * - This request DTO describes the JSON input required to create or update Driver data.
+ * - Validation annotations like @NotBlank, @NotNull, @Min, or @Email protect the service from bad input.
+ * - Controllers receive this object with @RequestBody and pass the clean data to the service layer.
+ */
 public class DriverRequest {
 
     /** Driving license number — required, must be unique */

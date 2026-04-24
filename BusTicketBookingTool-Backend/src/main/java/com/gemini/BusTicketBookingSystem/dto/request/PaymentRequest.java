@@ -12,6 +12,11 @@ import java.time.LocalDateTime;
  * Contains the booking ID, customer ID, payment amount, and status.
  */
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+/*
+ * - This request DTO describes the JSON input required to create or update Payment data.
+ * - Validation annotations like @NotBlank, @NotNull, @Min, or @Email protect the service from bad input.
+ * - Controllers receive this object with @RequestBody and pass the clean data to the service layer.
+ */
 public class PaymentRequest {
 
     /** ID of the booking to pay for — required */

@@ -82,7 +82,7 @@ class PaymentServiceImplTest {
         request.setAmount(BigDecimal.valueOf(500));
     }
 
-    // ✅ MAKE PAYMENT SUCCESS
+    // MAKE PAYMENT SUCCESS
     @Test
     void testMakePayment_Success() {
 
@@ -159,7 +159,7 @@ class PaymentServiceImplTest {
                 () -> paymentService.makePayment(request));
     }
 
-    // ✅ GET PAYMENT BY ID
+    // GET PAYMENT BY ID
     @Test
     void testGetPaymentById_Success() {
 
@@ -180,7 +180,7 @@ class PaymentServiceImplTest {
                 () -> paymentService.getPaymentById(1));
     }
 
-    // ✅ GET CUSTOMER PAYMENTS
+    // GET CUSTOMER PAYMENTS
     @Test
     void testGetCustomerPayments_Success() {
 
@@ -203,7 +203,7 @@ class PaymentServiceImplTest {
                 () -> paymentService.getCustomerPayments(1));
     }
 
-    // ✅ GET BOOKING PAYMENT
+    // GET BOOKING PAYMENT
     @Test
     void testGetBookingPayment_Success() {
 

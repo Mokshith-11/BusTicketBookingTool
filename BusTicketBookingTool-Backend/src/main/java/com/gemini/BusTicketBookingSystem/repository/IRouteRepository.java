@@ -14,6 +14,11 @@ import java.util.List;
  * Contains a custom query to find routes by source and destination cities.
  */
 @Repository
+/*
+ * - This repository is the database access layer for Route records.
+ * - Spring Data JPA automatically provides common CRUD methods like save, findById, findAll, and delete.
+ * - Service classes call this repository so SQL/database work stays separate from business rules.
+ */
 public interface IRouteRepository extends JpaRepository<Route,Integer> {
 
     /**

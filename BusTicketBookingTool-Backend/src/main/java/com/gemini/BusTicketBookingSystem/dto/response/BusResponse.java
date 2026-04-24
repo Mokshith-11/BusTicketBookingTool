@@ -7,6 +7,11 @@ import lombok.*;
  * Contains bus details including registration, capacity, and type.
  */
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+/*
+ * - This response DTO is the safe shape of Bus data returned to the frontend.
+ * - Services convert database entities into this class so API responses do not expose unwanted internal fields.
+ * - Controllers usually place this object inside ApiResponse with status code, message, and data.
+ */
 public class BusResponse {
     /** Unique bus identifier */
     private Integer busId;

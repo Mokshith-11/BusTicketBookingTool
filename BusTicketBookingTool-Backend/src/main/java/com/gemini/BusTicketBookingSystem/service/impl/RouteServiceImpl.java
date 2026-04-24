@@ -22,6 +22,11 @@ import java.util.stream.Collectors;
  * validates that source and destination cities are different.
  */
 @Service
+/*
+ * - This class contains the real business logic for Route operations.
+ * - It checks rules, loads related records from repositories, throws clear exceptions when something is wrong, and saves valid changes.
+ * - At the end it converts entities into response DTOs so controllers can return clean API output.
+ */
 public class RouteServiceImpl implements IRouteService {
 
     @Autowired

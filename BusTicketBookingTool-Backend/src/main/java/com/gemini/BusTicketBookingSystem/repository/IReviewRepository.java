@@ -15,6 +15,11 @@ import java.util.List;
  * and checking for duplicate reviews.
  */
 @Repository
+/*
+ * - This repository is the database access layer for Review records.
+ * - Spring Data JPA automatically provides common CRUD methods like save, findById, findAll, and delete.
+ * - Service classes call this repository so SQL/database work stays separate from business rules.
+ */
 public interface IReviewRepository extends JpaRepository<Review, Integer> {
 
     /**

@@ -14,6 +14,11 @@ import java.util.List;
  * Contains custom queries for checking duplicate licenses and finding drivers by office.
  */
 @Repository
+/*
+ * - This repository is the database access layer for Driver Repositorty records.
+ * - Spring Data JPA automatically provides common CRUD methods like save, findById, findAll, and delete.
+ * - Service classes call this repository so SQL/database work stays separate from business rules.
+ */
 public interface IDriverRepositorty extends JpaRepository<Driver,Integer> {
 
     /**

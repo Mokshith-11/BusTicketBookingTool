@@ -12,6 +12,11 @@ import lombok.*;
  * Contains bus details like registration number, capacity, and type.
  */
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+/*
+ * - This request DTO describes the JSON input required to create or update Bus data.
+ * - Validation annotations like @NotBlank, @NotNull, @Min, or @Email protect the service from bad input.
+ * - Controllers receive this object with @RequestBody and pass the clean data to the service layer.
+ */
 public class BusRequest {
 
     /** ID of the office this bus belongs to — required */

@@ -6,6 +6,11 @@ import lombok.*;
  * Contains driver details including office assignment and address.
  */
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+/*
+ * - This response DTO is the safe shape of Driver data returned to the frontend.
+ * - Services convert database entities into this class so API responses do not expose unwanted internal fields.
+ * - Controllers usually place this object inside ApiResponse with status code, message, and data.
+ */
 public class DriverResponse {
 
     /** Unique driver identifier */

@@ -7,6 +7,11 @@ import lombok.*;
  * Contains office details including parent agency info and nested address.
  */
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+/*
+ * - This response DTO is the safe shape of Agency Office data returned to the frontend.
+ * - Services convert database entities into this class so API responses do not expose unwanted internal fields.
+ * - Controllers usually place this object inside ApiResponse with status code, message, and data.
+ */
 public class AgencyOfficeResponse {
     /** Unique office identifier */
     private Integer officeId;

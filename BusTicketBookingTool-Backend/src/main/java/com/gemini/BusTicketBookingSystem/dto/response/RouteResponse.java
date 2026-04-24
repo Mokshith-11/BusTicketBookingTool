@@ -7,6 +7,11 @@ import lombok.*;
  * Contains the route details including cities, stops, and duration.
  */
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+/*
+ * - This response DTO is the safe shape of Route data returned to the frontend.
+ * - Services convert database entities into this class so API responses do not expose unwanted internal fields.
+ * - Controllers usually place this object inside ApiResponse with status code, message, and data.
+ */
 public class RouteResponse {
 
     /** Unique route identifier */

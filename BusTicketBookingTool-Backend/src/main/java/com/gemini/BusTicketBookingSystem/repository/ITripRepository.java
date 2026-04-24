@@ -15,6 +15,11 @@ import java.util.List;
  * Contains a custom query for searching trips by route and date.
  */
 @Repository
+/*
+ * - This repository is the database access layer for Trip records.
+ * - Spring Data JPA automatically provides common CRUD methods like save, findById, findAll, and delete.
+ * - Service classes call this repository so SQL/database work stays separate from business rules.
+ */
 public interface ITripRepository extends JpaRepository<Trip, Integer> {
 
     /**

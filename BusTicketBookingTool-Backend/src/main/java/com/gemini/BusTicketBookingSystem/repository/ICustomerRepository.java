@@ -13,6 +13,11 @@ import org.springframework.stereotype.Repository;
  * Contains custom queries to check for duplicate phone numbers and emails.
  */
 @Repository
+/*
+ * - This repository is the database access layer for Customer records.
+ * - Spring Data JPA automatically provides common CRUD methods like save, findById, findAll, and delete.
+ * - Service classes call this repository so SQL/database work stays separate from business rules.
+ */
 public interface ICustomerRepository extends JpaRepository<Customer,Integer> {
 
     /**

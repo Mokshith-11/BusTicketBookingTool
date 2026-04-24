@@ -12,6 +12,11 @@ import java.time.LocalDateTime;
  * Contains payment details including booking info, customer info, and payment status.
  */
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+/*
+ * - This response DTO is the safe shape of Payment data returned to the frontend.
+ * - Services convert database entities into this class so API responses do not expose unwanted internal fields.
+ * - Controllers usually place this object inside ApiResponse with status code, message, and data.
+ */
 public class PaymentResponse {
     /** Unique payment identifier */
     private Integer paymentId;
