@@ -13,6 +13,7 @@ import { MODULE_CONFIGS, ModuleConfig, EndpointDef } from '../../../core/config/
   imports: [CommonModule, FormsModule],
   templateUrl: './module-endpoints.component.html'
 })
+// Reusable API console used by all module pages.
 export class ModuleEndpointsComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -30,6 +31,7 @@ export class ModuleEndpointsComponent implements OnInit {
   loading = signal(false);
   @Input() moduleKey?: string;
 
+  // Load the selected module definition either from route data or an explicit input.
   ngOnInit() {
     const moduleKey = this.moduleKey || this.route.snapshot.data['moduleKey'];
     if (moduleKey && MODULE_CONFIGS[moduleKey]) {
@@ -63,7 +65,7 @@ export class ModuleEndpointsComponent implements OnInit {
     }
   }
 
-  // Converts endpoint templates like /trips/{tripId} into the real URL sent to the backend.
+  // Converts templates like /trips/{tripId} into a concrete URL before the request is sent.
   buildUrl(ep: EndpointDef): string {
     let url = ep.path;
     // Replace path params like {tripId} with actual values entered in the UI.
@@ -80,7 +82,7 @@ export class ModuleEndpointsComponent implements OnInit {
     return url;
   }
 
-  // Builds the final request from form input and sends it with the correct HTTP method.
+  // Builds the URL/body from the form and sends the matching HTTP request.
   submit() {
     const ep = this.activeEndpoint();
     if (!ep) return;

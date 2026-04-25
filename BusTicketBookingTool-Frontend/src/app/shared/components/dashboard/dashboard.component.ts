@@ -10,6 +10,7 @@ import { MODULE_CONFIGS } from '../../../core/config/module-endpoints.config';
   imports: [CommonModule],
   templateUrl: './dashboard.component.html'
 })
+// Dashboard shows the modules owned by the logged-in teammate.
 export class DashboardComponent {
   auth = inject(AuthService);
   router = inject(Router);
@@ -22,6 +23,7 @@ export class DashboardComponent {
     description: config.description
   }));
 
+  // Only show module cards assigned to the current teammate.
   get visibleModules() {
     const user = this.auth.username()?.toLowerCase();
     if (!user) return [];
