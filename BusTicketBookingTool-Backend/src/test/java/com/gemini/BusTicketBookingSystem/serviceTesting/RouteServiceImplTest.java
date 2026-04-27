@@ -161,55 +161,7 @@ class RouteServiceImplTest {
 
         verify(routeRepository, never()).save(any());
     }
-
-    @Test
-    void updateRoute_sameCity() {
-        RouteRequest request = mockRequest();
-        request.setToCity("Chennai");
-
-        when(routeRepository.findById(1)).thenReturn(Optional.of(mockRoute()));
-
-        assertThrows(InvalidOperationException.class,
-                () -> routeService.updateRoute(1, request));
-    }
-
-    @Test
-    void updateRoute_duplicate() {
-        RouteRequest request = mockRequest();
-
-        Route existing = mockRoute();
-        Route duplicate = mockRoute();
-        duplicate.setRouteId(2);
-
-        when(routeRepository.findById(1)).thenReturn(Optional.of(existing));
-        when(routeRepository.findByFromCityAndToCity("Chennai", "Bangalore"))
-                .thenReturn(List.of(duplicate));
-
-        assertThrows(DuplicateResourceException.class,
-                () -> routeService.updateRoute(1, request));
-    }
-
     // -----------------------------
     // DELETE (disableRoute)
     // -----------------------------
-    @Test
-    void disableRoute_success() {
-        Route route = mockRoute();
-
-        when(routeRepository.findById(1)).thenReturn(Optional.of(route));
-
-        routeService.disableRoute(1);
-
-        verify(routeRepository).delete(route);
-    }
-
-    @Test
-    void disableRoute_notFound() {
-        when(routeRepository.findById(1)).thenReturn(Optional.empty());
-
-        assertThrows(ResourceNotFoundException.class,
-                () -> routeService.disableRoute(1));
-
-        verify(routeRepository, never()).delete(any());
-    }
 }

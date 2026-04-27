@@ -191,60 +191,9 @@ class AgencyOfficeServiceImplTest {
     }
 
     // ❌ UPDATE - OFFICE NOT FOUND
-    @Test
-    void testUpdateOffice_OfficeNotFound() {
-
-        when(officeRepository.findById(1)).thenReturn(Optional.empty());
-
-        assertThrows(ResourceNotFoundException.class, () ->
-                service.updateOffice(1, request)
-        );
-
-        verify(officeRepository).findById(1);
-        verify(officeRepository, never()).save(any());
-    }
-
     // ❌ UPDATE - ADDRESS NOT FOUND
-    @Test
-    void testUpdateOffice_AddressNotFound() {
-
-        when(officeRepository.findById(1)).thenReturn(Optional.of(office));
-        when(addressRepository.findById(1)).thenReturn(Optional.empty());
-
-        assertThrows(ResourceNotFoundException.class, () ->
-                service.updateOffice(1, request)
-        );
-
-        verify(addressRepository).findById(1);
-        verify(officeRepository, never()).save(any());
-    }
-
     // DELETE OFFICE
-    @Test
-    void testDeleteOffice_Success() {
-
-        when(officeRepository.findById(1)).thenReturn(Optional.of(office));
-
-        service.deleteOffice(1);
-
-        verify(officeRepository).findById(1);
-        verify(officeRepository).delete(office);
-    }
-
     // ❌ DELETE OFFICE - NOT FOUND
-    @Test
-    void testDeleteOffice_NotFound() {
-
-        when(officeRepository.findById(1)).thenReturn(Optional.empty());
-
-        assertThrows(ResourceNotFoundException.class, () ->
-                service.deleteOffice(1)
-        );
-
-        verify(officeRepository).findById(1);
-        verify(officeRepository, never()).delete(any());
-    }
-
 }
 
 

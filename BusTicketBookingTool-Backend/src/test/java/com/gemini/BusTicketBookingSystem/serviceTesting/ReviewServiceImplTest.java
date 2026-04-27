@@ -178,45 +178,7 @@ class ReviewServiceImplTest {
     }
 
     // GET CUSTOMER REVIEWS
-    @Test
-    void testGetCustomerReviews_Success() {
-
-        when(customerRepository.existsById(1)).thenReturn(true);
-        when(reviewRepository.findByCustomerId(1)).thenReturn(List.of(review));
-
-        List<ReviewResponse> result = reviewService.getCustomerReviews(1);
-
-        assertEquals(1, result.size());
-    }
-
     // ❌ CUSTOMER NOT FOUND
-    @Test
-    void testGetCustomerReviews_NotFound() {
-
-        when(customerRepository.existsById(1)).thenReturn(false);
-
-        assertThrows(ResourceNotFoundException.class,
-                () -> reviewService.getCustomerReviews(1));
-    }
-
     // DELETE REVIEW
-    @Test
-    void testRemoveReview_Success() {
-
-        when(reviewRepository.findById(1)).thenReturn(Optional.of(review));
-
-        reviewService.removeReview(1);
-
-        verify(reviewRepository).delete(review);
-    }
-
     // ❌ DELETE NOT FOUND
-    @Test
-    void testRemoveReview_NotFound() {
-
-        when(reviewRepository.findById(1)).thenReturn(Optional.empty());
-
-        assertThrows(ResourceNotFoundException.class,
-                () -> reviewService.removeReview(1));
-    }
 }

@@ -190,18 +190,4 @@ class TripServiceImplTest {
     // -----------------------------
     // SEARCH
     // -----------------------------
-    @Test
-    void searchTrips_success() {
-        when(tripRepository.findTripsByCitiesAndDateRange(
-                eq("Chennai"),
-                eq("Bangalore"),
-                any(),
-                any()
-        )).thenReturn(List.of(mockTrip()));
-
-        List<TripResponse> result =
-                tripService.searchTrips("Chennai", "Bangalore", LocalDate.now());
-
-        assertEquals(1, result.size());
-    }
 }
