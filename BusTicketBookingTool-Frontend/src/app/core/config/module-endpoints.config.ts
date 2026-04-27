@@ -283,9 +283,6 @@ export const MODULE_CONFIGS: { [key: string]: ModuleConfig } = {
       { method: 'PATCH', path: '/bookings/{bookingId}/cancel', label: 'Cancel Booking', params: [
         { name: 'bookingId', label: 'Booking ID', type: 'number' }
       ]},
-      { method: 'GET', path: '/trips/{tripId}/seats', label: 'Seat Availability', params: [
-        { name: 'tripId', label: 'Trip ID', type: 'number' }
-      ]},
       { method: 'GET', path: '/trips/{tripId}/seats/booked', label: 'Booked Seats', params: [
         { name: 'tripId', label: 'Trip ID', type: 'number' }
       ]},

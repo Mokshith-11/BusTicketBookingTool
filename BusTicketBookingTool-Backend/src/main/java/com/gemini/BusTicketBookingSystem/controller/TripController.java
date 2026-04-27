@@ -163,6 +163,8 @@ public class TripController {
         @GetMapping("/{tripId}/seats")
         public ResponseEntity<ApiResponse<SeatAvailabilityResponse>> getSeatAvailability(
                         @PathVariable Integer tripId) {
+                // Validate the trip first so invalid IDs return the normal not-found error.
+                tripService.getTripById(tripId);
 
                 SeatAvailabilityResponse response = new SeatAvailabilityResponse(tripId);
 
