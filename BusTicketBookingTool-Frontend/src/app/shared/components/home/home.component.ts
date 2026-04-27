@@ -10,6 +10,7 @@ import { AuthService } from '../../../core/services/auth.service';
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './home.component.html'
 })
+// HomeComponent is the current login screen used to choose a teammate and enter the password.
 export class HomeComponent {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
@@ -31,6 +32,7 @@ export class HomeComponent {
     password: ['', Validators.required]
   });
 
+  // Clicking a member card pre-fills the read-only username field for that teammate.
   selectMember(member: any) {
     this.selectedMember.set(member);
     this.loginForm.patchValue({ username: member.name });
@@ -38,6 +40,7 @@ export class HomeComponent {
     this.loginError.set(false);
   }
 
+  // On success, store the session through AuthService and open the dashboard.
   onLogin() {
     const member = this.selectedMember();
     if (this.loginForm.valid && member) {

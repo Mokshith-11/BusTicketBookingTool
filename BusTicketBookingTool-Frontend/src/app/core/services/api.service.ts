@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
+// Small wrapper around HttpClient so feature services can stay concise.
 export class ApiService {
   constructor(private http: HttpClient) {}
 

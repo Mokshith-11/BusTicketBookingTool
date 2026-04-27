@@ -7,5 +7,6 @@ import { RouterOutlet } from '@angular/router';
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
+// Root shell: routed pages are rendered inside the RouterOutlet in app.component.html.
 export class AppComponent {
 }
