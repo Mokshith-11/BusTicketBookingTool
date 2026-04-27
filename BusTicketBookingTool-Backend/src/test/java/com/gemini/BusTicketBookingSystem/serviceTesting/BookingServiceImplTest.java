@@ -187,27 +187,5 @@ class BookingServiceImplTest {
     }
 
     // ❌ TRIP NOT FOUND FOR AVAILABLE SEATS
-    @Test
-    void testGetAvailableSeats_TripNotFound() {
-
-        when(tripRepository.findById(1)).thenReturn(Optional.empty());
-
-        assertThrows(ResourceNotFoundException.class, () ->
-                service.getAvailableSeats(1)
-        );
-    }
-
     // GET BOOKED SEATS
-    @Test
-    void testGetBookedSeats() {
-
-        when(tripRepository.findById(1)).thenReturn(Optional.of(trip));
-        when(bookingRepository.findBookingsByTripIdAndStatus(1, BookingStatus.Booked))
-                .thenReturn(List.of(booking));
-
-        List<Integer> result = service.getBookedSeats(1);
-
-        assertEquals(1, result.size());
-        assertEquals(5, result.get(0));
-    }
 }

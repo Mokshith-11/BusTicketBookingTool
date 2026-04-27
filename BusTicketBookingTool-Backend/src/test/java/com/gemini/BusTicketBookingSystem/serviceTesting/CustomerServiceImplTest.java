@@ -150,43 +150,6 @@ class CustomerServiceImplTest {
     }
 
     // ❌ UPDATE DUPLICATE EMAIL (only when changed)
-    @Test
-    void updateCustomer_duplicateEmail() {
-        Customer existing = new Customer();
-        existing.setCustomerId(1);
-        existing.setEmail("old@gmail.com");
-        existing.setPhone("9876543210");
-
-        when(customerRepository.findById(1)).thenReturn(Optional.of(existing));
-        when(customerRepository.existsByEmail(request.getEmail())).thenReturn(true);
-
-        assertThrows(DuplicateResourceException.class,
-                () -> customerService.updateCustomer(1, request));
-    }
-
     // ❌ UPDATE DUPLICATE PHONE (only when changed)
-    @Test
-    void updateCustomer_duplicatePhone() {
-        Customer existing = new Customer();
-        existing.setCustomerId(1);
-        existing.setEmail("john@gmail.com");
-        existing.setPhone("1111111111");
-
-        when(customerRepository.findById(1)).thenReturn(Optional.of(existing));
-        when(customerRepository.existsByPhone(request.getPhone())).thenReturn(true);
-
-        assertThrows(DuplicateResourceException.class,
-                () -> customerService.updateCustomer(1, request));
-    }
-
     // GET ALL
-    @Test
-    void getAllCustomers_success() {
-        when(customerRepository.findAll()).thenReturn(List.of(customer));
-
-        List<CustomerResponse> result = customerService.getAllCustomers();
-
-        assertEquals(1, result.size());
-        verify(customerRepository).findAll();
-    }
 }

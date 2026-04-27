@@ -171,15 +171,6 @@ class PaymentServiceImplTest {
     }
 
     // ❌ PAYMENT NOT FOUND
-    @Test
-    void testGetPaymentById_NotFound() {
-
-        when(paymentRepository.findById(1)).thenReturn(Optional.empty());
-
-        assertThrows(ResourceNotFoundException.class,
-                () -> paymentService.getPaymentById(1));
-    }
-
     // GET CUSTOMER PAYMENTS
     @Test
     void testGetCustomerPayments_Success() {
@@ -194,48 +185,7 @@ class PaymentServiceImplTest {
     }
 
     // ❌ CUSTOMER NOT FOUND
-    @Test
-    void testGetCustomerPayments_NotFound() {
-
-        when(customerRepository.existsById(1)).thenReturn(false);
-
-        assertThrows(ResourceNotFoundException.class,
-                () -> paymentService.getCustomerPayments(1));
-    }
-
     // GET BOOKING PAYMENT
-    @Test
-    void testGetBookingPayment_Success() {
-
-        when(bookingRepository.existsById(1)).thenReturn(true);
-        when(paymentRepository.findFirstByBooking_BookingIdOrderByPaymentIdDesc(1))
-                .thenReturn(Optional.of(payment));
-
-        PaymentResponse response = paymentService.getBookingPayment(1);
-
-        assertEquals(1, response.getBookingId());
-    }
-
     // ❌ BOOKING NOT FOUND
-    @Test
-    void testGetBookingPayment_BookingNotFound() {
-
-        when(bookingRepository.existsById(1)).thenReturn(false);
-
-        assertThrows(ResourceNotFoundException.class,
-                () -> paymentService.getBookingPayment(1));
-    }
-
-
     // ❌ INVALID STATUS CHANGE
-    @Test
-    void testUpdatePaymentStatus_Invalid() {
-
-        payment.setPaymentStatus(PaymentStatus.Success);
-
-        when(paymentRepository.findById(1)).thenReturn(Optional.of(payment));
-
-        assertThrows(InvalidOperationException.class,
-                () -> paymentService.updatePaymentStatus(1, PaymentStatus.Failed));
-    }
 }

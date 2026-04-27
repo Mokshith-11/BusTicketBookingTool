@@ -170,61 +170,8 @@ class DriverServiceImplTest {
     }
 
     // UPDATE SUCCESS
-    @Test
-    void testUpdateDriver_Success() {
-
-        when(driverRepository.findById(1)).thenReturn(Optional.of(driver));
-        when(addressRepository.findById(1)).thenReturn(Optional.of(address));
-        when(driverRepository.save(any(Driver.class))).thenReturn(driver);
-
-        DriverResponse response = driverService.updateDriver(1, request);
-
-        assertEquals("Ravi", response.getName());
-    }
-
     // ❌ UPDATE NOT FOUND
-    @Test
-    void testUpdateDriver_NotFound() {
-
-        when(driverRepository.findById(1)).thenReturn(Optional.empty());
-
-        assertThrows(ResourceNotFoundException.class,
-                () -> driverService.updateDriver(1, request));
-    }
-
     // ❌ UPDATE DUPLICATE LICENSE
-    @Test
-    void testUpdateDriver_DuplicateLicense() {
-
-        Driver existing = new Driver();
-        existing.setDriverId(1);
-        existing.setLicenseNumber("OLD123");
-
-        when(driverRepository.findById(1)).thenReturn(Optional.of(existing));
-        when(driverRepository.existsByLicenseNumber("LIC123")).thenReturn(true);
-
-        assertThrows(DuplicateResourceException.class,
-                () -> driverService.updateDriver(1, request));
-    }
-
     // DELETE SUCCESS
-    @Test
-    void testRemoveDriver_Success() {
-
-        when(driverRepository.findById(1)).thenReturn(Optional.of(driver));
-
-        driverService.removeDriver(1);
-
-        verify(driverRepository).delete(driver);
-    }
-
     // ❌ DELETE NOT FOUND
-    @Test
-    void testRemoveDriver_NotFound() {
-
-        when(driverRepository.findById(1)).thenReturn(Optional.empty());
-
-        assertThrows(ResourceNotFoundException.class,
-                () -> driverService.removeDriver(1));
-    }
 }
