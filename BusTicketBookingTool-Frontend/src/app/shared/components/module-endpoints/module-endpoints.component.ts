@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AuthService } from '../../../core/services/auth.service';
-import { MODULE_CONFIGS, ModuleConfig, EndpointDef } from '../../../core/config/module-endpoints.config';
+import { MODULE_CONFIGS, ModuleConfig, EndpointDef, EndpointParam } from '../../../core/config/module-endpoints.config';
 
 @Component({
   selector: 'app-module-endpoints',
@@ -13,47 +13,49 @@ import { MODULE_CONFIGS, ModuleConfig, EndpointDef } from '../../../core/config/
   imports: [CommonModule, FormsModule],
   templateUrl: './module-endpoints.component.html'
 })
-// Reusable API console used by all module pages.
+// This component shows the API form for a module.
 export class ModuleEndpointsComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private http = inject(HttpClient);
   private auth = inject(AuthService);
 
-  // Signals keep the UI reactive without manual change detection code.
+  // These values update the screen when they change.
   config = signal<ModuleConfig | null>(null);
   activeEndpoint = signal<EndpointDef | null>(null);
   paramValues: { [key: string]: string } = {};
   bodyValues: { [key: string]: string } = {};
   queryValues: { [key: string]: string } = {};
+  fieldErrors: { [key: string]: string } = {};
   response = signal<string>('');
   responseStatus = signal<'success' | 'error' | ''>('');
   loading = signal(false);
   @Input() moduleKey?: string;
 
-  // Load the selected module definition either from route data or an explicit input.
+  // Load the selected module details when the page opens.
   ngOnInit() {
     const moduleKey = this.moduleKey || this.route.snapshot.data['moduleKey'];
     if (moduleKey && MODULE_CONFIGS[moduleKey]) {
       const conf = { ...MODULE_CONFIGS[moduleKey] };
       const user = this.auth.username()?.toLowerCase();
-      // isMine lets the UI highlight modules owned by the logged-in team member.
+      // Mark the module if it belongs to the logged-in user.
       conf.isMine = conf.owner.toLowerCase() === user;
       this.config.set(conf);
     }
   }
 
-  // Selecting a new endpoint resets old form values and old response output.
+  // Clear old values when the user picks a different API action.
   selectEndpoint(ep: EndpointDef) {
     this.activeEndpoint.set(ep);
     this.paramValues = {};
     this.bodyValues = {};
     this.queryValues = {};
+    this.fieldErrors = {};
     this.response.set('');
     this.responseStatus.set('');
   }
 
-  // Colors make HTTP methods easy to scan visually in the left-side API list.
+  // Give each HTTP method a different color.
   getMethodColor(method: string): string {
     switch (method) {
       case 'GET': return 'bg-teal-500 shadow-teal-500/40';
@@ -65,14 +67,14 @@ export class ModuleEndpointsComponent implements OnInit {
     }
   }
 
-  // Converts templates like /trips/{tripId} into a concrete URL before the request is sent.
+  // Replace values like {tripId} with what the user entered.
   buildUrl(ep: EndpointDef): string {
     let url = ep.path;
-    // Replace path params like {tripId} with actual values entered in the UI.
+    // Fill path values.
     for (const param of ep.params) {
       url = url.replace(`{${param.name}}`, this.paramValues[param.name] || '0');
     }
-    // Append query params for search/filter endpoints.
+    // Add query values for search APIs.
     if (ep.queryParams && ep.queryParams.length > 0) {
       const qp = ep.queryParams
         .map(q => `${q.name}=${encodeURIComponent(this.queryValues[q.name] || '')}`)
@@ -82,16 +84,127 @@ export class ModuleEndpointsComponent implements OnInit {
     return url;
   }
 
-  // Builds the URL/body from the form and sends the matching HTTP request.
+  // Make one key for each section so errors do not clash.
+  fieldKey(section: 'param' | 'body' | 'query', name: string): string {
+    return `${section}:${name}`;
+  }
+
+  // Show the current value for a field from the right form section.
+  getFieldValue(section: 'param' | 'body' | 'query', name: string): string {
+    if (section === 'param') return this.paramValues[name] || '';
+    if (section === 'body') return this.bodyValues[name] || '';
+    return this.queryValues[name] || '';
+  }
+
+  // Clear the error when the user starts fixing the field.
+  clearFieldError(section: 'param' | 'body' | 'query', name: string) {
+    delete this.fieldErrors[this.fieldKey(section, name)];
+  }
+
+  // Return the error text for one field.
+  getFieldError(section: 'param' | 'body' | 'query', name: string): string {
+    return this.fieldErrors[this.fieldKey(section, name)] || '';
+  }
+
+  // Highlight fields that still have an error.
+  hasFieldError(section: 'param' | 'body' | 'query', name: string): boolean {
+    return !!this.getFieldError(section, name);
+  }
+
+  // Check one field and return an easy message when something is wrong.
+  validateField(field: EndpointParam, value: string, section: 'param' | 'body' | 'query'): string {
+    const trimmed = value.trim();
+
+    if (!trimmed) {
+      return `${field.label} is required.`;
+    }
+
+    if (field.type === 'number' && Number.isNaN(Number(trimmed))) {
+      return `${field.label} must be a number.`;
+    }
+
+    if ((field.name.toLowerCase().includes('email') || field.label.toLowerCase().includes('email')) &&
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
+      return 'Enter a valid email address.';
+    }
+
+    if ((field.name.toLowerCase().includes('phone') || field.label.toLowerCase().includes('phone')) &&
+      !/^\d{10}$/.test(trimmed)) {
+      return `${field.label} must be 10 digits.`;
+    }
+
+    if (field.name === 'rating') {
+      const rating = Number(trimmed);
+      if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+        return 'Rating must be between 1 and 5.';
+      }
+    }
+
+    if (field.name === 'paymentStatus' || (section === 'query' && field.name === 'status')) {
+      const status = trimmed.toLowerCase();
+      if (status !== 'success' && status !== 'failed') {
+        return `${field.label} must be Success or Failed.`;
+      }
+    }
+
+    if (field.name === 'tripDate' || field.label.toLowerCase().includes('date')) {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
+        return `${field.label} must be in YYYY-MM-DD format.`;
+      }
+    }
+
+    if ((field.name.toLowerCase().includes('time') || field.label.toLowerCase().includes('departure') || field.label.toLowerCase().includes('arrival')) &&
+      !/^\d{4}-\d{2}-\d{2}[ tT]\d{2}:\d{2}(:\d{2})?$/.test(trimmed)) {
+      return `${field.label} must be in YYYY-MM-DD HH:MM:SS format.`;
+    }
+
+    return '';
+  }
+
+  // Validate all visible fields before sending the request.
+  validateActiveEndpoint(): boolean {
+    const ep = this.activeEndpoint();
+    if (!ep) return false;
+
+    this.fieldErrors = {};
+    const sections: Array<{ fields?: EndpointParam[]; section: 'param' | 'body' | 'query' }> = [
+      { fields: ep.params, section: 'param' },
+      { fields: ep.bodyFields, section: 'body' },
+      { fields: ep.queryParams, section: 'query' }
+    ];
+
+    for (const { fields, section } of sections) {
+      for (const field of fields || []) {
+        const value = this.getFieldValue(section, field.name);
+        const error = this.validateField(field, value, section);
+        if (error) {
+          this.fieldErrors[this.fieldKey(section, field.name)] = error;
+        }
+      }
+    }
+
+    return Object.keys(this.fieldErrors).length === 0;
+  }
+
+  // Build the request and send it.
   submit() {
     const ep = this.activeEndpoint();
     if (!ep) return;
+
+    if (!this.validateActiveEndpoint()) {
+      this.response.set(JSON.stringify({
+        error: 'FrontendValidationError',
+        message: 'Please fix the highlighted fields and try again.'
+      }, null, 2));
+      this.responseStatus.set('error');
+      return;
+    }
 
     this.loading.set(true);
     this.response.set('');
     const url = this.buildUrl(ep);
 
-    // GET/DELETE usually have no body, but write operations need one.
+    // POST, PUT, and some PATCH calls need a body.
     let body: Record<string, unknown> | null = null;
     if (ep.bodyFields && ep.bodyFields.length > 0) {
       body = {};
@@ -102,9 +215,7 @@ export class ModuleEndpointsComponent implements OnInit {
         }
       }
 
-      // Some backend APIs take important IDs from the URL.
-      // If the same field is also part of the request object, copy it into the body
-      // so update flows stay aligned with backend expectations.
+      // Some APIs need the same ID in both the URL and the body.
       for (const param of ep.params) {
         if (Object.prototype.hasOwnProperty.call(body, param.name)) {
           continue;
@@ -129,13 +240,13 @@ export class ModuleEndpointsComponent implements OnInit {
 
     req$.subscribe({
       next: (res: unknown) => {
-        // Pretty-printing JSON makes success output easier to read during demos and testing.
+        // Show the response in a readable way.
         this.response.set(JSON.stringify(res, null, 2));
         this.responseStatus.set('success');
         this.loading.set(false);
       },
       error: (err: { error?: unknown; message?: string }) => {
-        // The backend may return either plain text or structured JSON; handle both safely.
+        // Handle both text errors and JSON errors.
         const errBody = err.error || err.message || 'Request failed';
         this.response.set(typeof errBody === 'string' ? errBody : JSON.stringify(errBody, null, 2));
         this.responseStatus.set('error');
@@ -144,7 +255,7 @@ export class ModuleEndpointsComponent implements OnInit {
     });
   }
 
-  // Every module page returns to the shared dashboard.
+  // Go back to the dashboard.
   back() {
     this.router.navigate(['/dashboard']);
   }

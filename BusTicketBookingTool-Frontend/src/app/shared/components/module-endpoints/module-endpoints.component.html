@@ -98,7 +98,18 @@
                     @for (f of activeEndpoint()!.bodyFields; track f.name) {
                       <div class="space-y-2.5">
                         <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{{ f.label }}</label>
-                        <input [type]="f.type" [(ngModel)]="bodyValues[f.name]" class="input-field" [placeholder]="'Enter ' + f.label">
+                        <input
+                          [type]="f.type"
+                          [(ngModel)]="bodyValues[f.name]"
+                          (ngModelChange)="clearFieldError('body', f.name)"
+                          class="input-field"
+                          [class.border-rose-400]="hasFieldError('body', f.name)"
+                          [class.ring-2]="hasFieldError('body', f.name)"
+                          [class.ring-rose-100]="hasFieldError('body', f.name)"
+                          [placeholder]="'Enter ' + f.label">
+                        @if (getFieldError('body', f.name)) {
+                          <p class="text-xs font-bold text-rose-500 ml-1">{{ getFieldError('body', f.name) }}</p>
+                        }
                       </div>
                     }
                   </div>
@@ -116,7 +127,18 @@
                     @for (q of activeEndpoint()!.queryParams; track q.name) {
                       <div class="space-y-2.5">
                         <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{{ q.label }}</label>
-                        <input [type]="q.type" [(ngModel)]="queryValues[q.name]" class="input-field" [placeholder]="'Enter ' + q.label">
+                        <input
+                          [type]="q.type"
+                          [(ngModel)]="queryValues[q.name]"
+                          (ngModelChange)="clearFieldError('query', q.name)"
+                          class="input-field"
+                          [class.border-rose-400]="hasFieldError('query', q.name)"
+                          [class.ring-2]="hasFieldError('query', q.name)"
+                          [class.ring-rose-100]="hasFieldError('query', q.name)"
+                          [placeholder]="'Enter ' + q.label">
+                        @if (getFieldError('query', q.name)) {
+                          <p class="text-xs font-bold text-rose-500 ml-1">{{ getFieldError('query', q.name) }}</p>
+                        }
                       </div>
                     }
                   </div>
@@ -134,7 +156,18 @@
                     @for (p of activeEndpoint()!.params; track p.name) {
                       <div class="space-y-2.5">
                         <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{{ p.label }}</label>
-                        <input [type]="p.type" [(ngModel)]="paramValues[p.name]" class="input-field" placeholder="ID Segment">
+                        <input
+                          [type]="p.type"
+                          [(ngModel)]="paramValues[p.name]"
+                          (ngModelChange)="clearFieldError('param', p.name)"
+                          class="input-field"
+                          [class.border-rose-400]="hasFieldError('param', p.name)"
+                          [class.ring-2]="hasFieldError('param', p.name)"
+                          [class.ring-rose-100]="hasFieldError('param', p.name)"
+                          placeholder="ID Segment">
+                        @if (getFieldError('param', p.name)) {
+                          <p class="text-xs font-bold text-rose-500 ml-1">{{ getFieldError('param', p.name) }}</p>
+                        }
                       </div>
                     }
                   </div>
