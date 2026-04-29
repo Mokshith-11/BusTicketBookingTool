@@ -96,7 +96,7 @@ public class GlobalExceptionHandler {
 
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.NOT_FOUND.value(),
-                "Not Found",
+                ex.getClass().getSimpleName(),
                 ex.getMessage(),
                 request.getDescription(false).replace("uri=", "")
         );
@@ -115,7 +115,7 @@ public class GlobalExceptionHandler {
 
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.CONFLICT.value(),
-                "Conflict",
+                ex.getClass().getSimpleName(),
                 ex.getMessage(),
                 request.getDescription(false).replace("uri=", "")
         );
@@ -134,7 +134,7 @@ public class GlobalExceptionHandler {
 
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.CONFLICT.value(),
-                "Conflict",
+                ex.getClass().getSimpleName(),
                 ex.getMessage(),
                 request.getDescription(false).replace("uri=", "")
         );
@@ -153,7 +153,7 @@ public class GlobalExceptionHandler {
 
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
-                "Bad Request",
+                ex.getClass().getSimpleName(),
                 ex.getMessage(),
                 request.getDescription(false).replace("uri=", "")
         );
@@ -182,7 +182,7 @@ public class GlobalExceptionHandler {
         Map<String, Object> response = new HashMap<>();
         response.put("timestamp", LocalDateTime.now());
         response.put("status", HttpStatus.BAD_REQUEST.value());
-        response.put("error", "Validation Failed");
+        response.put("error", ex.getClass().getSimpleName());
         response.put("message", "Input validation failed");
         response.put("errors", errors);
         response.put("path", request.getDescription(false).replace("uri=", ""));
@@ -201,7 +201,7 @@ public class GlobalExceptionHandler {
 
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
-                "Bad Request",
+                ex.getClass().getSimpleName(),
                 ex.getMessage(),
                 request.getDescription(false).replace("uri=", "")
         );
@@ -220,7 +220,7 @@ public class GlobalExceptionHandler {
 
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                "Internal Server Error",
+                ex.getClass().getSimpleName(),
                 "An unexpected error occurred: " + ex.getMessage(),
                 request.getDescription(false).replace("uri=", "")
         );
@@ -239,7 +239,7 @@ public class GlobalExceptionHandler {
 
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                "Internal Server Error",
+                ex.getClass().getSimpleName(),
                 "A null pointer exception occurred. Please contact support.",
                 request.getDescription(false).replace("uri=", "")
         );
