@@ -1,16 +1,16 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { MODULE_CONFIGS } from '../../../core/config/module-endpoints.config';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './dashboard.component.html'
 })
-// Dashboard shows the modules owned by the logged-in teammate.
+// This page shows the modules for the logged-in user.
 export class DashboardComponent {
   auth = inject(AuthService);
   router = inject(Router);
@@ -23,7 +23,7 @@ export class DashboardComponent {
     description: config.description
   }));
 
-  // Only show module cards assigned to the current teammate.
+  // Show only the modules that belong to this user.
   get visibleModules() {
     const user = this.auth.username()?.toLowerCase();
     if (!user) return [];
@@ -33,9 +33,5 @@ export class DashboardComponent {
   logout() {
     this.auth.logout();
     this.router.navigate(['/']);
-  }
-
-  navigateTo(route: string) {
-    this.router.navigate([route]);
   }
 }

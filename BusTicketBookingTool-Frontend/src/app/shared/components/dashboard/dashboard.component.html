@@ -30,9 +30,10 @@
     <!-- Module Grid (Clean Interface) -->
     <div class="flex flex-wrap justify-center gap-8 pb-20">
       @for (mod of visibleModules; track mod.route) {
-        <div 
-          (click)="navigateTo(mod.route)"
-          class="glass-card group p-10 rounded-[3rem] cursor-pointer bg-white/40 border-slate-200/40 hover:-translate-y-1 transition-all w-full max-w-[24rem] md:basis-[24rem]"
+        <button
+          type="button"
+          [routerLink]="mod.route"
+          class="glass-card group w-full max-w-[24rem] rounded-[3rem] bg-white/40 p-10 text-left transition-all hover:-translate-y-1 md:basis-[24rem] border-slate-200/40 cursor-pointer focus:outline-none focus:ring-4 focus:ring-blue-200"
         >
           <div class="flex justify-between items-start mb-10">
             <div class="w-14 h-14 rounded-2xl bg-white border border-slate-100 flex items-center justify-center text-slate-400 group-hover:bg-blue-600 group-hover:text-white group-hover:border-blue-600 transition-all shadow-sm">
@@ -57,7 +58,7 @@
               </svg>
             </div>
           </div>
-        </div>
+        </button>
       }
     </div>
   </div>

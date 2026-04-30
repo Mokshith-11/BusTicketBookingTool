@@ -31,6 +31,7 @@ export class ModuleEndpointsComponent implements OnInit {
   lookupLoading = signal(false);
   lookupError = signal('');
   openLookupField = signal<string | null>(null);
+  lookupCache: Record<string, LookupOption[]> = {};
   readableResponse = signal<ReadableResponse | null>(null);
   response = signal<string>('');
   responseStatus = signal<'success' | 'error' | ''>('');
@@ -60,6 +61,7 @@ export class ModuleEndpointsComponent implements OnInit {
     this.openLookupField.set(null);
     this.lookupOptions.set([]);
     this.lookupError.set('');
+    this.lookupCache = {};
     this.readableResponse.set(null);
     this.response.set('');
     this.responseStatus.set('');
@@ -242,6 +244,18 @@ export class ModuleEndpointsComponent implements OnInit {
   keepLookupDropdownOpen(event: Event, section: 'param' | 'body' | 'query', name: string) {
     event.stopPropagation();
     this.openLookupField.set(this.fieldKey(section, name));
+  }
+
+  // Open the lookup, clear old errors, and load fresh options for this field.
+  activateLookup(section: 'param' | 'body' | 'query', field: EndpointParam, event?: Event) {
+    event?.stopPropagation();
+    this.clearFieldError(section, field.name);
+    this.lookupError.set('');
+    this.openLookupField.set(this.fieldKey(section, field.name));
+
+    if (this.isLookupField(field)) {
+      this.loadLookupOptions(field);
+    }
   }
 
   // Find a value that another dropdown depends on, like agencyId before officeId.
@@ -462,6 +476,12 @@ export class ModuleEndpointsComponent implements OnInit {
       return;
     }
 
+    if (lookup.url && this.lookupCache[lookup.url]) {
+      this.lookupOptions.set(this.lookupCache[lookup.url]);
+      this.lookupError.set('');
+      return;
+    }
+
     if (this.lookupLoading()) {
       return;
     }
@@ -485,13 +505,20 @@ export class ModuleEndpointsComponent implements OnInit {
           .map(item => mapper(item))
           .filter((item): item is LookupOption => !!item && !!item.value);
 
+        if (lookup.url) {
+          this.lookupCache[lookup.url] = options;
+        }
         this.lookupOptions.set(options);
         this.lookupLoading.set(false);
         this.lookupError.set(options.length === 0 ? (lookup.emptyMessage || 'No options found.') : '');
       },
-      error: () => {
+      error: (err: { status?: number; error?: unknown; message?: string }) => {
         this.lookupLoading.set(false);
-        this.lookupError.set(`${field.label} list could not be loaded.`);
+        const backendMessage = typeof (err.error as { message?: unknown })?.message === 'string'
+          ? (err.error as { message: string }).message
+          : '';
+        const statusText = err.status ? ` (status ${err.status})` : '';
+        this.lookupError.set(backendMessage || `${field.label} list could not be loaded${statusText}.`);
       }
     });
   }
