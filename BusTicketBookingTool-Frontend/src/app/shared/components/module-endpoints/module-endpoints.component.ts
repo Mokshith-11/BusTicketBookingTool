@@ -1,4 +1,4 @@
-import { Component, Input, inject, signal, OnInit } from '@angular/core';
+import { Component, HostListener, Input, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -27,8 +27,14 @@ export class ModuleEndpointsComponent implements OnInit {
   bodyValues: { [key: string]: string } = {};
   queryValues: { [key: string]: string } = {};
   fieldErrors: { [key: string]: string } = {};
+  lookupOptions = signal<LookupOption[]>([]);
+  lookupLoading = signal(false);
+  lookupError = signal('');
+  openLookupField = signal<string | null>(null);
+  readableResponse = signal<ReadableResponse | null>(null);
   response = signal<string>('');
   responseStatus = signal<'success' | 'error' | ''>('');
+  outputView = signal<'preview' | 'table' | 'json'>('preview');
   loading = signal(false);
   @Input() moduleKey?: string;
 
@@ -51,8 +57,13 @@ export class ModuleEndpointsComponent implements OnInit {
     this.bodyValues = {};
     this.queryValues = {};
     this.fieldErrors = {};
+    this.openLookupField.set(null);
+    this.lookupOptions.set([]);
+    this.lookupError.set('');
+    this.readableResponse.set(null);
     this.response.set('');
     this.responseStatus.set('');
+    this.outputView.set('preview');
   }
 
   // Give each HTTP method a different color.
@@ -89,6 +100,17 @@ export class ModuleEndpointsComponent implements OnInit {
     return `${section}:${name}`;
   }
 
+  // Some ID fields can use a dropdown instead of typing the number by hand.
+  isLookupField(field: EndpointParam): boolean {
+    return !!this.buildLookupRequest(field);
+  }
+
+  // Some screens can load helper dropdowns for their ID fields.
+  endpointHasLookupField(ep: EndpointDef): boolean {
+    return [...ep.params, ...(ep.bodyFields || []), ...(ep.queryParams || [])]
+      .some(field => this.isLookupField(field));
+  }
+
   // Show the current value for a field from the right form section.
   getFieldValue(section: 'param' | 'body' | 'query', name: string): string {
     if (section === 'param') return this.paramValues[name] || '';
@@ -96,9 +118,39 @@ export class ModuleEndpointsComponent implements OnInit {
     return this.queryValues[name] || '';
   }
 
+  // Use browser pickers for backend date and date-time fields.
+  getInputType(field: EndpointParam): string {
+    return field.type;
+  }
+
+  // Show a hint that matches the backend format.
+  getFieldPlaceholder(field: EndpointParam, fallback: string): string {
+    if (field.name === 'departureTime' || field.name === 'arrivalTime') {
+      return 'YYYY-MM-DDTHH:MM:SS.000Z';
+    }
+
+    if (field.name === 'tripDate' || field.type === 'date') {
+      return 'YYYY-MM-DD';
+    }
+
+    return fallback;
+  }
+
   // Clear the error when the user starts fixing the field.
   clearFieldError(section: 'param' | 'body' | 'query', name: string) {
     delete this.fieldErrors[this.fieldKey(section, name)];
+  }
+
+  // When the user types in a lookup field, keep the dropdown open and filter the list.
+  onFieldInput(section: 'param' | 'body' | 'query', field: EndpointParam) {
+    this.clearFieldError(section, field.name);
+
+    if (!this.isLookupField(field)) {
+      return;
+    }
+
+    this.openLookupField.set(this.fieldKey(section, field.name));
+    this.loadLookupOptions(field);
   }
 
   // Return the error text for one field.
@@ -109,6 +161,339 @@ export class ModuleEndpointsComponent implements OnInit {
   // Highlight fields that still have an error.
   hasFieldError(section: 'param' | 'body' | 'query', name: string): boolean {
     return !!this.getFieldError(section, name);
+  }
+
+  // Disable submit until every visible field has a valid value.
+  isSubmitDisabled(): boolean {
+    const ep = this.activeEndpoint();
+    if (!ep || this.loading()) {
+      return true;
+    }
+
+    const sections: Array<{ fields?: EndpointParam[]; section: 'param' | 'body' | 'query' }> = [
+      { fields: ep.params, section: 'param' },
+      { fields: ep.bodyFields, section: 'body' },
+      { fields: ep.queryParams, section: 'query' }
+    ];
+
+    for (const { fields, section } of sections) {
+      for (const field of fields || []) {
+        const value = this.getFieldValue(section, field.name);
+        if (this.validateField(field, value, section)) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  // Switch between readable preview, table view, and raw JSON.
+  setOutputView(view: 'preview' | 'table' | 'json') {
+    this.outputView.set(view);
+  }
+
+  // Table view only makes sense when we have rows to show.
+  hasTableView(): boolean {
+    return !!this.readableResponse()?.table?.length;
+  }
+
+  // The dropdown is shown only for the active lookup field.
+  isLookupDropdownOpen(section: 'param' | 'body' | 'query', name: string): boolean {
+    return this.openLookupField() === this.fieldKey(section, name);
+  }
+
+  // Show all options first, then narrow them down while the user types.
+  getLookupSuggestions(section: 'param' | 'body' | 'query', name: string): LookupOption[] {
+    const value = this.getFieldValue(section, name).trim().toLowerCase();
+    const options = this.lookupOptions();
+
+    if (!value) {
+      return options;
+    }
+
+    return options.filter(option => {
+      return option.value.toLowerCase().includes(value) || option.label.toLowerCase().includes(value);
+    });
+  }
+
+  // Keep the option text easy to scan in the dropdown.
+  lookupLabel(option: LookupOption): string {
+    return option.label;
+  }
+
+  // Put the chosen ID into the field and close the dropdown.
+  selectLookupOption(section: 'param' | 'body' | 'query', name: string, option: LookupOption) {
+    if (section === 'param') this.paramValues[name] = option.value;
+    if (section === 'body') this.bodyValues[name] = option.value;
+    if (section === 'query') this.queryValues[name] = option.value;
+
+    this.clearFieldError(section, name);
+    this.openLookupField.set(null);
+  }
+
+  // Close the dropdown when the user clicks anywhere else.
+  @HostListener('document:click')
+  closeLookupDropdown() {
+    this.openLookupField.set(null);
+  }
+
+  // Stop outside clicks from closing the dropdown while the user is inside the field area.
+  keepLookupDropdownOpen(event: Event, section: 'param' | 'body' | 'query', name: string) {
+    event.stopPropagation();
+    this.openLookupField.set(this.fieldKey(section, name));
+  }
+
+  // Find a value that another dropdown depends on, like agencyId before officeId.
+  findSelectedValue(name: string): string {
+    return this.paramValues[name] || this.bodyValues[name] || this.queryValues[name] || '';
+  }
+
+  // Some modules need a slightly different dropdown source for the same field name.
+  getActiveModuleKey(): string {
+    return this.moduleKey || this.route.snapshot.data['moduleKey'] || '';
+  }
+
+  // Read dynamic API fields safely from list results.
+  readLookupValue(item: LookupSourceItem, key: string): string | number | boolean | null | undefined {
+    return item[key];
+  }
+
+  // Convert browser date values to the format the backend expects.
+  formatValueForRequest(field: EndpointParam, value: string): string {
+    if (!value) {
+      return value;
+    }
+
+    if (field.name === 'departureTime' || field.name === 'arrivalTime') {
+      return value;
+    }
+
+    return value;
+  }
+
+  // Decide which API should power the dropdown for this field.
+  buildLookupRequest(field: EndpointParam): LookupRequest | null {
+    switch (field.name) {
+      case 'agencyId':
+        return {
+          url: '/agencies',
+          emptyMessage: 'No agencies found.',
+          map: (item) => ({
+            value: String(this.readLookupValue(item, 'agencyId')),
+            label: `Agency ${this.readLookupValue(item, 'agencyId')} | ${this.readLookupValue(item, 'name') || 'No name'}`
+          })
+        };
+      case 'routeId':
+        return {
+          url: '/routes',
+          emptyMessage: 'No routes found.',
+          map: (item) => ({
+            value: String(this.readLookupValue(item, 'routeId')),
+            label: `Route ${this.readLookupValue(item, 'routeId')} | ${this.readLookupValue(item, 'fromCity') || '-'} -> ${this.readLookupValue(item, 'toCity') || '-'}`
+          })
+        };
+      case 'tripId':
+        return {
+          url: '/trips',
+          emptyMessage: 'No trips found.',
+          map: (item) => ({
+            value: String(this.readLookupValue(item, 'tripId')),
+            label: `Trip ${this.readLookupValue(item, 'tripId')} | ${this.readLookupValue(item, 'fromCity') || '-'} -> ${this.readLookupValue(item, 'toCity') || '-'} | ${this.readLookupValue(item, 'tripDate') || '-'} | ${this.readLookupValue(item, 'availableSeats') ?? 0} seats`
+          })
+        };
+      case 'customerId':
+        return {
+          url: '/customers',
+          emptyMessage: 'No customers found.',
+          map: (item) => ({
+            value: String(this.readLookupValue(item, 'customerId')),
+            label: `Customer ${this.readLookupValue(item, 'customerId')} | ${this.readLookupValue(item, 'name') || 'No name'} | ${this.readLookupValue(item, 'phone') || 'No phone'}`
+          })
+        };
+      case 'addressId':
+      case 'officeAddressId':
+      case 'boardingAddressId':
+      case 'droppingAddressId':
+        return {
+          url: '/addresses',
+          emptyMessage: 'No addresses found.',
+          map: (item) => ({
+            value: String(this.readLookupValue(item, 'addressId')),
+            label: `Address ${this.readLookupValue(item, 'addressId')} | ${this.readLookupValue(item, 'address') || 'No address'} | ${this.readLookupValue(item, 'city') || 'No city'} | ${this.readLookupValue(item, 'state') || 'No state'}`
+          })
+        };
+      case 'officeId': {
+        const agencyId = this.findSelectedValue('agencyId');
+        if (!agencyId) {
+          return {
+            url: '/offices',
+            emptyMessage: 'No offices found.',
+            map: (item) => ({
+              value: String(this.readLookupValue(item, 'officeId')),
+              label: `Office ${this.readLookupValue(item, 'officeId')} | ${this.readLookupValue(item, 'agencyName') || 'No agency'} | ${this.readLookupValue(item, 'officeMail') || 'No email'}`
+            })
+          };
+        }
+        return {
+          url: `/agencies/${agencyId}/offices`,
+          emptyMessage: 'No offices found for this agency.',
+          map: (item) => ({
+            value: String(this.readLookupValue(item, 'officeId')),
+            label: `Office ${this.readLookupValue(item, 'officeId')} | ${this.readLookupValue(item, 'officeContactPersonName') || 'No contact'} | ${this.readLookupValue(item, 'officeMail') || 'No email'}`
+          })
+        };
+      }
+      case 'busId': {
+        if (this.getActiveModuleKey() === 'trips') {
+          return {
+            url: '/buses',
+            emptyMessage: 'No buses found.',
+            map: (item) => ({
+              value: String(this.readLookupValue(item, 'busId')),
+              label: `Bus ${this.readLookupValue(item, 'busId')} | ${this.readLookupValue(item, 'registrationNumber') || 'No plate'} | ${this.readLookupValue(item, 'capacity') ?? 0} seats`
+            })
+          };
+        }
+
+        const officeId = this.findSelectedValue('officeId');
+        if (!officeId) {
+          return {
+            url: '/buses',
+            emptyMessage: 'No buses found.',
+            map: (item) => ({
+              value: String(this.readLookupValue(item, 'busId')),
+              label: `Bus ${this.readLookupValue(item, 'busId')} | ${this.readLookupValue(item, 'registrationNumber') || 'No plate'} | ${this.readLookupValue(item, 'capacity') ?? 0} seats`
+            })
+          };
+        }
+        return {
+          url: `/offices/${officeId}/buses`,
+          emptyMessage: 'No buses found for this office.',
+          map: (item) => ({
+            value: String(this.readLookupValue(item, 'busId')),
+            label: `Bus ${this.readLookupValue(item, 'busId')} | ${this.readLookupValue(item, 'registrationNumber') || 'No plate'} | ${this.readLookupValue(item, 'capacity') ?? 0} seats`
+          })
+        };
+      }
+      case 'driverId':
+      case 'driver1Id':
+      case 'driver2Id': {
+        if (this.getActiveModuleKey() === 'trips') {
+          return {
+            url: '/drivers',
+            emptyMessage: 'No drivers found.',
+            map: (item) => ({
+              value: String(this.readLookupValue(item, 'driverId')),
+              label: `Driver ${this.readLookupValue(item, 'driverId')} | ${this.readLookupValue(item, 'name') || 'No name'} | ${this.readLookupValue(item, 'licenseNumber') || 'No license'}`
+            })
+          };
+        }
+
+        const officeId = this.findSelectedValue('officeId');
+        if (!officeId) {
+          return {
+            url: '/drivers',
+            emptyMessage: 'No drivers found.',
+            map: (item) => ({
+              value: String(this.readLookupValue(item, 'driverId')),
+              label: `Driver ${this.readLookupValue(item, 'driverId')} | ${this.readLookupValue(item, 'name') || 'No name'} | ${this.readLookupValue(item, 'licenseNumber') || 'No license'}`
+            })
+          };
+        }
+        return {
+          url: `/offices/${officeId}/drivers`,
+          emptyMessage: 'No drivers found for this office.',
+          map: (item) => ({
+            value: String(this.readLookupValue(item, 'driverId')),
+            label: `Driver ${this.readLookupValue(item, 'driverId')} | ${this.readLookupValue(item, 'name') || 'No name'} | ${this.readLookupValue(item, 'licenseNumber') || 'No license'}`
+          })
+        };
+      }
+      case 'bookingId': {
+        const customerId = this.findSelectedValue('customerId');
+        if (!customerId) {
+          return { emptyMessage: 'Select Customer ID first.' };
+        }
+        return {
+          url: `/customers/${customerId}/bookings`,
+          emptyMessage: 'No bookings found for this customer.',
+          map: (item) => ({
+            value: String(this.readLookupValue(item, 'bookingId')),
+            label: `Booking ${this.readLookupValue(item, 'bookingId')} | Trip ${this.readLookupValue(item, 'tripId') || '-'} | Seat ${this.readLookupValue(item, 'seatNumber') || '-'}`
+          })
+        };
+      }
+      case 'paymentId': {
+        const bookingId = this.findSelectedValue('bookingId');
+        if (!bookingId) {
+          return { emptyMessage: 'Select Booking ID first.' };
+        }
+        return {
+          url: `/payments/bookings/${bookingId}/payment`,
+          emptyMessage: 'No payment found for this booking.',
+          map: (item) => ({
+            value: String(this.readLookupValue(item, 'paymentId')),
+            label: `Payment ${this.readLookupValue(item, 'paymentId')} | ${this.readLookupValue(item, 'paymentStatus') || 'No status'} | ${this.readLookupValue(item, 'amount') ?? 0}`
+          })
+        };
+      }
+      default:
+        return null;
+    }
+  }
+
+  // Load list data for the current lookup field.
+  loadLookupOptions(field: EndpointParam) {
+    const lookup = this.buildLookupRequest(field);
+    if (!lookup) {
+      return;
+    }
+
+    if (!lookup.url) {
+      this.lookupOptions.set([]);
+      this.lookupError.set(lookup.emptyMessage || 'No options available.');
+      return;
+    }
+
+    if (!lookup.map) {
+      this.lookupOptions.set([]);
+      this.lookupError.set('This list could not be prepared.');
+      return;
+    }
+
+    if (this.lookupLoading()) {
+      return;
+    }
+
+    this.lookupLoading.set(true);
+    this.lookupError.set('');
+    this.lookupOptions.set([]);
+
+    this.http.get<LookupApiResponse | LookupSourceItem[] | LookupSourceItem>(lookup.url).subscribe({
+      next: (res) => {
+        const raw: LookupSourceItem[] = Array.isArray(res)
+          ? res as LookupSourceItem[]
+          : Array.isArray(res.data)
+            ? res.data as LookupSourceItem[]
+            : res.data && typeof res.data === 'object'
+              ? [res.data as LookupSourceItem]
+              : [];
+
+        const mapper = lookup.map!;
+        const options = raw
+          .map(item => mapper(item))
+          .filter((item): item is LookupOption => !!item && !!item.value);
+
+        this.lookupOptions.set(options);
+        this.lookupLoading.set(false);
+        this.lookupError.set(options.length === 0 ? (lookup.emptyMessage || 'No options found.') : '');
+      },
+      error: () => {
+        this.lookupLoading.set(false);
+        this.lookupError.set(`${field.label} list could not be loaded.`);
+      }
+    });
   }
 
   // Check one field and return an easy message when something is wrong.
@@ -154,8 +539,8 @@ export class ModuleEndpointsComponent implements OnInit {
     }
 
     if ((field.name.toLowerCase().includes('time') || field.label.toLowerCase().includes('departure') || field.label.toLowerCase().includes('arrival')) &&
-      !/^\d{4}-\d{2}-\d{2}[ tT]\d{2}:\d{2}(:\d{2})?$/.test(trimmed)) {
-      return `${field.label} must be in YYYY-MM-DD HH:MM:SS format.`;
+      !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(trimmed)) {
+      return `${field.label} must be in YYYY-MM-DDTHH:MM:SS.000Z format.`;
     }
 
     return '';
@@ -186,12 +571,150 @@ export class ModuleEndpointsComponent implements OnInit {
     return Object.keys(this.fieldErrors).length === 0;
   }
 
+  // Seat APIs are easier to read with a small summary instead of a raw empty array.
+  formatResponse(ep: EndpointDef, res: unknown): string {
+    const formattedSeatResponse = this.formatSeatResponse(ep, res);
+    if (formattedSeatResponse) {
+      return formattedSeatResponse;
+    }
+
+    return JSON.stringify(res, null, 2);
+  }
+
+  // Build a simple card/table view from the API response.
+  buildReadableResponse(res: unknown, status: 'success' | 'error'): ReadableResponse | null {
+    if (typeof res !== 'object' || res === null) {
+      return null;
+    }
+
+    const payload = res as Record<string, unknown>;
+    const data = payload['data'];
+    const timestamp = typeof payload['timestamp'] === 'string' ? payload['timestamp'] : '';
+    const message = typeof payload['message'] === 'string' ? payload['message'] : '';
+    const numericStatus = typeof payload['statusCode'] === 'number'
+      ? payload['statusCode']
+      : typeof payload['status'] === 'number'
+        ? payload['status']
+        : status === 'success' ? 200 : 500;
+
+    const rows = this.getReadableRows(data);
+    const details = this.getReadableDetails(payload, ['statusCode', 'status', 'message', 'timestamp', 'data']);
+
+    return {
+      banner: message || (status === 'success' ? 'Request completed successfully.' : 'Request failed.'),
+      status: numericStatus,
+      message,
+      timestamp,
+      details,
+      table: rows
+    };
+  }
+
+  // Show extra top-level fields in a small details strip.
+  getReadableDetails(payload: Record<string, unknown>, skipKeys: string[]): Array<{ label: string; value: string }> {
+    return Object.entries(payload)
+      .filter(([key, value]) => !skipKeys.includes(key) && value !== null && value !== undefined && typeof value !== 'object')
+      .map(([key, value]) => ({
+        label: this.toTitleCase(key),
+        value: String(value)
+      }));
+  }
+
+  // Turn API data into rows for a simple result table.
+  getReadableRows(data: unknown): ReadableRow[] | null {
+    if (Array.isArray(data)) {
+      const rows = data
+        .filter((item): item is Record<string, unknown> => typeof item === 'object' && item !== null)
+        .map(item => this.normalizeReadableRow(item));
+      return rows.length > 0 ? rows : null;
+    }
+
+    if (typeof data === 'object' && data !== null) {
+      return [this.normalizeReadableRow(data as Record<string, unknown>)];
+    }
+
+    return null;
+  }
+
+  // Keep the result values easy to render in a table.
+  normalizeReadableRow(item: Record<string, unknown>): ReadableRow {
+    const row: ReadableRow = {};
+
+    for (const [key, value] of Object.entries(item)) {
+      if (value === null || value === undefined) {
+        row[this.toTitleCase(key)] = '-';
+      } else if (typeof value === 'object') {
+        row[this.toTitleCase(key)] = JSON.stringify(value);
+      } else {
+        row[this.toTitleCase(key)] = String(value);
+      }
+    }
+
+    return row;
+  }
+
+  // Make backend field names look nicer in the result card.
+  toTitleCase(value: string): string {
+    return value
+      .replace(/([A-Z])/g, ' $1')
+      .replace(/[_-]/g, ' ')
+      .replace(/^\w/, (char) => char.toUpperCase())
+      .trim();
+  }
+
+  // Show seat lists in a friendlier way for booking screens.
+  formatSeatResponse(ep: EndpointDef, res: unknown): string | null {
+    if (!ep.path.includes('/seats/booked') && !ep.path.includes('/seats/available')) {
+      return null;
+    }
+
+    const payload = typeof res === 'object' && res !== null ? res as Record<string, unknown> : null;
+    const seats = Array.isArray(payload?.['data']) ? payload['data'] as Array<string | number> : null;
+
+    if (!seats) {
+      return null;
+    }
+
+    const isBookedView = ep.path.includes('/seats/booked');
+    const message = typeof payload?.['message'] === 'string' ? payload['message'] : '';
+    const tripId = this.paramValues['tripId'] || 'selected trip';
+
+    if (seats.length === 0) {
+      return JSON.stringify({
+        statusCode: payload?.['statusCode'] ?? 200,
+        message,
+        tripId,
+        summary: isBookedView ? 'No seats are booked for this trip.' : 'No available seats were found for this trip.',
+        seats: []
+      }, null, 2);
+    }
+
+    return JSON.stringify({
+      statusCode: payload?.['statusCode'] ?? 200,
+      message,
+      tripId,
+      summary: isBookedView
+        ? `Booked seats: ${seats.join(', ')}`
+        : `Available seats: ${seats.join(', ')}`,
+      seats
+    }, null, 2);
+  }
+
   // Build the request and send it.
   submit() {
     const ep = this.activeEndpoint();
     if (!ep) return;
 
     if (!this.validateActiveEndpoint()) {
+      this.readableResponse.set({
+        banner: 'Please fix the highlighted fields and try again.',
+        status: 400,
+        message: 'Frontend validation failed.',
+        timestamp: '',
+        details: [],
+        table: null
+      });
+      this.outputView.set('preview');
       this.response.set(JSON.stringify({
         error: 'FrontendValidationError',
         message: 'Please fix the highlighted fields and try again.'
@@ -201,7 +724,9 @@ export class ModuleEndpointsComponent implements OnInit {
     }
 
     this.loading.set(true);
+    this.readableResponse.set(null);
     this.response.set('');
+    this.outputView.set('preview');
     const url = this.buildUrl(ep);
 
     // POST, PUT, and some PATCH calls need a body.
@@ -211,7 +736,8 @@ export class ModuleEndpointsComponent implements OnInit {
       for (const field of ep.bodyFields) {
         const val = this.bodyValues[field.name];
         if (val !== undefined && val !== null && val !== '') {
-          body[field.name] = field.type === 'number' ? Number(val) : val;
+          const formattedValue = this.formatValueForRequest(field, val);
+          body[field.name] = field.type === 'number' ? Number(formattedValue) : formattedValue;
         }
       }
 
@@ -223,7 +749,8 @@ export class ModuleEndpointsComponent implements OnInit {
 
         const val = this.paramValues[param.name];
         if (val !== undefined && val !== null && val !== '') {
-          body[param.name] = param.type === 'number' ? Number(val) : val;
+          const formattedValue = this.formatValueForRequest(param, val);
+          body[param.name] = param.type === 'number' ? Number(formattedValue) : formattedValue;
         }
       }
     }
@@ -241,13 +768,20 @@ export class ModuleEndpointsComponent implements OnInit {
     req$.subscribe({
       next: (res: unknown) => {
         // Show the response in a readable way.
-        this.response.set(JSON.stringify(res, null, 2));
+        this.readableResponse.set(this.buildReadableResponse(res, 'success'));
+        this.outputView.set(this.hasTableView() ? 'table' : 'preview');
+        this.response.set(this.formatResponse(ep, res));
         this.responseStatus.set('success');
         this.loading.set(false);
       },
       error: (err: { error?: unknown; message?: string }) => {
         // Handle both text errors and JSON errors.
         const errBody = err.error || err.message || 'Request failed';
+        this.readableResponse.set(this.buildReadableResponse(
+          typeof errBody === 'string' ? { message: errBody, status: 500 } : errBody,
+          'error'
+        ));
+        this.outputView.set('preview');
         this.response.set(typeof errBody === 'string' ? errBody : JSON.stringify(errBody, null, 2));
         this.responseStatus.set('error');
         this.loading.set(false);
@@ -259,4 +793,36 @@ export class ModuleEndpointsComponent implements OnInit {
   back() {
     this.router.navigate(['/dashboard']);
   }
+}
+
+interface LookupOption {
+  value: string;
+  label: string;
+}
+
+interface LookupSourceItem {
+  [key: string]: string | number | boolean | null | undefined;
+}
+
+interface LookupRequest {
+  url?: string;
+  emptyMessage?: string;
+  map?: (item: LookupSourceItem) => LookupOption;
+}
+
+interface LookupApiResponse {
+  data?: LookupSourceItem[] | LookupSourceItem;
+}
+
+interface ReadableResponse {
+  banner: string;
+  status: number;
+  message: string;
+  timestamp: string;
+  details: Array<{ label: string; value: string }>;
+  table: ReadableRow[] | null;
+}
+
+interface ReadableRow {
+  [key: string]: string;
 }

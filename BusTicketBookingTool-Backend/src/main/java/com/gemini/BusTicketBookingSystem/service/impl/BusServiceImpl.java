@@ -61,6 +61,13 @@ public class BusServiceImpl implements IBusService {
     }
 
     @Override
+    public List<BusResponse> getAllBuses() {
+        return iBusRepository.findAll().stream()
+                .map(this::convertToResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<BusResponse> getBusesByOffice(Integer officeId) {
         if (!officeRepository.existsById(officeId)) {
             throw new ResourceNotFoundException("AgencyOffice", "officeId", officeId);

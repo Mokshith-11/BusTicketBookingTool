@@ -63,6 +63,20 @@ public class DriverController {
 
         return ResponseEntity.ok(apiResponse);
     }
+
+    @GetMapping("/drivers")
+    public ResponseEntity<ApiResponse<List<DriverResponse>>> getAllDrivers() {
+
+        List<DriverResponse> drivers = driverService.getAllDrivers();
+
+        ApiResponse<List<DriverResponse>> apiResponse =
+                new ApiResponse<>(HttpStatus.OK.value(),
+                        "Drivers fetched successfully",
+                        drivers);
+
+        return ResponseEntity.ok(apiResponse);
+    }
+
     /*
      * GET flow:
      * - Frontend asks for existing data using an ID, filter, or list endpoint.

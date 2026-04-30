@@ -62,6 +62,20 @@ public class AgencyOfficeController {
 
         return ResponseEntity.ok(apiResponse);
     }
+
+    @GetMapping("/offices")
+    public ResponseEntity<ApiResponse<List<AgencyOfficeResponse>>> getAllOffices() {
+
+        List<AgencyOfficeResponse> offices = officeService.getAllOffices();
+
+        ApiResponse<List<AgencyOfficeResponse>> apiResponse =
+                new ApiResponse<>(HttpStatus.OK.value(),
+                        "Offices fetched successfully",
+                        offices);
+
+        return ResponseEntity.ok(apiResponse);
+    }
+
     /*
      * GET flow:
      * - Frontend asks for existing data using an ID, filter, or list endpoint.

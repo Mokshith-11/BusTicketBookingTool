@@ -21,7 +21,8 @@ public class ResourceNotFoundException extends RuntimeException {
         super(message);
     }
 
-    public ResourceNotFoundException(String agency, Integer agencyId) {
+    public ResourceNotFoundException(String resourceName, Integer resourceId) {
+        this(resourceName, "id", resourceId);
     }
 
     public String getResourceName() {

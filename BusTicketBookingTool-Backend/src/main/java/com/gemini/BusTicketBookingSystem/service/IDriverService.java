@@ -12,6 +12,7 @@ import java.util.List;
  */
 public interface IDriverService {
     DriverResponse registerDriver(Integer officeId, DriverRequest requestDTO);
+    List<DriverResponse> getAllDrivers();
     List<DriverResponse> getDriversByOffice(Integer officeId);
     DriverResponse getDriverById(Integer driverId);
     DriverResponse updateDriver(Integer driverId, DriverRequest requestDTO);

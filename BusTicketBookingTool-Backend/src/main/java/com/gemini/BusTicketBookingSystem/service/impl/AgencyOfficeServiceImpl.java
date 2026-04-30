@@ -50,6 +50,14 @@ public class AgencyOfficeServiceImpl implements IAgencyOfficeService {
     }
 
     @Override
+    public List<AgencyOfficeResponse> getAllOffices() {
+        return officeRepository.findAll()
+                .stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public AgencyOfficeResponse getOfficeById(Integer officeId) {
         AgencyOffice office = officeRepository.findById(officeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Office", officeId));

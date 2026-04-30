@@ -62,6 +62,20 @@ public class BusController {
 
         return ResponseEntity.ok(apiResponse);
     }
+
+    @GetMapping("/buses")
+    public ResponseEntity<ApiResponse<List<BusResponse>>> getAllBuses() {
+
+        List<BusResponse> buses = busService.getAllBuses();
+
+        ApiResponse<List<BusResponse>> apiResponse =
+                new ApiResponse<>(HttpStatus.OK.value(),
+                        "Buses fetched successfully",
+                        buses);
+
+        return ResponseEntity.ok(apiResponse);
+    }
+
     /*
      * GET flow:
      * - Frontend asks for existing data using an ID, filter, or list endpoint.

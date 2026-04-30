@@ -1,5 +1,6 @@
 package com.gemini.BusTicketBookingSystem.dto.request;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
@@ -33,9 +34,11 @@ public class TripRequest {
 
     @NotNull(message = "Departure time is required")
     @Future(message = "Departure time must be in the future")
+    @JsonDeserialize(using = UtcLocalDateTimeDeserializer.class)
     private LocalDateTime departureTime;
 
     @NotNull(message = "Arrival time is required")
+    @JsonDeserialize(using = UtcLocalDateTimeDeserializer.class)
     private LocalDateTime arrivalTime;
 
     @NotNull(message = "Fare is required")

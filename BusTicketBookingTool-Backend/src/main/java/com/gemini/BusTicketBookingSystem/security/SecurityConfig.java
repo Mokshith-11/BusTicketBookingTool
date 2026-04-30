@@ -2,6 +2,7 @@ package com.gemini.BusTicketBookingSystem.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -115,6 +116,15 @@ public class SecurityConfig {
 
                         // Agency office paths are kept explicit before agency wildcard rules.
                         .requestMatchers("/api/v1/agencies/*/offices").hasRole("AKSHA")
+
+                        // Shared dropdowns only need read access.
+                        .requestMatchers(HttpMethod.GET, "/api/v1/trips").hasAnyRole("VIGNESH", "PRIYA")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/routes").hasAnyRole("AJITHA", "PRIYA")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/customers").hasAnyRole("AJITHA", "VIGNESH", "PRIYA")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/buses").hasAnyRole("NITHISH", "PRIYA")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/drivers").hasAnyRole("NITHISH", "PRIYA")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/offices").hasAnyRole("AKSHA", "NITHISH")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/addresses").hasAnyRole("AKSHA", "AJITHA", "NITHISH", "PRIYA")
 
                         // ════════════════════════════════════════════════════════════
                         // WILDCARD rules AFTER specific rules

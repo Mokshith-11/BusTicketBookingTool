@@ -71,7 +71,7 @@
 
         @if (activeEndpoint()) {
           <!-- Request View -->
-          <div class="space-y-6 animate-slide-up">
+          <div class="relative z-20 space-y-6 animate-slide-up">
             
             <div class="glass-card p-10 rounded-[3rem] bg-white border-none shadow-xl shadow-slate-200/40">
               <div class="flex items-center gap-3 mb-6">
@@ -89,7 +89,7 @@
               
               <!-- Body Section -->
               @if (activeEndpoint()!.bodyFields && activeEndpoint()!.bodyFields!.length > 0) {
-                <div class="glass-card p-10 rounded-[3rem] bg-white border-none">
+                <div class="glass-card p-10 rounded-[3rem] bg-white border-none overflow-visible">
                   <div class="label-purple mb-8">
                     <div class="dot-purple"></div>
                     Request Content
@@ -98,15 +98,43 @@
                     @for (f of activeEndpoint()!.bodyFields; track f.name) {
                       <div class="space-y-2.5">
                         <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{{ f.label }}</label>
-                        <input
-                          [type]="f.type"
-                          [(ngModel)]="bodyValues[f.name]"
-                          (ngModelChange)="clearFieldError('body', f.name)"
-                          class="input-field"
-                          [class.border-rose-400]="hasFieldError('body', f.name)"
-                          [class.ring-2]="hasFieldError('body', f.name)"
-                          [class.ring-rose-100]="hasFieldError('body', f.name)"
-                          [placeholder]="'Enter ' + f.label">
+                        <div
+                          class="relative z-40"
+                          (click)="keepLookupDropdownOpen($event, 'body', f.name)">
+                          <input
+                            [type]="getInputType(f)"
+                            [(ngModel)]="bodyValues[f.name]"
+                            (focus)="keepLookupDropdownOpen($event, 'body', f.name)"
+                            (ngModelChange)="onFieldInput('body', f)"
+                            class="input-field"
+                            [class.border-rose-400]="hasFieldError('body', f.name)"
+                            [class.ring-2]="hasFieldError('body', f.name)"
+                            [class.ring-rose-100]="hasFieldError('body', f.name)"
+                            [placeholder]="isLookupField(f) ? 'Type or choose an option' : getFieldPlaceholder(f, 'Enter ' + f.label)"
+                            autocomplete="off">
+                          @if (isLookupField(f) && isLookupDropdownOpen('body', f.name)) {
+                            <div class="absolute bottom-full left-0 z-[80] mb-2 w-full rounded-3xl border border-slate-200 bg-white shadow-2xl overflow-hidden">
+                              @if (lookupLoading()) {
+                                <div class="px-5 py-4 text-sm font-bold text-slate-400">Loading options...</div>
+                              } @else if (lookupError()) {
+                                <div class="px-5 py-4 text-sm font-bold text-rose-500">{{ lookupError() }}</div>
+                              } @else if (getLookupSuggestions('body', f.name).length === 0) {
+                                <div class="px-5 py-4 text-sm font-bold text-slate-400">No matching options found.</div>
+                              } @else {
+                                <div class="max-h-56 overflow-y-auto">
+                                  @for (option of getLookupSuggestions('body', f.name); track option.value) {
+                                    <button
+                                      type="button"
+                                      class="w-full px-5 py-3 text-left hover:bg-slate-50 border-b border-slate-100 last:border-b-0"
+                                      (click)="selectLookupOption('body', f.name, option)">
+                                      <div class="text-sm font-black text-slate-800">{{ lookupLabel(option) }}</div>
+                                    </button>
+                                  }
+                                </div>
+                              }
+                            </div>
+                          }
+                        </div>
                         @if (getFieldError('body', f.name)) {
                           <p class="text-xs font-bold text-rose-500 ml-1">{{ getFieldError('body', f.name) }}</p>
                         }
@@ -118,7 +146,7 @@
 
               <!-- Query Params Section -->
               @if (activeEndpoint()!.queryParams && activeEndpoint()!.queryParams!.length > 0) {
-                <div class="glass-card p-10 rounded-[3rem] bg-white border-none">
+                <div class="glass-card p-10 rounded-[3rem] bg-white border-none overflow-visible">
                   <div class="label-purple mb-8">
                     <div class="dot-purple"></div>
                     Query Constraints
@@ -127,15 +155,43 @@
                     @for (q of activeEndpoint()!.queryParams; track q.name) {
                       <div class="space-y-2.5">
                         <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{{ q.label }}</label>
-                        <input
-                          [type]="q.type"
-                          [(ngModel)]="queryValues[q.name]"
-                          (ngModelChange)="clearFieldError('query', q.name)"
-                          class="input-field"
-                          [class.border-rose-400]="hasFieldError('query', q.name)"
-                          [class.ring-2]="hasFieldError('query', q.name)"
-                          [class.ring-rose-100]="hasFieldError('query', q.name)"
-                          [placeholder]="'Enter ' + q.label">
+                        <div
+                          class="relative z-40"
+                          (click)="keepLookupDropdownOpen($event, 'query', q.name)">
+                          <input
+                            [type]="getInputType(q)"
+                            [(ngModel)]="queryValues[q.name]"
+                            (focus)="keepLookupDropdownOpen($event, 'query', q.name)"
+                            (ngModelChange)="onFieldInput('query', q)"
+                            class="input-field"
+                            [class.border-rose-400]="hasFieldError('query', q.name)"
+                            [class.ring-2]="hasFieldError('query', q.name)"
+                            [class.ring-rose-100]="hasFieldError('query', q.name)"
+                            [placeholder]="isLookupField(q) ? 'Type or choose an option' : getFieldPlaceholder(q, 'Enter ' + q.label)"
+                            autocomplete="off">
+                          @if (isLookupField(q) && isLookupDropdownOpen('query', q.name)) {
+                            <div class="absolute bottom-full left-0 z-[80] mb-2 w-full rounded-3xl border border-slate-200 bg-white shadow-2xl overflow-hidden">
+                              @if (lookupLoading()) {
+                                <div class="px-5 py-4 text-sm font-bold text-slate-400">Loading options...</div>
+                              } @else if (lookupError()) {
+                                <div class="px-5 py-4 text-sm font-bold text-rose-500">{{ lookupError() }}</div>
+                              } @else if (getLookupSuggestions('query', q.name).length === 0) {
+                                <div class="px-5 py-4 text-sm font-bold text-slate-400">No matching options found.</div>
+                              } @else {
+                                <div class="max-h-56 overflow-y-auto">
+                                  @for (option of getLookupSuggestions('query', q.name); track option.value) {
+                                    <button
+                                      type="button"
+                                      class="w-full px-5 py-3 text-left hover:bg-slate-50 border-b border-slate-100 last:border-b-0"
+                                      (click)="selectLookupOption('query', q.name, option)">
+                                      <div class="text-sm font-black text-slate-800">{{ lookupLabel(option) }}</div>
+                                    </button>
+                                  }
+                                </div>
+                              }
+                            </div>
+                          }
+                        </div>
                         @if (getFieldError('query', q.name)) {
                           <p class="text-xs font-bold text-rose-500 ml-1">{{ getFieldError('query', q.name) }}</p>
                         }
@@ -147,7 +203,7 @@
 
               <!-- Path Section -->
               @if (activeEndpoint()!.params.length > 0) {
-                <div class="glass-card p-10 rounded-[3rem] bg-white border-none">
+                <div class="glass-card p-10 rounded-[3rem] bg-white border-none overflow-visible">
                   <div class="label-purple mb-8">
                     <div class="dot-purple"></div>
                     Identifier
@@ -156,15 +212,43 @@
                     @for (p of activeEndpoint()!.params; track p.name) {
                       <div class="space-y-2.5">
                         <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{{ p.label }}</label>
-                        <input
-                          [type]="p.type"
-                          [(ngModel)]="paramValues[p.name]"
-                          (ngModelChange)="clearFieldError('param', p.name)"
-                          class="input-field"
-                          [class.border-rose-400]="hasFieldError('param', p.name)"
-                          [class.ring-2]="hasFieldError('param', p.name)"
-                          [class.ring-rose-100]="hasFieldError('param', p.name)"
-                          placeholder="ID Segment">
+                        <div
+                          class="relative z-40"
+                          (click)="keepLookupDropdownOpen($event, 'param', p.name)">
+                          <input
+                            [type]="getInputType(p)"
+                            [(ngModel)]="paramValues[p.name]"
+                            (focus)="keepLookupDropdownOpen($event, 'param', p.name)"
+                            (ngModelChange)="onFieldInput('param', p)"
+                            class="input-field"
+                            [class.border-rose-400]="hasFieldError('param', p.name)"
+                            [class.ring-2]="hasFieldError('param', p.name)"
+                            [class.ring-rose-100]="hasFieldError('param', p.name)"
+                            [placeholder]="isLookupField(p) ? 'Type or choose an option' : getFieldPlaceholder(p, 'ID Segment')"
+                            autocomplete="off">
+                          @if (isLookupField(p) && isLookupDropdownOpen('param', p.name)) {
+                            <div class="absolute bottom-full left-0 z-[80] mb-2 w-full rounded-3xl border border-slate-200 bg-white shadow-2xl overflow-hidden">
+                              @if (lookupLoading()) {
+                                <div class="px-5 py-4 text-sm font-bold text-slate-400">Loading options...</div>
+                              } @else if (lookupError()) {
+                                <div class="px-5 py-4 text-sm font-bold text-rose-500">{{ lookupError() }}</div>
+                              } @else if (getLookupSuggestions('param', p.name).length === 0) {
+                                <div class="px-5 py-4 text-sm font-bold text-slate-400">No matching options found.</div>
+                              } @else {
+                                <div class="max-h-56 overflow-y-auto">
+                                  @for (option of getLookupSuggestions('param', p.name); track option.value) {
+                                    <button
+                                      type="button"
+                                      class="w-full px-5 py-3 text-left hover:bg-slate-50 border-b border-slate-100 last:border-b-0"
+                                      (click)="selectLookupOption('param', p.name, option)">
+                                      <div class="text-sm font-black text-slate-800">{{ lookupLabel(option) }}</div>
+                                    </button>
+                                  }
+                                </div>
+                              }
+                            </div>
+                          }
+                        </div>
                         @if (getFieldError('param', p.name)) {
                           <p class="text-xs font-bold text-rose-500 ml-1">{{ getFieldError('param', p.name) }}</p>
                         }
@@ -176,8 +260,8 @@
             </div>
 
             <button (click)="submit()"
-              class="btn-primary w-full py-6 text-sm lowercase tracking-[0.4em]"
-              [disabled]="loading()">
+              class="relative z-0 btn-primary w-full py-6 text-sm lowercase tracking-[0.4em] disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none"
+              [disabled]="isSubmitDisabled()">
               {{ loading() ? 'processing...' : 'submit operation' }}
             </button>
           </div>
@@ -189,25 +273,121 @@
                  <div class="w-1.5 h-1.5 rounded-full bg-slate-300"></div>
                  Response
                </div>
-               @if (response()) {
-                <span class="px-4 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest"
-                  [ngClass]="responseStatus() === 'success' ? 'bg-emerald-500 text-white shadow-xl shadow-emerald-500/20' : 'bg-rose-500 text-white shadow-xl shadow-rose-500/20'">
-                  {{ responseStatus() === 'success' ? 'success' : 'failure' }}
-                </span>
-               }
+               <div class="flex items-center gap-4">
+                 @if (response()) {
+                  <span class="px-4 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest"
+                    [ngClass]="responseStatus() === 'success' ? 'bg-emerald-500 text-white shadow-xl shadow-emerald-500/20' : 'bg-rose-500 text-white shadow-xl shadow-rose-500/20'">
+                    {{ responseStatus() === 'success' ? 'success' : 'failure' }}
+                  </span>
+                 }
+
+                 @if (response()) {
+                   <div class="inline-flex items-center rounded-[1.5rem] border border-slate-200 bg-white p-1 shadow-lg shadow-slate-200/40">
+                     <button
+                       type="button"
+                       class="px-4 py-2 rounded-[1.1rem] text-xs font-black tracking-wide transition-all"
+                       [ngClass]="outputView() === 'preview' ? 'bg-[#2d5d63] text-white' : 'text-slate-500 hover:text-slate-800'"
+                       (click)="setOutputView('preview')">
+                       Preview
+                     </button>
+                     @if (hasTableView()) {
+                       <button
+                         type="button"
+                         class="px-4 py-2 rounded-[1.1rem] text-xs font-black tracking-wide transition-all"
+                         [ngClass]="outputView() === 'table' ? 'bg-[#2d5d63] text-white' : 'text-slate-500 hover:text-slate-800'"
+                         (click)="setOutputView('table')">
+                         Table
+                       </button>
+                     }
+                     <button
+                       type="button"
+                       class="px-4 py-2 rounded-[1.1rem] text-xs font-black tracking-wide transition-all"
+                       [ngClass]="outputView() === 'json' ? 'bg-[#2d5d63] text-white' : 'text-slate-500 hover:text-slate-800'"
+                       (click)="setOutputView('json')">
+                       JSON
+                     </button>
+                   </div>
+                 }
+               </div>
              </div>
 
-             <div class="flex-1 bg-[#0f172a] rounded-[3.5rem] shadow-2xl p-10 font-mono text-sm leading-relaxed flex flex-col group relative border-[12px] border-white overflow-hidden">
-               @if (!response()) {
-                 <div class="flex-1 flex flex-col items-center justify-center text-slate-600 opacity-20">
-                    <span class="text-xs font-black uppercase tracking-[0.4em]">STANDBY</span>
+             @if (readableResponse() && outputView() === 'preview') {
+               <div class="rounded-[2.5rem] bg-white p-6 shadow-xl shadow-slate-200/40 border border-slate-100">
+                 <h3 class="text-2xl font-black tracking-tight text-slate-900 mb-4">Result</h3>
+
+                 <div
+                   class="rounded-2xl px-5 py-4 text-sm font-black mb-5"
+                   [ngClass]="responseStatus() === 'success' ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'">
+                   {{ readableResponse()!.banner }}
                  </div>
-               } @else {
-                 <div class="flex-1 overflow-y-auto scroll-custom pr-4">
-                    <pre class="text-blue-100 selection:bg-blue-500/20">{{ response() }}</pre>
+
+                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
+                   <div class="rounded-2xl bg-slate-50 px-4 py-4">
+                     <div class="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">Timestamp</div>
+                     <div class="text-sm font-bold text-slate-700 break-all">{{ readableResponse()!.timestamp || '-' }}</div>
+                   </div>
+                   <div class="rounded-2xl bg-slate-50 px-4 py-4">
+                     <div class="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">Status</div>
+                     <div class="text-sm font-bold text-slate-700">{{ readableResponse()!.status }}</div>
+                   </div>
+                   <div class="rounded-2xl bg-slate-50 px-4 py-4">
+                     <div class="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">Message</div>
+                     <div class="text-sm font-bold text-slate-700 break-words">{{ readableResponse()!.message || '-' }}</div>
+                   </div>
                  </div>
-               }
-             </div>
+
+                 @if (readableResponse()!.details.length > 0) {
+                   <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+                     @for (detail of readableResponse()!.details; track detail.label) {
+                       <div class="rounded-2xl bg-slate-50 px-4 py-4">
+                         <div class="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">{{ detail.label }}</div>
+                         <div class="text-sm font-bold text-slate-700 break-words">{{ detail.value }}</div>
+                       </div>
+                     }
+                   </div>
+                 }
+
+               </div>
+             }
+
+             @if (readableResponse() && outputView() === 'table' && hasTableView()) {
+               <div class="flex-1 rounded-[3.5rem] bg-white p-8 shadow-2xl border-[12px] border-white overflow-hidden">
+                 <div class="overflow-x-auto rounded-[2rem] border border-slate-100">
+                   <table class="min-w-full text-left text-sm">
+                     <thead class="bg-[#2d5d63] text-white">
+                       <tr>
+                         @for (header of $any(readableResponse()!.table![0]) | keyvalue; track header.key) {
+                           <th class="px-4 py-4 font-black uppercase tracking-widest whitespace-nowrap text-xs">{{ header.key }}</th>
+                         }
+                       </tr>
+                     </thead>
+                     <tbody class="bg-white">
+                       @for (row of readableResponse()!.table!; track $index) {
+                         <tr class="border-t border-slate-100">
+                           @for (cell of row | keyvalue; track cell.key) {
+                             <td class="px-4 py-4 font-bold text-slate-700 align-top whitespace-nowrap">{{ cell.value }}</td>
+                           }
+                         </tr>
+                       }
+                     </tbody>
+                   </table>
+                 </div>
+               </div>
+             }
+
+             @if (outputView() === 'json' || !readableResponse() || (outputView() === 'table' && !hasTableView())) {
+               <div class="flex-1 bg-[#0f172a] rounded-[3.5rem] shadow-2xl p-10 font-mono text-sm leading-relaxed flex flex-col group relative border-[12px] border-white overflow-hidden">
+                 @if (!response()) {
+                   <div class="flex-1 flex flex-col items-center justify-center text-slate-600 opacity-20">
+                      <span class="text-xs font-black uppercase tracking-[0.4em]">STANDBY</span>
+                   </div>
+                 } @else {
+                   <div class="flex-1 overflow-y-auto scroll-custom pr-4">
+                      <pre class="text-blue-100 selection:bg-blue-500/20">{{ response() }}</pre>
+                   </div>
+                 }
+               </div>
+             }
           </div>
         }
       </div>

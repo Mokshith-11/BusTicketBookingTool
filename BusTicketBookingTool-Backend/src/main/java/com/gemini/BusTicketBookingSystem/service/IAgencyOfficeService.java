@@ -12,6 +12,7 @@ import java.util.List;
 
 public interface IAgencyOfficeService {
     AgencyOfficeResponse addOffice(Integer agencyId, AgencyOfficeRequest request);
+    List<AgencyOfficeResponse> getAllOffices();
     AgencyOfficeResponse getOfficeById(Integer officeId);
     List<AgencyOfficeResponse> getOfficesByAgency(Integer agencyId);
     AgencyOfficeResponse updateOffice(Integer officeId, AgencyOfficeRequest request);

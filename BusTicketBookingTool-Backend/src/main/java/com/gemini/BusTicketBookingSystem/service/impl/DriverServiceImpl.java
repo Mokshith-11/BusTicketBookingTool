@@ -63,6 +63,13 @@ public class DriverServiceImpl implements IDriverService {
     }
 
     @Override
+    public List<DriverResponse> getAllDrivers() {
+        return driverRepository.findAll().stream()
+                .map(this::convertToResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<DriverResponse> getDriversByOffice(Integer officeId) {
         if (!officeRepository.existsById(officeId)) {
             throw new ResourceNotFoundException("AgencyOffice", "officeId", officeId);

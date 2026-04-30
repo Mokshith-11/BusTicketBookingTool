@@ -15,6 +15,7 @@ public interface IBusService {
 
 
     BusResponse registerBus(Integer officeId, BusRequest requestDTO);
+    List<BusResponse> getAllBuses();
     List<BusResponse> getBusesByOffice(Integer officeId);
     BusResponse getBusById(Integer busId);
     BusResponse updateBus(Integer busId, BusRequest requestDTO);

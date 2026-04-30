@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/addresses")
@@ -57,6 +58,19 @@ public class AddressController {
         ApiResponse<AddressResponse> apiResponse =
                 new ApiResponse<>(HttpStatus.OK.value(),
                         "Address fetched successfully",
+                        response);
+
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<AddressResponse>>> getAllAddresses() {
+
+        List<AddressResponse> response = addressService.getAllAddresses();
+
+        ApiResponse<List<AddressResponse>> apiResponse =
+                new ApiResponse<>(HttpStatus.OK.value(),
+                        "Addresses fetched successfully",
                         response);
 
         return ResponseEntity.ok(apiResponse);
