@@ -122,6 +122,14 @@ export class ModuleEndpointsComponent implements OnInit {
 
   // Use browser pickers for backend date and date-time fields.
   getInputType(field: EndpointParam): string {
+    if (field.name === 'departureTime' || field.name === 'arrivalTime') {
+      return 'datetime-local';
+    }
+
+    if (field.name === 'tripDate') {
+      return 'date';
+    }
+
     return field.type;
   }
 
@@ -312,6 +320,12 @@ export class ModuleEndpointsComponent implements OnInit {
     }
 
     if (field.name === 'departureTime' || field.name === 'arrivalTime') {
+      const hasSeconds = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/.test(value);
+      const normalized = hasSeconds ? value : `${value}:00`;
+      return `${normalized}.000Z`;
+    }
+
+    if (field.name === 'tripDate') {
       return value;
     }
 
@@ -667,6 +681,20 @@ export class ModuleEndpointsComponent implements OnInit {
       return `${field.label} is required.`;
     }
 
+    if (field.name === 'departureTime' || field.name === 'arrivalTime') {
+      if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?$/.test(trimmed)) {
+        return `${field.label} must be chosen from the date/time picker.`;
+      }
+      return '';
+    }
+
+    if (field.name === 'tripDate') {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
+        return `${field.label} must be chosen from the calendar.`;
+      }
+      return '';
+    }
+
     if (field.type === 'number' && Number.isNaN(Number(trimmed))) {
       return `${field.label} must be a number.`;
     }
@@ -695,7 +723,7 @@ export class ModuleEndpointsComponent implements OnInit {
       }
     }
 
-    if (field.name === 'tripDate' || field.label.toLowerCase().includes('date')) {
+    if (field.label.toLowerCase().includes('date')) {
       if (!/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
         return `${field.label} must be in YYYY-MM-DD format.`;
       }
