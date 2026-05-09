@@ -145,7 +145,14 @@ export class ModuleEndpointsComponent implements OnInit {
 
   // When the user types in a lookup field, keep the dropdown open and filter the list.
   onFieldInput(section: 'param' | 'body' | 'query', field: EndpointParam) {
-    this.clearFieldError(section, field.name);
+    const value = this.getFieldValue(section, field.name);
+    const error = this.validateField(field, value, section);
+
+    if (error) {
+      this.fieldErrors[this.fieldKey(section, field.name)] = error;
+    } else {
+      this.clearFieldError(section, field.name);
+    }
 
     if (!this.isLookupField(field)) {
       return;
@@ -203,6 +210,19 @@ export class ModuleEndpointsComponent implements OnInit {
   // The dropdown is shown only for the active lookup field.
   isLookupDropdownOpen(section: 'param' | 'body' | 'query', name: string): boolean {
     return this.openLookupField() === this.fieldKey(section, name);
+  }
+
+  // Trip search fields work better with simple browser suggestions.
+  useNativeSuggestions(section: 'param' | 'body' | 'query', field: EndpointParam): boolean {
+    return section === 'query'
+      && this.getActiveModuleKey() === 'trips'
+      && this.activeEndpoint()?.path === '/trips/search'
+      && ['fromCity', 'toCity', 'date'].includes(field.name);
+  }
+
+  // Give each suggestion list a stable id for the input list attribute.
+  getLookupListId(section: 'param' | 'body' | 'query', name: string): string {
+    return `lookup-${this.fieldKey(section, name).replace(/[^a-zA-Z0-9_-]/g, '-')}`;
   }
 
   // Show all options first, then narrow them down while the user types.
@@ -288,6 +308,41 @@ export class ModuleEndpointsComponent implements OnInit {
 
   // Decide which API should power the dropdown for this field.
   buildLookupRequest(field: EndpointParam): LookupRequest | null {
+    if (this.getActiveModuleKey() === 'trips' && this.activeEndpoint()?.path === '/trips/search') {
+      if (field.name === 'fromCity') {
+        return {
+          url: '/trips',
+          emptyMessage: 'No source cities found.',
+          map: (item) => {
+            const city = this.readLookupValue(item, 'fromCity');
+            return city ? { value: String(city), label: String(city) } : null;
+          }
+        };
+      }
+
+      if (field.name === 'toCity') {
+        return {
+          url: '/trips',
+          emptyMessage: 'No destination cities found.',
+          map: (item) => {
+            const city = this.readLookupValue(item, 'toCity');
+            return city ? { value: String(city), label: String(city) } : null;
+          }
+        };
+      }
+
+      if (field.name === 'date') {
+        return {
+          url: '/trips',
+          emptyMessage: 'No trip dates found.',
+          map: (item) => {
+            const tripDate = this.readLookupValue(item, 'tripDate');
+            return tripDate ? { value: String(tripDate), label: String(tripDate) } : null;
+          }
+        };
+      }
+    }
+
     switch (field.name) {
       case 'agencyId':
         return {
@@ -504,13 +559,16 @@ export class ModuleEndpointsComponent implements OnInit {
         const options = raw
           .map(item => mapper(item))
           .filter((item): item is LookupOption => !!item && !!item.value);
+        const uniqueOptions = options.filter((option, index, list) =>
+          list.findIndex(candidate => candidate.value === option.value && candidate.label === option.label) === index
+        );
 
         if (lookup.url) {
-          this.lookupCache[lookup.url] = options;
+          this.lookupCache[lookup.url] = uniqueOptions;
         }
-        this.lookupOptions.set(options);
+        this.lookupOptions.set(uniqueOptions);
         this.lookupLoading.set(false);
-        this.lookupError.set(options.length === 0 ? (lookup.emptyMessage || 'No options found.') : '');
+        this.lookupError.set(uniqueOptions.length === 0 ? (lookup.emptyMessage || 'No options found.') : '');
       },
       error: (err: { status?: number; error?: unknown; message?: string }) => {
         this.lookupLoading.set(false);
@@ -616,7 +674,7 @@ export class ModuleEndpointsComponent implements OnInit {
 
     const payload = res as Record<string, unknown>;
     const data = payload['data'];
-    const timestamp = typeof payload['timestamp'] === 'string' ? payload['timestamp'] : '';
+    const timestamp = typeof payload['timestamp'] === 'string' ? payload['timestamp'] : new Date().toISOString();
     const message = typeof payload['message'] === 'string' ? payload['message'] : '';
     const numericStatus = typeof payload['statusCode'] === 'number'
       ? payload['statusCode']
@@ -626,15 +684,38 @@ export class ModuleEndpointsComponent implements OnInit {
 
     const rows = this.getReadableRows(data);
     const details = this.getReadableDetails(payload, ['statusCode', 'status', 'message', 'timestamp', 'data']);
+    const emptyState = Array.isArray(data) && data.length === 0
+      ? this.getEmptyStateMessage()
+      : null;
 
     return {
-      banner: message || (status === 'success' ? 'Request completed successfully.' : 'Request failed.'),
+      banner: emptyState || message || (status === 'success' ? 'Request completed successfully.' : 'Request failed.'),
       status: numericStatus,
       message,
       timestamp,
       details,
-      table: rows
+      table: rows,
+      emptyState: emptyState || undefined
     };
+  }
+
+  // Turn an empty list into a more human message for the current endpoint.
+  getEmptyStateMessage(): string {
+    const ep = this.activeEndpoint();
+    if (!ep) {
+      return 'No data found.';
+    }
+
+    switch (ep.label) {
+      case 'Customer Bookings':
+        return 'No bookings were found for this customer.';
+      case 'Booked Seats':
+        return 'No seats are booked for this trip.';
+      case 'Available Seats':
+        return 'No available seats were found for this trip.';
+      default:
+        return `No data found for ${ep.label.toLowerCase()}.`;
+    }
   }
 
   // Show extra top-level fields in a small details strip.
@@ -848,6 +929,7 @@ interface ReadableResponse {
   timestamp: string;
   details: Array<{ label: string; value: string }>;
   table: ReadableRow[] | null;
+  emptyState?: string;
 }
 
 interface ReadableRow {
