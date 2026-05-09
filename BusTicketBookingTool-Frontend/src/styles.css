@@ -16,14 +16,9 @@
 }
 
 @layer base {
-  html,
-  body,
-  button,
-  input,
-  textarea,
-  select,
-  pre,
-  code {
+  *,
+  *::before,
+  *::after {
     font-family: "Times New Roman", Times, serif !important;
   }
 

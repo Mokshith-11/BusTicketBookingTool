@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { forkJoin, Observable } from 'rxjs';
 import { AuthService } from '../../../core/services/auth.service';
 import { MODULE_CONFIGS, ModuleConfig, EndpointDef, EndpointParam } from '../../../core/config/module-endpoints.config';
 
@@ -242,6 +242,18 @@ export class ModuleEndpointsComponent implements OnInit {
   // Keep the option text easy to scan in the dropdown.
   lookupLabel(option: LookupOption): string {
     return option.label;
+  }
+
+  // Show a clear status chip for seat availability.
+  lookupStatusClass(option: LookupOption): string {
+    switch (option.statusTone) {
+      case 'success':
+        return 'bg-emerald-100 text-emerald-700';
+      case 'danger':
+        return 'bg-rose-100 text-rose-700';
+      default:
+        return 'bg-slate-100 text-slate-500';
+    }
   }
 
   // Put the chosen ID into the field and close the dropdown.
@@ -507,6 +519,24 @@ export class ModuleEndpointsComponent implements OnInit {
           })
         };
       }
+      case 'seatNumber': {
+        if (this.getActiveModuleKey() !== 'bookings') {
+          return null;
+        }
+
+        const tripId = this.findSelectedValue('tripId');
+        if (!tripId) {
+          return { emptyMessage: 'Select Trip ID first.' };
+        }
+
+        return {
+          emptyMessage: 'No seats found for this trip.',
+          load: () => forkJoin({
+            available: this.http.get<LookupApiResponse>(`/trips/${tripId}/seats/available`),
+            booked: this.http.get<LookupApiResponse>(`/trips/${tripId}/seats/booked`)
+          })
+        };
+      }
       default:
         return null;
     }
@@ -525,7 +555,7 @@ export class ModuleEndpointsComponent implements OnInit {
       return;
     }
 
-    if (!lookup.map) {
+    if (!lookup.map && !lookup.load) {
       this.lookupOptions.set([]);
       this.lookupError.set('This list could not be prepared.');
       return;
@@ -545,20 +575,15 @@ export class ModuleEndpointsComponent implements OnInit {
     this.lookupError.set('');
     this.lookupOptions.set([]);
 
-    this.http.get<LookupApiResponse | LookupSourceItem[] | LookupSourceItem>(lookup.url).subscribe({
-      next: (res) => {
-        const raw: LookupSourceItem[] = Array.isArray(res)
-          ? res as LookupSourceItem[]
-          : Array.isArray(res.data)
-            ? res.data as LookupSourceItem[]
-            : res.data && typeof res.data === 'object'
-              ? [res.data as LookupSourceItem]
-              : [];
+    const source$ = lookup.load
+      ? lookup.load()
+      : this.http.get<LookupApiResponse | LookupSourceItem[] | LookupSourceItem>(lookup.url!);
 
-        const mapper = lookup.map!;
-        const options = raw
-          .map(item => mapper(item))
-          .filter((item): item is LookupOption => !!item && !!item.value);
+    source$.subscribe({
+      next: (res) => {
+        const options = lookup.load
+          ? this.buildLoadedLookupOptions(field, res)
+          : this.buildMappedLookupOptions(lookup.map!, res);
         const uniqueOptions = options.filter((option, index, list) =>
           list.findIndex(candidate => candidate.value === option.value && candidate.label === option.label) === index
         );
@@ -579,6 +604,59 @@ export class ModuleEndpointsComponent implements OnInit {
         this.lookupError.set(backendMessage || `${field.label} list could not be loaded${statusText}.`);
       }
     });
+  }
+
+  // Convert normal API list responses into dropdown options.
+  buildMappedLookupOptions(
+    mapper: (item: LookupSourceItem) => LookupOption | null,
+    res: unknown
+  ): LookupOption[] {
+    const raw: LookupSourceItem[] = Array.isArray(res)
+      ? res as LookupSourceItem[]
+      : Array.isArray((res as LookupApiResponse)?.data)
+        ? (res as LookupApiResponse).data as LookupSourceItem[]
+        : (res as LookupApiResponse)?.data && typeof (res as LookupApiResponse).data === 'object'
+          ? [(res as LookupApiResponse).data as LookupSourceItem]
+          : [];
+
+    return raw
+      .map(item => mapper(item))
+      .filter((item): item is LookupOption => !!item && !!item.value);
+  }
+
+  // Build richer dropdown options for special fields like seat status.
+  buildLoadedLookupOptions(field: EndpointParam, res: unknown): LookupOption[] {
+    if (field.name === 'seatNumber') {
+      const payload = res as {
+        available?: LookupApiResponse;
+        booked?: LookupApiResponse;
+      };
+
+      const availableSeats = Array.isArray(payload.available?.data)
+        ? payload.available!.data as unknown as Array<string | number>
+        : [];
+      const bookedSeats = Array.isArray(payload.booked?.data)
+        ? payload.booked!.data as unknown as Array<string | number>
+        : [];
+
+      return [
+        ...availableSeats.map((seat) => ({
+          value: String(seat),
+          label: `Seat ${seat}`,
+          statusText: 'Available',
+          statusTone: 'success' as const
+        })),
+        ...bookedSeats.map((seat) => ({
+          value: String(seat),
+          label: `Seat ${seat}`,
+          statusText: 'Booked',
+          statusTone: 'danger' as const,
+          disabled: true
+        }))
+      ];
+    }
+
+    return [];
   }
 
   // Check one field and return an easy message when something is wrong.
@@ -906,6 +984,9 @@ export class ModuleEndpointsComponent implements OnInit {
 interface LookupOption {
   value: string;
   label: string;
+  statusText?: string;
+  statusTone?: 'success' | 'danger' | 'neutral';
+  disabled?: boolean;
 }
 
 interface LookupSourceItem {
@@ -915,7 +996,8 @@ interface LookupSourceItem {
 interface LookupRequest {
   url?: string;
   emptyMessage?: string;
-  map?: (item: LookupSourceItem) => LookupOption;
+  map?: (item: LookupSourceItem) => LookupOption | null;
+  load?: () => Observable<unknown>;
 }
 
 interface LookupApiResponse {

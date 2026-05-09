@@ -72,7 +72,7 @@
 
       @if (activeEndpoint()) {
         <section class="grid gap-8 xl:grid-cols-[360px_minmax(0,1fr)]">
-          <div class="space-y-6">
+          <div class="space-y-6 xl:sticky xl:top-6 self-start">
             <div class="rounded-[2rem] bg-white p-6 shadow-lg shadow-blue-100/60 ring-1 ring-slate-100">
               <p class="text-[11px] font-black uppercase tracking-[0.35em] text-[#3F72AF]">Current Endpoint</p>
               <div class="mt-5 flex items-center gap-3">
@@ -131,9 +131,20 @@
                                 @for (option of getLookupSuggestions('body', f.name); track option.value) {
                                   <button
                                     type="button"
-                                    class="w-full border-b border-slate-100 px-5 py-3 text-left hover:bg-slate-50 last:border-b-0"
+                                    class="w-full border-b border-slate-100 px-5 py-3 text-left last:border-b-0"
+                                    [disabled]="option.disabled"
+                                    [ngClass]="option.disabled ? 'cursor-not-allowed bg-slate-50/80 opacity-80' : 'hover:bg-slate-50'"
                                     (click)="selectLookupOption('body', f.name, option)">
-                                    <div class="text-sm font-black text-slate-800">{{ lookupLabel(option) }}</div>
+                                    <div class="flex items-center justify-between gap-3">
+                                      <div class="text-sm font-black text-slate-800">{{ lookupLabel(option) }}</div>
+                                      @if (option.statusText) {
+                                        <span
+                                          class="rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-[0.2em]"
+                                          [ngClass]="lookupStatusClass(option)">
+                                          {{ option.statusText }}
+                                        </span>
+                                      }
+                                    </div>
                                   </button>
                                 }
                               </div>
@@ -194,9 +205,20 @@
                                 @for (option of getLookupSuggestions('query', q.name); track option.value) {
                                   <button
                                     type="button"
-                                    class="w-full border-b border-slate-100 px-5 py-3 text-left hover:bg-slate-50 last:border-b-0"
+                                    class="w-full border-b border-slate-100 px-5 py-3 text-left last:border-b-0"
+                                    [disabled]="option.disabled"
+                                    [ngClass]="option.disabled ? 'cursor-not-allowed bg-slate-50/80 opacity-80' : 'hover:bg-slate-50'"
                                     (click)="selectLookupOption('query', q.name, option)">
-                                    <div class="text-sm font-black text-slate-800">{{ lookupLabel(option) }}</div>
+                                    <div class="flex items-center justify-between gap-3">
+                                      <div class="text-sm font-black text-slate-800">{{ lookupLabel(option) }}</div>
+                                      @if (option.statusText) {
+                                        <span
+                                          class="rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-[0.2em]"
+                                          [ngClass]="lookupStatusClass(option)">
+                                          {{ option.statusText }}
+                                        </span>
+                                      }
+                                    </div>
                                   </button>
                                 }
                               </div>
@@ -249,9 +271,20 @@
                                 @for (option of getLookupSuggestions('param', p.name); track option.value) {
                                   <button
                                     type="button"
-                                    class="w-full border-b border-slate-100 px-5 py-3 text-left hover:bg-slate-50 last:border-b-0"
+                                    class="w-full border-b border-slate-100 px-5 py-3 text-left last:border-b-0"
+                                    [disabled]="option.disabled"
+                                    [ngClass]="option.disabled ? 'cursor-not-allowed bg-slate-50/80 opacity-80' : 'hover:bg-slate-50'"
                                     (click)="selectLookupOption('param', p.name, option)">
-                                    <div class="text-sm font-black text-slate-800">{{ lookupLabel(option) }}</div>
+                                    <div class="flex items-center justify-between gap-3">
+                                      <div class="text-sm font-black text-slate-800">{{ lookupLabel(option) }}</div>
+                                      @if (option.statusText) {
+                                        <span
+                                          class="rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-[0.2em]"
+                                          [ngClass]="lookupStatusClass(option)">
+                                          {{ option.statusText }}
+                                        </span>
+                                      }
+                                    </div>
                                   </button>
                                 }
                               </div>
